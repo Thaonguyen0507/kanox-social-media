@@ -32,9 +32,7 @@ import { AuthContext } from "../../../context/AuthContext";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useEmojiList from "../../../hooks/useEmojiList";
-import { useLoadScript, Autocomplete } from '@react-google-maps/api';
 
-const libraries = ['places'];
 
 function TweetInput({ onPostSuccess, groupId }) {
     const { user } = useContext(AuthContext);
@@ -62,33 +60,34 @@ function TweetInput({ onPostSuccess, groupId }) {
     const [showPlacePicker, setShowPlacePicker] = useState(false);
     const placeInputRef = useRef(null);
 
-    const { isLoaded, loadError } = useLoadScript({
-        googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-        libraries,
-    });
-
     useEffect(() => {
-        if (isLoaded && placeInputRef.current) {
-            const autocomplete = new window.google.maps.places.Autocomplete(
-                placeInputRef.current,
-                { types: ['geocode'] }
-            );
-            autocomplete.addListener('place_changed', () => {
-                const place = autocomplete.getPlace();
-                if (place.geometry) {
-                    setSelectedPlace({
-                        latitude: place.geometry.location.lat(),
-                        longitude: place.geometry.location.lng(),
-                        locationName: place.formatted_address,
-                    });
-                    setPlaceInput(place.formatted_address);
-                    setShowPlacePicker(false);
-                } else {
-                    setPlaceInput('');
-                }
-            });
-        }
-    }, [isLoaded]);
+        const interval = setInterval(() => {
+            if (window.google?.maps?.places) {
+                clearInterval(interval);
+                const autocomplete = new window.google.maps.places.Autocomplete(
+                    placeInputRef.current,
+                    { types: ['geocode'] }
+                );
+                autocomplete.addListener('place_changed', () => {
+                    const place = autocomplete.getPlace();
+                    if (place.geometry) {
+                        setSelectedPlace({
+                            latitude: place.geometry.location.lat(),
+                            longitude: place.geometry.location.lng(),
+                            locationName: place.formatted_address,
+                        });
+                        setPlaceInput(place.formatted_address);
+                        setShowPlacePicker(false);
+                    } else {
+                        setPlaceInput('');
+                    }
+                });
+            }
+        }, 200);
+
+        return () => clearInterval(interval);
+    }, []);
+
 
     useEffect(() => {
         const handleClickOutside = (event) => {
