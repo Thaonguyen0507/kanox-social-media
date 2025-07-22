@@ -3,9 +3,9 @@ import { Modal, Button, Form, Image, Spinner, Nav } from "react-bootstrap";
 import { FaCamera, FaTimes, FaLock, FaTrash } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import PlaceAutocomplete from "../location/PlaceAutocomplete"; // đường dẫn đúng tới file
+import AutocompleteInput from "../location/AutocompleteInput"; // đường dẫn tùy bạn
+import MapView from "../location/MapView"; // đường dẫn đúng tới file
 
-const libraries = ["places"];
 
 function EditProfileModal({
   show,
@@ -318,7 +318,7 @@ function EditProfileModal({
               <Form.Label className="text-[var(--muted-text-color)] small mb-1">
                 Địa điểm
               </Form.Label>
-              <PlaceAutocomplete
+              <AutocompleteInput
                   ref={placeInputRef}
                   onPlaceSelect={(place) => {
                     if (!place || !place.geometry) return;

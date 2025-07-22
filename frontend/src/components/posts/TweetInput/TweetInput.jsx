@@ -32,7 +32,8 @@ import { AuthContext } from "../../../context/AuthContext";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useEmojiList from "../../../hooks/useEmojiList";
-import PlaceAutocomplete from "../../location/PlaceAutocomplete";
+import AutocompleteInput from "../../location/AutocompleteInput"; // đường dẫn tùy bạn
+import MapView from "../../location/MapView";
 
 
 
@@ -511,18 +512,22 @@ function TweetInput({ onPostSuccess, groupId }) {
                         onChange={(e) => setTweetContent(e.target.value)}
                     />
                     {selectedPlace && (
-                        <div className="flex items-center mb-2">
-                            <FaMapMarkerAlt className="mr-1" />
-                            <span>{selectedPlace.locationName}</span>
-                            <Button
-                                variant="link"
-                                className="text-red-600 p-0 ml-2"
-                                onClick={() => setSelectedPlace(null)}
-                            >
-                                <AiOutlineClose size={18} />
-                            </Button>
+                        <div className="mb-3">
+                            <div className="flex items-center mb-2">
+                                <FaMapMarkerAlt className="mr-1" />
+                                <span>{selectedPlace.locationName}</span>
+                                <Button
+                                    variant="link"
+                                    className="text-red-600 p-0 ml-2"
+                                    onClick={() => setSelectedPlace(null)}
+                                >
+                                    <AiOutlineClose size={18} />
+                                </Button>
+                            </div>
+                            <MapView lat={selectedPlace.lat} lng={selectedPlace.lng} />
                         </div>
                     )}
+
                     <div className="mb-3">{renderMediaPreview()}</div>
 
                     {taggedUserIds.length > 0 && (
@@ -742,7 +747,7 @@ function TweetInput({ onPostSuccess, groupId }) {
                         {showPlacePicker && (
                             <div className="absolute z-50 mt-2 w-64 bg-[var(--background-color)] border border-[var(--border-color)] rounded shadow p-3">
                                 {ready ? (
-                                    <PlaceAutocomplete
+                                    <AutocompleteInput
                                         onPlaceSelect={(place) => {
                                             if (!place) return;
                                             setSelectedPlace(place);
