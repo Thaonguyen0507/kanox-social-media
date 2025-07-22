@@ -11,6 +11,14 @@
     import process from 'process';
     window.process = process;
 
+    if (!document.querySelector('script[src*="maps.googleapis.com/maps/api/js"]')) {
+        const script = document.createElement("script");
+        script.src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyCH8eUqefKzCsoIhXQeE2Oe-P25itPiRZw&v=weekly&libraries=places";
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+    }
+
     const root = ReactDOM.createRoot(document.getElementById("root"));
     if (!root) {
         console.error("Root element not found");
