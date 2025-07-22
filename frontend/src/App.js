@@ -14,7 +14,6 @@ import "./App.css";
 import moment from "moment";
 import PrivateRoute from "./components/common/PrivateRoute/PrivateRoute";
 import { EmojiProvider } from "./context/EmojiContext";
-import { definePlaceAutocomplete } from "./components/location/googleMapsInit";
 
 
 import SidebarLeft from "./components/layout/SidebarLeft/SidebarLeft";
@@ -126,16 +125,6 @@ function AppContent() {
 
     fetchChatIdsAndMembers();
   }, [user, token]);
-
-  useEffect(() => {
-    const waitForGoogle = async () => {
-      while (!window.google?.maps?.importLibrary) {
-        await new Promise((r) => setTimeout(r, 100));
-      }
-      definePlaceAutocomplete();
-    };
-    waitForGoogle();
-  }, []);
 
 
   useEffect(() => {
