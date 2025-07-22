@@ -6,48 +6,21 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { definePlaceAutocomplete } from "./components/location/googleMapsInit"; // ✅ Thêm dòng này
-
 import process from "process";
 window.process = process;
 
-// ✅ Load Google Maps trước khi render app
-const loadGoogleMaps = () =>
-    new Promise((resolve, reject) => {
-        if (window.google?.maps?.importLibrary) return resolve();
+const root = ReactDOM.createRoot(document.getElementById("root"));
+if (!root) {
+    console.error("Root element not found");
+    throw new Error("Root element not found");
+}
 
-        const existingScript = document.querySelector('script[src*="maps.googleapis.com/maps/api/js"]');
-        if (existingScript) {
-            existingScript.addEventListener("load", resolve);
-            return;
-        }
-
-        const script = document.createElement("script");
-        script.src =
-            "https://maps.googleapis.com/maps/api/js?key=AIzaSyCH8eUqefKzCsoIhXQeE2Oe-P25itPiRZw&v=weekly&libraries=places";
-        script.async = true;
-        script.defer = true;
-        script.onload = resolve;
-        script.onerror = reject;
-        document.head.appendChild(script);
-    });
-
-loadGoogleMaps()
-    .then(() => definePlaceAutocomplete()) // ✅ Gọi define duy nhất ở đây
-    .then(() => {
-        const root = ReactDOM.createRoot(document.getElementById("root"));
-        if (!root) {
-            console.error("Root element not found");
-            throw new Error("Root element not found");
-        }
-
-        root.render(
-            <React.StrictMode>
-                <GoogleOAuthProvider clientId="169927075241-2bls9jare84nfak44e777ish524o5avk.apps.googleusercontent.com">
-                    <App />
-                </GoogleOAuthProvider>
-            </React.StrictMode>
-        );
-    });
+root.render(
+    <React.StrictMode>
+        <GoogleOAuthProvider clientId="169927075241-2bls9jare84nfak44e777ish524o5avk.apps.googleusercontent.com">
+            <App />
+        </GoogleOAuthProvider>
+    </React.StrictMode>
+);
 
 reportWebVitals();

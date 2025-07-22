@@ -11,7 +11,6 @@ const PlaceAutocomplete = forwardRef(({ onPlaceSelect }, ref) => {
             return;
         }
 
-        // ⚠️ Đợi shadow DOM render xong
         const waitForInput = setInterval(() => {
             const input = el.shadowRoot?.querySelector("input");
             if (!input) return;
@@ -37,7 +36,6 @@ const PlaceAutocomplete = forwardRef(({ onPlaceSelect }, ref) => {
 
             el.addEventListener("gmpx-placeautocomplete:placechanged", handlePlaceChange);
 
-            // ✅ Cleanup
             return () => {
                 el.removeEventListener("gmpx-placeautocomplete:placechanged", handlePlaceChange);
             };
@@ -47,6 +45,7 @@ const PlaceAutocomplete = forwardRef(({ onPlaceSelect }, ref) => {
     return (
         <gmpx-place-autocomplete
             ref={elRef}
+            lang="vi"
             style={{
                 width: "100%",
                 display: "block",
