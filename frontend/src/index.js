@@ -12,7 +12,7 @@ const loadGoogleMaps = () =>
         if (window.google?.maps?.importLibrary) return resolve();
 
         const script = document.createElement("script");
-        script.src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyCH8eUqefKzCsoIhXQeE2Oe-P25itPiRZw&v=beta&libraries=places";
+        script.src = "https://maps.googleapis.com/maps/api/js?key=AIzaSyCH8eUqefKzCsoIhXQeE2Oe-P25itPiRZw&v=beta&libraries=places&modules=place_autocomplete";
         script.async = true;
         script.defer = true;
         script.onload = resolve;
