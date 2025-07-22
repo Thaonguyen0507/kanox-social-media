@@ -7,7 +7,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "./index.css";
 
-// ✅ Load Google Maps + define gmpx-place-autocomplete
 const loadGoogleMaps = () =>
     new Promise((resolve, reject) => {
         if (window.google?.maps?.importLibrary) return resolve();
@@ -23,12 +22,21 @@ const loadGoogleMaps = () =>
 
 const defineGMPX = async () => {
     if (customElements.get("gmpx-place-autocomplete")) {
-        console.log("✅ gmpx-place-autocomplete already defined.");
+        console.log("⚠️ gmpx-place-autocomplete đã được define.");
         return;
     }
-    const { PlaceAutocompleteElement } = await window.google.maps.importLibrary("places");
-    customElements.define("gmpx-place-autocomplete", PlaceAutocompleteElement);
-    console.log("✅ gmpx-place-autocomplete defined.");
+
+    try {
+        const { PlaceAutocompleteElement } = await window.google.maps.importLibrary("places");
+        customElements.define("gmpx-place-autocomplete", PlaceAutocompleteElement);
+        console.log("✅ gmpx-place-autocomplete defined.");
+    } catch (error) {
+        if (error instanceof DOMException && error.name === "NotSupportedError") {
+            console.warn("⚠️ Constructor đã được sử dụng trước đó. Bỏ qua.");
+        } else {
+            console.error("❌ Lỗi define:", error);
+        }
+    }
 };
 
 loadGoogleMaps()
