@@ -128,8 +128,15 @@ function AppContent() {
   }, [user, token]);
 
   useEffect(() => {
-    definePlaceAutocomplete();
+    const waitForGoogle = async () => {
+      while (!window.google?.maps?.importLibrary) {
+        await new Promise((r) => setTimeout(r, 100));
+      }
+      definePlaceAutocomplete();
+    };
+    waitForGoogle();
   }, []);
+
 
   useEffect(() => {
     if (!subscribe || !unsubscribe || !publish || !user || !token) {

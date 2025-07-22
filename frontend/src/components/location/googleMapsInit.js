@@ -1,14 +1,13 @@
-let isPlaceAutocompleteDefined = false; // 🔁 Chặn define nhiều lần
+let isPlaceAutocompleteDefined = false;
 
 export const definePlaceAutocomplete = async () => {
     if (isPlaceAutocompleteDefined) {
-        console.log("ℹ️ gmpx-place-autocomplete already defined (skipped)");
+        console.log("✅ gmpx-place-autocomplete đã được define");
         return;
     }
 
-    // Chờ window.google.maps.importLibrary sẵn sàng
     if (!window.google?.maps?.importLibrary) {
-        console.log("⏳ Waiting for window.google.maps.importLibrary...");
+        console.log("⏳ Chờ window.google.maps.importLibrary...");
         await new Promise((resolve) => {
             const interval = setInterval(() => {
                 if (window.google?.maps?.importLibrary) {
@@ -24,13 +23,13 @@ export const definePlaceAutocomplete = async () => {
 
         if (!customElements.get("gmpx-place-autocomplete")) {
             customElements.define("gmpx-place-autocomplete", PlaceAutocompleteElement);
-            console.log("✅ gmpx-place-autocomplete defined successfully");
+            console.log("✅ gmpx-place-autocomplete đã được define thành công");
         } else {
-            console.log("⚠️ gmpx-place-autocomplete already defined in registry");
+            console.warn("⚠️ gmpx-place-autocomplete đã được define trước đó");
         }
 
         isPlaceAutocompleteDefined = true;
-    } catch (err) {
-        console.error("❌ Error defining gmpx-place-autocomplete:", err);
+    } catch (error) {
+        console.error("❌ Lỗi khi define gmpx-place-autocomplete:", error);
     }
 };
