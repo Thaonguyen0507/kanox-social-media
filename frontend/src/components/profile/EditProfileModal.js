@@ -48,12 +48,12 @@ function EditProfileModal({
     }
   }, [show, userProfile]);
 
-  useEffect(() => {
-    const el = placeInputRef.current;
-    if (el && formData.locationName) {
-      el.querySelector("input")?.setAttribute("value", formData.locationName);
-    }
-  }, [formData.locationName]);
+  // useEffect(() => {
+  //   const el = placeInputRef.current;
+  //   if (el && formData.locationName) {
+  //     el.querySelector("input")?.setAttribute("value", formData.locationName);
+  //   }
+  // }, [formData.locationName]);
 
 
 
@@ -319,9 +319,9 @@ function EditProfileModal({
                 Địa điểm
               </Form.Label>
               <PlaceAutocomplete
-                  ref={placeInputRef}
+                  // ref={placeInputRef}
                   onPlaceSelect={(place) => {
-                    if (!place || !place.geometry) return;
+                    if (!place) return;
                     setFormData((prev) => ({
                       ...prev,
                       locationName: place.formattedAddress || "",
