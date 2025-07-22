@@ -61,8 +61,18 @@ function TweetInput({ onPostSuccess, groupId }) {
     const [selectedPlace, setSelectedPlace] = useState(null);
     const [showPlacePicker, setShowPlacePicker] = useState(false);
     const placeInputRef = useRef(null);
+    const [ready, setReady] = useState(false);
 
 
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (customElements.get("gmpx-place-autocomplete")) {
+                clearInterval(interval);
+                setReady(true);
+            }
+        }, 200);
+        return () => clearInterval(interval);
+    }, []);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -731,16 +741,21 @@ function TweetInput({ onPostSuccess, groupId }) {
                         </Button>
                         {showPlacePicker && (
                             <div className="absolute z-50 mt-2 w-64 bg-[var(--background-color)] border border-[var(--border-color)] rounded shadow p-3">
-                                <PlaceAutocomplete
-                                    onPlaceSelect={(place) => {
-                                        if (!place) return;
-                                        setSelectedPlace(place);
-                                        setPlaceInput(place.formattedAddress || "");
-                                        setShowPlacePicker(false);
-                                    }}
-                                />
+                                {ready ? (
+                                    <PlaceAutocomplete
+                                        onPlaceSelect={(place) => {
+                                            if (!place) return;
+                                            setSelectedPlace(place);
+                                            setPlaceInput(place.formattedAddress || "");
+                                            setShowPlacePicker(false);
+                                        }}
+                                    />
+                                ) : (
+                                    <p className="text-sm text-gray-400">Đang tải địa điểm...</p>
+                                )}
                             </div>
                         )}
+
 
 
                         <Button

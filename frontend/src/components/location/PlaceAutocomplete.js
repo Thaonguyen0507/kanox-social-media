@@ -8,15 +8,20 @@ const PlaceAutocomplete = forwardRef(({ onPlaceSelect }, ref) => {
         const el = elRef.current;
         if (!el) return;
 
+        // 🕓 Đợi shadow DOM
         const interval = setInterval(() => {
             const input = el.shadowRoot?.querySelector("input");
             if (!input) return;
 
             clearInterval(interval);
-            el.setAttribute("placeholder", "Nhập địa điểm");
+            console.log("✅ Shadow DOM input ready");
+
+            input.placeholder = "Nhập địa điểm";
 
             const handlePlaceChange = (event) => {
                 const place = event.detail;
+                console.log("📍 Chọn địa điểm:", place);
+
                 if (!place?.geometry) return;
 
                 onPlaceSelect?.({
@@ -32,7 +37,7 @@ const PlaceAutocomplete = forwardRef(({ onPlaceSelect }, ref) => {
             return () => {
                 el.removeEventListener("gmpx-placeautocomplete:placechanged", handlePlaceChange);
             };
-        }, 100);
+        }, 200);
     }, [onPlaceSelect]);
 
     return (
