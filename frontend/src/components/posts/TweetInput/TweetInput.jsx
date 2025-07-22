@@ -32,6 +32,8 @@ import { AuthContext } from "../../../context/AuthContext";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useEmojiList from "../../../hooks/useEmojiList";
+import PlaceAutocomplete from "../location/PlaceAutocomplete";
+
 
 
 function TweetInput({ onPostSuccess, groupId }) {
@@ -60,33 +62,6 @@ function TweetInput({ onPostSuccess, groupId }) {
     const [showPlacePicker, setShowPlacePicker] = useState(false);
     const placeInputRef = useRef(null);
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            if (window.google?.maps?.places) {
-                clearInterval(interval);
-                const autocomplete = new window.google.maps.places.Autocomplete(
-                    placeInputRef.current,
-                    { types: ['geocode'] }
-                );
-                autocomplete.addListener('place_changed', () => {
-                    const place = autocomplete.getPlace();
-                    if (place.geometry) {
-                        setSelectedPlace({
-                            latitude: place.geometry.location.lat(),
-                            longitude: place.geometry.location.lng(),
-                            locationName: place.formatted_address,
-                        });
-                        setPlaceInput(place.formatted_address);
-                        setShowPlacePicker(false);
-                    } else {
-                        setPlaceInput('');
-                    }
-                });
-            }
-        }, 200);
-
-        return () => clearInterval(interval);
-    }, []);
 
 
     useEffect(() => {
@@ -756,13 +731,13 @@ function TweetInput({ onPostSuccess, groupId }) {
                         </Button>
                         {showPlacePicker && (
                             <div className="absolute z-50 mt-2 w-64 bg-[var(--background-color)] border border-[var(--border-color)] rounded shadow p-3">
-                                <input
-                                    ref={placeInputRef}
-                                    type="text"
-                                    placeholder="Nhập địa điểm"
-                                    value={placeInput}
-                                    onChange={(e) => setPlaceInput(e.target.value)}
-                                    className="border border-[var(--border-color)] bg-[var(--background-color)] text-[var(--text-color)] px-3 py-2 rounded w-full"
+                                <PlaceAutocomplete
+                                    onPlaceSelect={(place) => {
+                                        if (!place) return;
+                                        setSelectedPlace(place);
+                                        setPlaceInput(place.formattedAddress || "");
+                                        setShowPlacePicker(false);
+                                    }}
                                 />
                             </div>
                         )}

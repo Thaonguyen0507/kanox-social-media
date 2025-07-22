@@ -1,49 +1,65 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, forwardRef } from "react";
+import { definePlaceAutocomplete } from "./googleMapsInit";
 
-const PlaceAutocomplete = ({ onPlaceSelect }) => {
-    const inputRef = useRef(null);
-    const autocompleteRef = useRef(null);
+const PlaceAutocomplete = forwardRef(({ onPlaceSelect }, ref) => {
+    const internalRef = useRef(null);
+    const elRef = ref || internalRef;
 
     useEffect(() => {
-        if (!window.google || !window.google.maps || !window.google.maps.places) {
-            console.error("Google Maps chưa sẵn sàng.");
-            return;
-        }
-
-        autocompleteRef.current = new window.google.maps.places.Autocomplete(
-            inputRef.current,
-            {
-                types: ["geocode"],
-                componentRestrictions: { country: [] }, // <-- BỎ VN nếu bạn không chắc
-            }
-        );
-
-        autocompleteRef.current.addListener("place_changed", () => {
-            const place = autocompleteRef.current.getPlace();
-
-            if (!place || !place.geometry) {
-                console.warn("Không có thông tin địa điểm.");
+        definePlaceAutocomplete().then(() => {
+            const el = elRef.current;
+            if (!el) {
+                console.warn("⛔ Không tìm thấy ref tới <gmpx-place-autocomplete>");
                 return;
             }
 
-            const result = {
-                formattedAddress: place.formatted_address || "",
-                latitude: place.geometry.location.lat(),
-                longitude: place.geometry.location.lng(),
-            };
+            // ⚠️ Đợi shadow DOM render xong
+            const waitForInput = setInterval(() => {
+                const input = el.shadowRoot?.querySelector("input");
+                if (!input) return;
 
-            onPlaceSelect?.(result);
+                clearInterval(waitForInput);
+                console.log("✅ Shadow input đã sẵn sàng:", input);
+
+                // Gán placeholder
+                el.setAttribute("placeholder", "Nhập địa điểm");
+
+                // Sự kiện chọn địa điểm
+                const handlePlaceChange = (event) => {
+                    const place = event.detail;
+                    console.log("📍 Đã chọn địa điểm:", place);
+
+                    if (!place?.geometry) return;
+
+                    onPlaceSelect?.({
+                        ...place,
+                        formattedAddress: place.formattedAddress || "",
+                        latitude: place.geometry.location.lat,
+                        longitude: place.geometry.location.lng,
+                    });
+                };
+
+                el.addEventListener("gmpx-placeautocomplete:placechanged", handlePlaceChange);
+
+                // Clean up
+                return () => {
+                    el.removeEventListener("gmpx-placeautocomplete:placechanged", handlePlaceChange);
+                };
+            }, 100);
         });
     }, [onPlaceSelect]);
 
     return (
-        <input
-            ref={inputRef}
-            type="text"
-            placeholder="Nhập địa điểm"
-            className="form-control"
+        <gmpx-place-autocomplete
+            ref={elRef}
+            style={{
+                width: "100%",
+                display: "block",
+                borderBottom: "1px solid #ccc",
+                padding: "8px",
+            }}
         />
     );
-};
+});
 
 export default PlaceAutocomplete;
