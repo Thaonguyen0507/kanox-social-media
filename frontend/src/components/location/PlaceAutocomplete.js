@@ -13,14 +13,22 @@ const PlaceAutocomplete = forwardRef(({ onPlaceSelect }, ref) => {
                 return;
             }
 
-            // Delay để tránh lỗi shadow DOM chưa sẵn sàng
-            setTimeout(() => {
-                el.setAttribute("placeholder", "Nhập địa điểm");
-                console.log("📌 Element:", el);
+            // ⚠️ Đợi shadow DOM render xong
+            const waitForInput = setInterval(() => {
+                const input = el.shadowRoot?.querySelector("input");
+                if (!input) return;
 
+                clearInterval(waitForInput);
+                console.log("✅ Shadow input đã sẵn sàng:", input);
+
+                // Gán placeholder
+                el.setAttribute("placeholder", "Nhập địa điểm");
+
+                // Sự kiện chọn địa điểm
                 const handlePlaceChange = (event) => {
                     const place = event.detail;
                     console.log("📍 Đã chọn địa điểm:", place);
+
                     if (!place?.geometry) return;
 
                     onPlaceSelect?.({
@@ -32,26 +40,26 @@ const PlaceAutocomplete = forwardRef(({ onPlaceSelect }, ref) => {
                 };
 
                 el.addEventListener("gmpx-placeautocomplete:placechanged", handlePlaceChange);
-            }, 100); // 👈 Thêm delay ngắn để đảm bảo shadow DOM ready
+
+                // Clean up
+                return () => {
+                    el.removeEventListener("gmpx-placeautocomplete:placechanged", handlePlaceChange);
+                };
+            }, 100);
         });
     }, [onPlaceSelect]);
 
-
     return (
-        <>
-            {console.log("✅ Đã render gmpx-place-autocomplete")}
-            <gmpx-place-autocomplete
-                ref={elRef}
-                style={{
-                    width: "100%",
-                    display: "block",
-                    borderBottom: "1px solid #ccc",
-                    padding: "8px",
-                }}
-            />
-        </>
+        <gmpx-place-autocomplete
+            ref={elRef}
+            style={{
+                width: "100%",
+                display: "block",
+                borderBottom: "1px solid #ccc",
+                padding: "8px",
+            }}
+        />
     );
-
 });
 
 export default PlaceAutocomplete;

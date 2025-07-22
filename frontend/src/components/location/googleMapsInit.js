@@ -6,23 +6,18 @@ export const definePlaceAutocomplete = async () => {
         return;
     }
 
-    console.log("⏳ Chờ window.google.maps.importLibrary...");
+    console.log("⏳ Đợi window.google.maps.importLibrary...");
     await new Promise((resolve) => {
-        if (window.google?.maps?.importLibrary) {
-            console.log("✅ importLibrary SẴN SÀNG ngay lập tức");
-            return resolve();
-        }
+        if (window.google?.maps?.importLibrary) return resolve();
 
         const interval = setInterval(() => {
             if (window.google?.maps?.importLibrary) {
                 clearInterval(interval);
-                console.log("✅ importLibrary đã sẵn sàng sau polling");
                 resolve();
             }
         }, 100);
     });
 
-    console.log("➡️ Gọi importLibrary('places')...");
     try {
         const { PlaceAutocompleteElement } =
             await window.google.maps.importLibrary("places");
