@@ -5,7 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c6c17ae2-c6cb-4c94-a6b8-91c54839fa5e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,7 +32,7 @@
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/NgyenKhoi/kanox-web.git&quot;,
+    &quot;url&quot;: &quot;https://github.com/Thaonguyen0507/kanox-social-media.git&quot;,
     &quot;accountId&quot;: &quot;e69e2454-8d4b-4ce3-8419-ca359974fc33&quot;
   }
 }</component>
@@ -53,7 +53,7 @@
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/SWP391/kanox-web/frontend&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/kanox-social-media/frontend&quot;,
     &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -163,6 +163,10 @@
       <workItem from="1752769847271" duration="4408000" />
       <workItem from="1752817821730" duration="3566000" />
       <workItem from="1753019609758" duration="4287000" />
+      <workItem from="1753173539394" duration="3863000" />
+      <workItem from="1753188195102" duration="266000" />
+      <workItem from="1753195068232" duration="3222000" />
+      <workItem from="1753214074018" duration="1518000" />
     </task>
     <servers />
   </component>
