@@ -14,8 +14,7 @@ const PlaceAutocomplete = forwardRef(({ onPlaceSelect }, ref) => {
 
             const handlePlaceChange = (event) => {
                 const place = event.detail;
-                if (place && place.geometry) {
-                    console.log("📍 Đã chọn địa điểm:", place);
+                if (place?.geometry) {
                     const lat = place.geometry.location.lat;
                     const lng = place.geometry.location.lng;
                     const name = place.formattedAddress || place.displayName || "";
@@ -33,9 +32,11 @@ const PlaceAutocomplete = forwardRef(({ onPlaceSelect }, ref) => {
             return () => {
                 el.removeEventListener("gmpx-placeautocomplete:placechanged", handlePlaceChange);
             };
+        }).catch((err) => {
+            console.error("🧨 Không thể khởi tạo PlaceAutocomplete:", err);
         });
-        console.log("🧪 elRef.current:", elRef.current);
-    }, [onPlaceSelect, elRef]);
+    }, [onPlaceSelect]);
+
 
     return (
         <gmpx-place-autocomplete

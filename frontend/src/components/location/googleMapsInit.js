@@ -1,35 +1,46 @@
 let isPlaceAutocompleteDefined = false;
+let definePromise = null;
 
 export const definePlaceAutocomplete = async () => {
-    if (isPlaceAutocompleteDefined) {
-        console.log("✅ gmpx-place-autocomplete đã được define");
-        return;
-    }
+    if (isPlaceAutocompleteDefined) return;
 
-    if (!window.google?.maps?.importLibrary) {
-        console.log("⏳ Chờ window.google.maps.importLibrary...");
-        await new Promise((resolve) => {
-            const interval = setInterval(() => {
-                if (window.google?.maps?.importLibrary) {
-                    clearInterval(interval);
-                    resolve();
+    if (definePromise) return definePromise;
+
+    definePromise = new Promise(async (resolve, reject) => {
+        try {
+            if (!window.google?.maps?.importLibrary) {
+                const wait = () => new Promise((res) => {
+                    const interval = setInterval(() => {
+                        if (window.google?.maps?.importLibrary) {
+                            clearInterval(interval);
+                            res();
+                        }
+                    }, 100);
+                });
+                await wait();
+            }
+
+            const { PlaceAutocompleteElement } = await window.google.maps.importLibrary("places");
+
+            // ✅ Sử dụng try/catch để tránh throw nếu đã define
+            try {
+                if (!customElements.get("gmpx-place-autocomplete")) {
+                    customElements.define("gmpx-place-autocomplete", PlaceAutocompleteElement);
+                    console.log("✅ gmpx-place-autocomplete đã được define");
+                } else {
+                    console.log("ℹ️ gmpx-place-autocomplete đã được define trước đó");
                 }
-            }, 100);
-        });
-    }
+            } catch (err) {
+                console.warn("⚠️ Có thể đã define rồi:", err.message);
+            }
 
-    try {
-        const { PlaceAutocompleteElement } = await window.google.maps.importLibrary("places");
-
-        if (!customElements.get("gmpx-place-autocomplete")) {
-            customElements.define("gmpx-place-autocomplete", PlaceAutocompleteElement);
-            console.log("✅ gmpx-place-autocomplete đã được define thành công");
-        } else {
-            console.warn("⚠️ gmpx-place-autocomplete đã được define trước đó");
+            isPlaceAutocompleteDefined = true;
+            resolve();
+        } catch (err) {
+            console.error("❌ Lỗi khi define gmpx-place-autocomplete:", err);
+            reject(err);
         }
+    });
 
-        isPlaceAutocompleteDefined = true;
-    } catch (error) {
-        console.error("❌ Lỗi khi define gmpx-place-autocomplete:", error);
-    }
+    return definePromise;
 };
