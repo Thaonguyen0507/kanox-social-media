@@ -183,10 +183,10 @@ function ExplorePage() {
   return (
       <div className="flex min-h-screen bg-[var(--background-color)] text-[var(--text-color)]">
         <div className="flex flex-col flex-grow">
-          <div className="sticky top-0 z-50 bg-[var(--content-bg)] border-b border-gray-200 dark:border-gray-700">
+          <div className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-md">
             <div className="max-w-2xl mx-auto w-full p-4">
               {/* Search input + dropdown */}
-              <div className="relative z-50">
+              <div className="relative z-[60]">
                 <div className="relative flex items-center">
                   <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-300">
                     <FaSearch size={16} />
