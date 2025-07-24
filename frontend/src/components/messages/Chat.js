@@ -304,7 +304,7 @@ const Chat = ({ chatId, messages, onMessageUpdate, onSendMessage }) => {
         if (selectedMediaPreviews.length > 0) {
             // Gửi bằng REST API nếu có media
             const formData = new FormData();
-            formData.append("content", message.trim());
+            formData.append("content", message.trim() || ""); // Gửi chuỗi rỗng nếu không có content
 
             // Chỉ gửi file đã chọn (gốc)
             selectedMediaFiles.forEach(file => {
@@ -321,8 +321,8 @@ const Chat = ({ chatId, messages, onMessageUpdate, onSendMessage }) => {
                 });
 
                 if (!response.ok) {
-                    const text = await response.text();
-                    throw new Error(text);
+                    const error = await response.json();
+                    throw new Error(error.message || "Lỗi khi gửi tin nhắn với media");
                 }
 
                 const data = await response.json();
