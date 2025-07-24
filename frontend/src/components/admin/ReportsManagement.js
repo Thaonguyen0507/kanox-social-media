@@ -129,7 +129,7 @@ const ReportsManagement = () => {
             toast.success("Đã xóa báo cáo!");
             loadReports();
         } catch (error) {
-            toast.error("Lố khi xóa báo cáo: " + error.message);
+            toast.error("Lỗi khi xóa báo cáo: " + error.message);
         }
     };
 
@@ -364,25 +364,25 @@ const ReportsManagement = () => {
                                     <td className="p-3 text-text dark:text-white">{report.targetId}</td>
                                     <td className="p-3 text-text dark:text-white">{report.reason?.name || "Không xác định"}</td>
                                     <td className="p-3">
-                                <span
-                                    className={`px-2 py-1 rounded-full text-sm font-medium ${
-                                        report.processingStatusId === 1
-                                            ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-700 dark:text-yellow-200"
-                                            : report.processingStatusId === 2
-                                                ? "bg-blue-100 text-blue-800 dark:bg-blue-700 dark:text-blue-200"
-                                                : report.processingStatusId === 3
-                                                    ? "bg-green-100 text-green-800 dark:bg-green-700 dark:text-green-200"
-                                                    : "bg-red-100 text-red-800 dark:bg-red-700 dark:text-red-200"
-                                    }`}
-                                >
-                                    {report.processingStatusId === 1
-                                        ? "Đang chờ"
-                                        : report.processingStatusId === 2
-                                            ? "Đang xem xét"
-                                            : report.processingStatusId === 3
-                                                ? "Đã duyệt"
-                                                : "Đã từ chối"}
-                                </span>
+                                        <span
+                                            className={`px-2 py-1 rounded-full text-sm font-medium ${
+                                                report.processingStatusId === 1
+                                                    ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-700 dark:text-yellow-200"
+                                                    : report.processingStatusId === 2
+                                                        ? "bg-blue-100 text-blue-800 dark:bg-blue-700 dark:text-blue-200"
+                                                        : report.processingStatusId === 3
+                                                            ? "bg-green-100 text-green-800 dark:bg-green-700 dark:text-green-200"
+                                                            : "bg-red-100 text-red-800 dark:bg-red-700 dark:text-red-200"
+                                            }`}
+                                        >
+                                            {report.processingStatusId === 1
+                                                ? "Đang chờ"
+                                                : report.processingStatusId === 2
+                                                    ? "Đang xem xét"
+                                                    : report.processingStatusId === 3
+                                                        ? "Đã duyệt"
+                                                        : "Đã từ chối"}
+                                        </span>
                                     </td>
                                     <td className="p-3 flex gap-2">
                                         <button
@@ -432,106 +432,132 @@ const ReportsManagement = () => {
                             </button>
                         </div>
                     )}
-                </>
-            )}
-
-            <div
-                className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center transition-opacity duration-300 ${
-                    showDetailModal ? "opacity-100" : "opacity-0 pointer-events-none"
-                }`}
-            >
-                <div className="bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-2xl p-6">
-                    <div className="flex justify-between items-center mb-4">
-                        <h3 className="text-xl font-bold text-text dark:text-white">Chi tiết Báo cáo</h3>
-                        <button
-                            onClick={() => setShowDetailModal(false)}
-                            className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white"
-                        >
-                            ✕
-                        </button>
-                    </div>
-                    {selectedReport ? (
-                        <>
-                            <p className="text-text dark:text-white">
-                                <strong>ID Báo cáo:</strong> {selectedReport.id}
-                            </p>
-                            <p className="text-text dark:text-white">
-                                <strong>Người báo cáo:</strong> {selectedReport.reporterUsername}
-                            </p>
-                            <p className="text-text dark:text-white">
-                                <strong>Loại:</strong> {selectedReport.targetTypeId === 1 ? "Bài đăng" : "Người dùng"}
-                            </p>
-                            <p className="text-text dark:text-white">
-                                <strong>ID mục tiêu:</strong> {selectedReport.targetId}
-                            </p>
-                            <p className="text-text dark:text-white">
-                                <strong>Lý do:</strong> {selectedReport.reason?.name || "Không xác định"}
-                            </p>
-                            <p className="text-text dark:text-white">
-                                <strong>Thời gian:</strong> {new Date(selectedReport.reportTime * 1000).toLocaleString("vi-VN")}
-                            </p>
-                            <p className="text-text dark:text-white">
-                                <strong>Trạng thái:</strong> {selectedReport.processingStatusName || "Không xác định"}
-                            </p>
-                            <h5 className="text-lg font-semibold mt-4 dark:text-white">Lịch sử xử lý</h5>
-                            <div className="overflow-y-auto max-h-64">
-                                <table className="w-full border-collapse bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md">
-                                    <thead>
-                                    <tr className="bg-gray-100 dark:bg-gray-800">
-                                        <th className="p-3 text-left text-text dark:text-white font-semibold">Thời gian</th>
-                                        <th className="p-3 text-left text-text dark:text-white font-semibold">Admin</th>
-                                        <th className="p-3 text-left text-text dark:text-white font-semibold">Trạng thái</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {reportHistory.map((history) => (
-                                        <tr key={history.id} className="border-t border-gray-200 dark:border-gray-700">
-                                            <td className="p-3 text-gray-900 dark:text-gray-300">
-                                                {new Date(history.actionTime).toLocaleString("vi-VN")}
-                                            </td>
-                                            <td className="p-3 text-gray-900 dark:text-gray-300">
-                                                {history.reporterUsername || "Không xác định"}
-                                            </td>
-                                            <td className="p-3 text-gray-900 dark:text-gray-300">
-                                                {history.processingStatusName || "Không xác định"}
-                                            </td>
-                                        </tr>
-                                    ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div className="flex justify-end gap-2 mt-4">
+                    <div
+                        className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center transition-opacity duration-300 ${
+                            showDetailModal ? "opacity-100" : "opacity-0 pointer-events-none"
+                        }`}
+                    >
+                        <div className="bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-2xl p-6">
+                            <div className="flex justify-between items-center mb-4">
+                                <h3 className="text-xl font-bold text-text dark:text-white">Chi tiết Báo cáo</h3>
                                 <button
                                     onClick={() => setShowDetailModal(false)}
-                                    className="px-4 py-2 bg-gray-300 text-gray-700 dark:bg-gray-600 dark:text-gray-300 rounded-md hover:bg-gray-400 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 transition-colors duration-150"
+                                    className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white"
                                 >
-                                    Đóng
-                                </button>
-                                <button
-                                    onClick={() => handleUpdateStatus(selectedReport?.id, 2)}
-                                    className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 dark:hover:bg-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-150"
-                                >
-                                    Đang xem xét
-                                </button>
-                                <button
-                                    onClick={() => handleUpdateStatus(selectedReport?.id, 3)}
-                                    className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 dark:hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors duration-150"
-                                >
-                                    Duyệt
-                                </button>
-                                <button
-                                    onClick={() => handleUpdateStatus(selectedReport?.id, 4)}
-                                    className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 dark:hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors duration-150"
-                                >
-                                    Từ chối
+                                    ✕
                                 </button>
                             </div>
-                        </>
-                    ) : (
-                        <p className="text-gray-900 dark:text-gray-300">Không có thông tin báo cáo.</p>
-                    )}
-                </div>
-            </div>
+                            {selectedReport ? (
+                                <>
+                                    <div className="space-y-2">
+                                        <p className="text-text dark:text-white">
+                                            <strong>ID Báo cáo:</strong> {selectedReport.id}
+                                        </p>
+                                        <p className="text-text dark:text-white">
+                                            <strong>Người báo cáo:</strong> {selectedReport.reporterUsername}
+                                        </p>
+                                        <p className="text-text dark:text-white">
+                                            <strong>Loại:</strong> {selectedReport.targetTypeId === 1 ? "Bài đăng" : "Người dùng"}
+                                        </p>
+                                        <p className="text-text dark:text-white">
+                                            <strong>ID mục tiêu:</strong> {selectedReport.targetId}
+                                        </p>
+                                        <p className="text-text dark:text-white">
+                                            <strong>Lý do:</strong> {selectedReport.reason?.name || "Không xác định"}
+                                        </p>
+                                        <p className="text-text dark:text-white">
+                                            <strong>Thời gian:</strong> {new Date(selectedReport.reportTime * 1000).toLocaleString("vi-VN")}
+                                        </p>
+                                        <p className="text-text dark:text-white">
+                                            <strong>Trạng thái:</strong> {selectedReport.processingStatusName || "Không xác định"}
+                                        </p>
+                                        {/* Hiển thị nội dung bài viết nếu là báo cáo bài viết */}
+                                        {selectedReport.targetTypeId === 1 && (
+                                            <div className="mt-4">
+                                                <h5 className="text-lg font-semibold dark:text-white">Nội dung bài viết</h5>
+                                                <p className="text-text dark:text-white bg-gray-200 dark:bg-gray-700 p-3 rounded-md">
+                                                    {selectedReport.content || "Không có nội dung"}
+                                                </p>
+                                                {selectedReport.imageUrls && selectedReport.imageUrls.length > 0 && (
+                                                    <div className="mt-3">
+                                                        <h6 className="text-md font-semibold dark:text-white">Hình ảnh</h6>
+                                                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-2">
+                                                            {selectedReport.imageUrls.map((url, index) => (
+                                                                <div key={index} className="relative overflow-hidden rounded-lg shadow-sm">
+                                                                    <img
+                                                                        src={url}
+                                                                        alt={`Hình ảnh ${index + 1}`}
+                                                                        className="w-full h-48 object-cover transition-transform duration-200 hover:scale-105"
+                                                                    />
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+                                    <h5 className="text-lg font-semibold mt-4 dark:text-white">Lịch sử xử lý</h5>
+                                    <div className="overflow-y-auto max-h-64">
+                                        <table className="w-full border-collapse bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md">
+                                            <thead>
+                                            <tr className="bg-gray-100 dark:bg-gray-800">
+                                                <th className="p-3 text-left text-text dark:text-white font-semibold">Thời gian</th>
+                                                <th className="p-3 text-left text-text dark:text-white font-semibold">Admin</th>
+                                                <th className="p-3 text-left text-text dark:text-white font-semibold">Trạng thái</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            {reportHistory.map((history) => (
+                                                <tr key={history.id} className="border-t border-gray-200 dark:border-gray-700">
+                                                    <td className="p-3 text-gray-900 dark:text-gray-300">
+                                                        {new Date(history.actionTime).toLocaleString("vi-VN")}
+                                                    </td>
+                                                    <td className="p-3 text-gray-900 dark:text-gray-300">
+                                                        {history.reporterUsername || "Không xác định"}
+                                                    </td>
+                                                    <td className="p-3 text-gray-900 dark:text-gray-300">
+                                                        {history.processingStatusName || "Không xác định"}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div className="flex justify-end gap-2 mt-4">
+                                        <button
+                                            onClick={() => setShowDetailModal(false)}
+                                            className="px-4 py-2 bg-gray-300 text-gray-700 dark:bg-gray-600 dark:text-gray-300 rounded-md hover:bg-gray-400 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-400 transition-colors duration-150"
+                                        >
+                                            Đóng
+                                        </button>
+                                        <button
+                                            onClick={() => handleUpdateStatus(selectedReport?.id, 2)}
+                                            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 dark:hover:bg-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-150"
+                                        >
+                                            Đang xem xét
+                                        </button>
+                                        <button
+                                            onClick={() => handleUpdateStatus(selectedReport?.id, 3)}
+                                            className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 dark:hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors duration-150"
+                                        >
+                                            Duyệt
+                                        </button>
+                                        <button
+                                            onClick={() => handleUpdateStatus(selectedReport?.id, 4)}
+                                            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 dark:hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors duration-150"
+                                        >
+                                            Từ chối
+                                        </button>
+                                    </div>
+                                </>
+                            ) : (
+                                <p className="text-gray-900 dark:text-gray-300">Không có thông tin báo cáo.</p>
+                            )}
+                        </div>
+                    </div>
+                </>
+            )}
         </div>
     );
 };
