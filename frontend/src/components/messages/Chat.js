@@ -302,13 +302,11 @@ const Chat = ({ chatId, messages, onMessageUpdate, onSendMessage }) => {
         if (!message.trim() && selectedMediaPreviews.length === 0) return;
 
         if (selectedMediaPreviews.length > 0) {
-            // Gửi bằng REST API nếu có media
             const formData = new FormData();
-            formData.append("content", message.trim() || ""); // Gửi chuỗi rỗng nếu không có content
-
-            // Chỉ gửi file đã chọn (gốc)
-            selectedMediaFiles.forEach(file => {
-                formData.append("media", file);
+            formData.append("content", message.trim() || "");
+            selectedMediaPreviews.forEach((media, index) => {
+                formData.append(`media[${index}].url`, media.uploadedUrl);
+                formData.append(`media[${index}].type`, media.mediaType);
             });
 
             try {
@@ -331,12 +329,10 @@ const Chat = ({ chatId, messages, onMessageUpdate, onSendMessage }) => {
                 setMessage("");
                 setSelectedMediaPreviews([]);
                 setSelectedMediaFiles([]);
-
             } catch (err) {
                 toast.error("Không thể gửi tin nhắn với media: " + err.message);
             }
         } else {
-            // Gửi bằng WebSocket nếu chỉ có text
             const msg = {
                 chatId: Number(chatId),
                 senderId: user.id,
@@ -344,9 +340,7 @@ const Chat = ({ chatId, messages, onMessageUpdate, onSendMessage }) => {
                 mediaList: [],
                 typeId: 1, // text
             };
-
             publish("/app/sendMessage", msg);
-            console.log("📤 Sent via WebSocket:", msg);
             setMessage("");
         }
 
