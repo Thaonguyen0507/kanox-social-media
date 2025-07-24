@@ -63,17 +63,7 @@ function TweetInput({ onPostSuccess, groupId }) {
     const [showPlacePicker, setShowPlacePicker] = useState(false);
     const placeInputRef = useRef(null);
     const [ready, setReady] = useState(false);
-
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            if (customElements.get("gmpx-place-autocomplete")) {
-                clearInterval(interval);
-                setReady(true);
-            }
-        }, 200);
-        return () => clearInterval(interval);
-    }, []);
+    
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -748,10 +738,10 @@ function TweetInput({ onPostSuccess, groupId }) {
                             <div className="absolute z-50 mt-2 w-64 bg-[var(--background-color)] border border-[var(--border-color)] rounded shadow p-3">
                                 {ready ? (
                                     <AutocompleteInput
-                                        onPlaceSelect={(place) => {
+                                        onPlaceSelected={(place) => {
                                             if (!place) return;
                                             setSelectedPlace(place);
-                                            setPlaceInput(place.formattedAddress || "");
+                                            setPlaceInput(place.address);
                                             setShowPlacePicker(false);
                                         }}
                                     />

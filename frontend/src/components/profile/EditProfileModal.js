@@ -47,14 +47,7 @@ function EditProfileModal({
       setErrors({});
     }
   }, [show, userProfile]);
-
-  useEffect(() => {
-    const el = placeInputRef.current;
-    if (el && formData.locationName) {
-      el.querySelector("input")?.setAttribute("value", formData.locationName);
-    }
-  }, [formData.locationName]);
-
+  
 
 
   const validateForm = () => {
@@ -320,13 +313,13 @@ function EditProfileModal({
               </Form.Label>
               <AutocompleteInput
                   ref={placeInputRef}
-                  onPlaceSelect={(place) => {
-                    if (!place || !place.geometry) return;
+                  onPlaceSelected={(place) => {
+                    if (!place) return;
                     setFormData((prev) => ({
                       ...prev,
-                      locationName: place.formattedAddress || "",
-                      latitude: place.latitude,
-                      longitude: place.longitude,
+                      locationName: place.address,
+                      latitude: place.lat,
+                      longitude: place.lng,
                     }));
                   }}
               />

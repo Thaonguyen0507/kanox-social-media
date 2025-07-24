@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API_KEY;
+const GOONG_API_KEY = process.env.REACT_APP_GOONG_MAPS_API_KEY;
 
 function AutocompleteInput({ onPlaceSelected }) {
     const [suggestions, setSuggestions] = useState([]);
@@ -9,17 +9,14 @@ function AutocompleteInput({ onPlaceSelected }) {
     const handleInputChange = async (e) => {
         const input = e.target.value;
         setQuery(input);
-
         if (!input) return setSuggestions([]);
 
         const res = await fetch(
-            `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(
-                input
-            )}&key=${GOOGLE_API_KEY}&language=vi`
+            `https://rsapi.goong.io/Place/AutoComplete?api_key=${GOONG_API_KEY}&input=${encodeURIComponent(input)}`
         );
-
         const data = await res.json();
-        if (data.status === "OK") {
+
+        if (data.predictions) {
             setSuggestions(data.predictions);
         } else {
             setSuggestions([]);
@@ -31,16 +28,13 @@ function AutocompleteInput({ onPlaceSelected }) {
         setSuggestions([]);
 
         const res = await fetch(
-            `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&key=${GOOGLE_API_KEY}&language=vi`
+            `https://rsapi.goong.io/Place/Detail?place_id=${placeId}&api_key=${GOONG_API_KEY}`
         );
         const data = await res.json();
-
-        if (data.status === "OK") {
-            const place = data.result;
-            const location = place.geometry.location;
-
+        if (data.result) {
+            const location = data.result.geometry.location;
             onPlaceSelected({
-                address: place.formatted_address,
+                locationName: data.result.formatted_address,
                 lat: location.lat,
                 lng: location.lng,
             });
