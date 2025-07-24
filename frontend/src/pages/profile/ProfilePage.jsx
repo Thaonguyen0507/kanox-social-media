@@ -159,6 +159,7 @@ function ProfilePage() {
                     website: profileData.website || "",
                     isPremium: profileData.isPremium || false,
                     profileImageUrl: profileData.profileImageUrl || "https://via.placeholder.com/150?text=Avatar",
+                    location: profileData.locationName || "",
                 });
 
                 // Chỉ lấy bài đăng nếu có quyền truy cập (bio không null)
@@ -302,9 +303,14 @@ function ProfilePage() {
             return;
         }
 
-        setUserProfile(updatedProfile);
-        setUser(updatedProfile);
-        localStorage.setItem("user", JSON.stringify(updatedProfile));
+        const updatedProfileWithLocation = {
+            ...updatedProfile,
+            location: updatedProfile.locationName || "", // Ánh xạ locationName thành location
+        };
+
+        setUserProfile(updatedProfileWithLocation);
+        setUser(updatedProfileWithLocation);
+        localStorage.setItem("user", JSON.stringify(updatedProfileWithLocation));
         toast.success("Cập nhật hồ sơ thành công!");
     };
 
@@ -526,9 +532,9 @@ function ProfilePage() {
                             {hasAccess && (
                                 <>
                                     {userProfile.bio && <p className="mb-2">{userProfile.bio}</p>}
-                                    {userProfile.location && (
+                                    {userProfile.locationName && (
                                         <p className="text-sm flex items-center">
-                                            <FaMapMarkerAlt className="mr-2" /> {userProfile.location}
+                                            <FaMapMarkerAlt className="mr-2" /> {userProfile.locationName}
                                         </p>
                                     )}
                                     <p className="text-sm flex items-center">
