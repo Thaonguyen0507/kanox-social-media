@@ -46,6 +46,8 @@ const PremiumPage = () => {
     setLoading(planId);
     setError("");
     setSuccess("");
+    const token =
+        localStorage.getItem("token") || sessionStorage.getItem("token");
 
     const response = await fetch(
         `${process.env.REACT_APP_API_URL}/payment/premium/subscribe`,
@@ -76,7 +78,6 @@ const PremiumPage = () => {
     } else {
       console.error("Lỗi khi gọi API:", response.status);
     }
-
   };
 
   return (
