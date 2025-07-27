@@ -90,40 +90,35 @@ const PremiumPage = () => {
     const status = searchParams.get("status");
     const orderCode = searchParams.get("orderCode");
     const transactionId = searchParams.get("id");
-    const cancel = searchParams.get("cancel");
 
-    if (status === "PAID" && cancel === "false") {
-      // Gọi API xác nhận và insert dữ liệu
+    if (status === "PAID") {
       confirmPremium(orderCode, transactionId);
     }
   }, []);
 
   const confirmPremium = async (orderCode, transactionId) => {
     const token = localStorage.getItem("token");
-    try {
-      const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/api/payment/premium/confirm`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              orderCode,
-              transactionId,
-            }),
-          }
-      );
 
-      if (true) {
-        alert("🎉 Bạn đã đăng ký premium thành công!");
-        // Có thể cập nhật lại UI ở đây nếu cần
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/payment/premium/confirm`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          orderCode,
+          transactionId,
+        }),
+      });
+
+      if (response.ok) {
+        alert("🎉 Bạn đã đăng ký Premium thành công!");
       } else {
-        alert("❌ Xác nhận thất bại. Vui lòng liên hệ hỗ trợ.");
+        alert("❌ Có lỗi xảy ra khi xác nhận premium.");
       }
-    } catch (error) {
-      console.error("Lỗi xác nhận premium:", error);
+    } catch (err) {
+      console.error("Lỗi kết nối:", err);
     }
   };
 
