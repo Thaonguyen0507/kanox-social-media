@@ -26,9 +26,9 @@ function FriendItem({ user, showActions, handleAccept, handleReject, onAction })
     };
 
     return (
-        <div className="flex flex-col py-3 border-b border-dark">
-            <div className="flex items-center">
-                <Link to={`/profile/${user.username}`}>
+        <div className="flex flex-col py-3 border-b last:border-b-0 border-gray-300">
+            <div className="flex items-start gap-3">
+            <Link to={`/profile/${user.username}`}>
                     {renderAvatar()}
                 </Link>
                 <div className="flex-grow-1">
@@ -42,7 +42,7 @@ function FriendItem({ user, showActions, handleAccept, handleReject, onAction })
                     <p className="text-muted text-sm mb-0">{user.reasonText}</p>
                 </div>
             </div>
-            <div className="flex gap-1 mt-2">
+            <div className="flex justify-center gap-2 mt-3">
                 {showActions ? (
                     <>
                         <button
