@@ -38,6 +38,7 @@ function FriendItem({ user, showActions, handleAccept, handleReject, onAction })
                     {user.displayName || user.username}
                 </Link>
                 <p className="text-secondary small mb-0">@{user.username}</p>
+                <p className="text-secondary small mb-0">{user.reasonText}</p>
             </div>
             {showActions ? (
                 <div className="d-flex gap-2">
@@ -60,7 +61,7 @@ function FriendItem({ user, showActions, handleAccept, handleReject, onAction })
                 </div>
             ) : (
                 <div className="d-flex gap-2">
-                    <FriendshipButton targetId={user.id} />
+                    <FriendshipButton targetId={user.id} onAction={onAction} />
                     <FollowActionButton targetId={user.id} />
                 </div>
             )}
