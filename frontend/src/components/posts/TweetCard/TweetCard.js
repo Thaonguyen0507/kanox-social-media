@@ -840,10 +840,15 @@ function TweetCard({ tweet, onPostUpdate }) {
                       if (!safeUrl) return null;
 
                       return (
-                          <div key={idx} className="mb-2">
+                          <div key={idx} className="mb-2 d-flex justify-content-center">
                             <video
                                 controls
-                                width="100%"
+                                style={{
+                                  width: videoUrls.length === 1 ? "400px" : "100%",
+                                  height: videoUrls.length === 1 ? "auto" : "auto",
+                                  maxHeight: "400px", // giới hạn chiều cao
+                                  objectFit: "cover",
+                                }}
                                 className="rounded-2xl"
                                 aria-label={`Video bài đăng ${idx + 1}`}
                             >

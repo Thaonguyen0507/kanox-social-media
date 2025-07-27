@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="c6c17ae2-c6cb-4c94-a6b8-91c54839fa5e" name="Changes" comment="" />
+    <list default="true" id="c6c17ae2-c6cb-4c94-a6b8-91c54839fa5e" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/posts/TweetInput/TweetInput.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/posts/TweetInput/TweetInput.jsx" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -51,7 +54,7 @@
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/SWP391/kanox-social-media/frontend&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/kanox-social-media/frontend&quot;,
     &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -166,8 +169,9 @@
       <workItem from="1753195068232" duration="3222000" />
       <workItem from="1753214074018" duration="3170000" />
       <workItem from="1753249040373" duration="2235000" />
-      <workItem from="1753279860308" duration="616000" />
-      <workItem from="1753622471940" duration="1636000" />
+      <workItem from="1753279860308" duration="3196000" />
+      <workItem from="1753287145502" duration="661000" />
+      <workItem from="1753342814863" duration="2656000" />
     </task>
     <servers />
   </component>
