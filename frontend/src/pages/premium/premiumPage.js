@@ -10,7 +10,7 @@ import {
 } from "react-bootstrap";
 import { AuthContext } from "../../context/AuthContext";
 import { useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 
 const PremiumPage = () => {
@@ -18,6 +18,7 @@ const PremiumPage = () => {
   const [loading, setLoading] = useState(null); // 'MONTHLY', 'SEMI_ANNUALLY', 'ANNUALLY'
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const navigate = useNavigate();
 
   const plans = [
     {
