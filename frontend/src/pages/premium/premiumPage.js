@@ -49,7 +49,7 @@ const PremiumPage = () => {
     setSuccess("");
 
     const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/payment/premium/subscribe`,
+        `${process.env.REACT_APP_API_URL}/payment/premium/subscribe`,
         {
           method: "POST",
           headers: {
