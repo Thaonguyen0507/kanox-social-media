@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Button } from "react-bootstrap";
 import { AuthContext } from "../../context/AuthContext";
 
 function FriendshipButton({ targetId, disabled, onAction }) {
@@ -13,21 +12,21 @@ function FriendshipButton({ targetId, disabled, onAction }) {
     const fetchStatus = async () => {
       try {
         const token =
-          sessionStorage.getItem("token") || localStorage.getItem("token");
+            sessionStorage.getItem("token") || localStorage.getItem("token");
         if (!token) throw new Error("Không tìm thấy token");
 
         const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/friends/status/${targetId}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
+            `${process.env.REACT_APP_API_URL}/friends/status/${targetId}`,
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+            }
         );
         if (!response.ok) throw new Error("Không thể lấy trạng thái bạn bè");
         const data = await response.json();
-        setStatus(data.status || "none"); // Đảm bảo trạng thái "none" nếu không có bản ghi
+        setStatus(data.status || "none");
       } catch (err) {
         console.error("Lỗi khi lấy trạng thái bạn bè:", err);
       }
@@ -40,7 +39,7 @@ function FriendshipButton({ targetId, disabled, onAction }) {
     setLoading(true);
     try {
       const token =
-        sessionStorage.getItem("token") || localStorage.getItem("token");
+          sessionStorage.getItem("token") || localStorage.getItem("token");
       if (!token) throw new Error("Không tìm thấy token");
 
       let url, method;
@@ -68,15 +67,15 @@ function FriendshipButton({ targetId, disabled, onAction }) {
 
       if (!response.ok) throw new Error("Hành động thất bại");
       setStatus(
-        action === "send"
-          ? "pendingSent"
-          : action === "accept"
-          ? "accepted"
-          : action === "reject" || action === "cancel"
-          ? "none"
-          : status
+          action === "send"
+              ? "pendingSent"
+              : action === "accept"
+                  ? "accepted"
+                  : action === "reject" || action === "cancel"
+                      ? "none"
+                      : status
       );
-      if (onAction) onAction(); // Gọi callback để làm mới danh sách sentRequests
+      if (onAction) onAction();
     } catch (err) {
       console.error("Lỗi:", err);
     } finally {
@@ -87,37 +86,37 @@ function FriendshipButton({ targetId, disabled, onAction }) {
   if (!user || user.id === targetId) return null;
 
   return (
-    <Button
-      onClick={() =>
-        handleAction(
-          status === "none"
-            ? "send"
-            : status === "pendingReceived"
-            ? "accept"
-            : status === "pendingSent" || status === "accepted"
-            ? "cancel"
-            : "reject"
-        )
-      }
-      disabled={loading || disabled}
-      variant={
-        status === "accepted"
-          ? "outline-danger"
-          : status === "pendingSent"
-          ? "outline-secondary"
-          : status === "pendingReceived"
-          ? "primary"
-          : status === "none"
-          ? "success"
-          : "primary"
-      }
-      className="rounded-pill px-3 py-1"
-    >
-      {status === "none" && "Kết bạn"}
-      {status === "pendingSent" && "Đã gửi"}
-      {status === "pendingReceived" && "Chấp nhận"}
-      {status === "accepted" && "Hủy kết bạn"}
-    </Button>
+      <button
+          onClick={() =>
+              handleAction(
+                  status === "none"
+                      ? "send"
+                      : status === "pendingReceived"
+                          ? "accept"
+                          : status === "pendingSent" || status === "accepted"
+                              ? "cancel"
+                              : "reject"
+              )
+          }
+          disabled={loading || disabled}
+          className={`
+        rounded-full px-2 py-1 text-sm font-medium transition-colors duration-200
+        ${
+              status === "accepted"
+                  ? "border border-black text-black bg-white hover:bg-gray-200 dark:border-white dark:text-white dark:bg-black dark:hover:bg-gray-800"
+                  : status === "pendingSent"
+                      ? "border border-gray-500 text-gray-500 bg-white hover:bg-gray-200 dark:border-gray-400 dark:text-gray-400 dark:bg-black dark:hover:bg-gray-800"
+                      : status === "pendingReceived"
+                          ? "border border-black text-black bg-white hover:bg-gray-200 dark:border-white dark:text-white dark:bg-black dark:hover:bg-gray-800"
+                          : "border border-black text-black bg-white hover:bg-gray-200 dark:border-white dark:text-white dark:bg-black dark:hover:bg-gray-800"
+          }
+      `}
+      >
+        {status === "none" && "Kết bạn"}
+        {status === "pendingSent" && "Đã gửi"}
+        {status === "pendingReceived" && "Chấp nhận"}
+        {status === "accepted" && "Hủy kết bạn"}
+      </button>
   );
 }
 
