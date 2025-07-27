@@ -44,42 +44,40 @@ const PremiumPage = () => {
     }
 
     setLoading(planId);
+    console.log(p)
     setError("");
     setSuccess("");
 
-    try {
-      const token =
-        localStorage.getItem("token") || sessionStorage.getItem("token");
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/api/premium/subscribe`,
+    const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/payment/premium/subscribe`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${token}`, // đảm bảo token đã được định nghĩa trước đó
           },
-          body: JSON.stringify({ planType: planId }),
+          body: JSON.stringify({
+            amount: "2000",
+            description: "Kanox prenium",
+            returnUrl: "https://kanox-social-media.netlify.app/home",
+            cancelUrl: "https://kanox-social-media.netlify.app/home"
+          }),
         }
-      );
+    );
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          errorData.message || "Đăng ký không thành công. Vui lòng thử lại."
-        );
+    if (response.ok) {
+      const data = await response.json();
+      // Giả sử server trả về link thanh toán ở trường `checkoutUrl`
+      const checkoutUrl = data.checkoutUrl;
+      if (checkoutUrl) {
+        window.location.href = checkoutUrl; // Redirect user đến trang thanh toán
+      } else {
+        console.error("Không tìm thấy link thanh toán trong phản hồi.");
       }
-
-      const result = await response.json();
-      setSuccess(
-        result.message ||
-          "Chúc mừng! Bạn đã nâng cấp tài khoản Premium thành công."
-      );
-      // Bạn có thể thêm logic để cập nhật lại trạng thái user trong AuthContext ở đây nếu cần
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(null);
+    } else {
+      console.error("Lỗi khi gọi API:", response.status);
     }
+
   };
 
   return (
