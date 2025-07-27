@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Button } from "react-bootstrap";
 import { AuthContext } from "../../context/AuthContext";
 
 function FollowActionButton({ targetId, disabled, onFollowChange }) {
@@ -66,14 +65,20 @@ function FollowActionButton({ targetId, disabled, onFollowChange }) {
   if (!user || user.id === targetId) return null;
 
   return (
-      <Button
+      <button
           onClick={() => handleAction(isFollowing ? "unfollow" : "follow")}
           disabled={loading || disabled}
-          variant={isFollowing ? "secondary" : "primary"}
-          className="rounded-pill px-3 py-1 ms-2"
+          className={`
+        rounded-full px-2 py-1 text-sm font-medium transition-colors duration-200 ml-1
+        ${
+              isFollowing
+                  ? "border border-gray-500 text-gray-500 bg-white hover:bg-gray-200 dark:border-gray-400 dark:text-gray-400 dark:bg-black dark:hover:bg-gray-800"
+                  : "border border-black text-black bg-white hover:bg-gray-200 dark:border-white dark:text-white dark:bg-black dark:hover:bg-gray-800"
+          }
+      `}
       >
         {loading ? "Đang xử lý..." : isFollowing ? "Bỏ theo dõi" : "Theo dõi"}
-      </Button>
+      </button>
   );
 }
 
