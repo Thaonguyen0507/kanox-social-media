@@ -66,13 +66,7 @@ function SidebarRight() {
     }
   }, [showSuggestions, token]);
 
-  const trends = [
-    { id: 1, name: "Doanh nghiệp & Tài chính", title: "Investing", tweets: "143 N bài đăng" },
-    { id: 2, name: "Chủ đề ở Việt Nam", title: "Quời", tweets: "436 N bài đăng" },
-    { id: 3, name: "Chủ đề ở Việt Nam", title: "#riyadh", tweets: "989 N bài đăng" },
-    { id: 4, name: "Khác", title: "Count", tweets: "82.2 N bài đăng" },
-  ];
-  
+
 
   const fullFooterLinks = [
     { to: "/about", text: "Giới thiệu" },
@@ -116,25 +110,25 @@ function SidebarRight() {
     };
     fetchSuggestions();
   };
-  
+
   return (
       <div className="p-3 pt-2 hidden lg:block sticky top-0 h-screen overflow-y-auto scrollbar-hide bg-[var(--background-color)] text-[var(--text-color)]">
-        {/* Tìm kiếm */}
-        <div className="sticky top-0 bg-[var(--background-color)] z-30">
-          <div className="relative w-full mb-4">
-            <FaSearch
-                className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-500"
-                size={18}
-            />
-            <input
-                type="search"
-                value={searchKeyword}
-                onChange={(e) => setSearchKeyword(e.target.value)}
-                placeholder="Tìm kiếm"
-                className="w-full pl-10 pr-4 py-3 rounded-full bg-[var(--background-color)] border border-[var(--border-color)] text-[var(--text-color)] shadow-sm text-sm"
-            />
-          </div>
-        </div>
+        {/*/!* Tìm kiếm *!/*/}
+        {/*<div className="sticky top-0 bg-[var(--background-color)] z-30">*/}
+        {/*  <div className="relative w-full mb-4">*/}
+        {/*    <FaSearch*/}
+        {/*        className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-500"*/}
+        {/*        size={18}*/}
+        {/*    />*/}
+        {/*    <input*/}
+        {/*        type="search"*/}
+        {/*        value={searchKeyword}*/}
+        {/*        onChange={(e) => setSearchKeyword(e.target.value)}*/}
+        {/*        placeholder="Tìm kiếm"*/}
+        {/*        className="w-full pl-10 pr-4 py-3 rounded-full bg-[var(--background-color)] border border-[var(--border-color)] text-[var(--text-color)] shadow-sm text-sm"*/}
+        {/*    />*/}
+        {/*  </div>*/}
+        {/*</div>*/}
 
         {/* Premium Card (LCP target) */}
         <div className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-2xl shadow-sm mb-4 p-4">
@@ -150,30 +144,6 @@ function SidebarRight() {
           </button>
         </div>
 
-        {/* Trends (lazy loaded) */}
-        {showTrends && (
-            <div className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-2xl shadow-sm mb-4">
-              <div className="p-4 pb-2 font-bold">Những điều đang diễn ra</div>
-              {trends.map((trend) => (
-                  <div
-                      key={trend.id}
-                      className="px-4 py-3 hover:bg-[var(--hover-bg-color)] cursor-pointer border-b border-[var(--border-color)]"
-                  >
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <div className="text-xs text-gray-500">{trend.name}</div>
-                        <div className="font-bold text-sm">{trend.title}</div>
-                        <div className="text-xs text-gray-500">{trend.tweets}</div>
-                      </div>
-                      <FaEllipsisH className="text-gray-500" size={16} />
-                    </div>
-                  </div>
-              ))}
-              <div className="px-4 py-2 font-bold text-sm hover:bg-[var(--hover-bg-color)] cursor-pointer">
-                Hiển thị thêm
-              </div>
-            </div>
-        )}
 
         {/* Suggested users */}
         {showSuggestions && (
