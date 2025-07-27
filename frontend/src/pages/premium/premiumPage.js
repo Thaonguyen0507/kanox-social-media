@@ -44,7 +44,6 @@ const PremiumPage = () => {
     }
 
     setLoading(planId);
-    console.log(p)
     setError("");
     setSuccess("");
 
