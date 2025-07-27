@@ -190,31 +190,47 @@ function TweetInput({ onPostSuccess, groupId }) {
 
         try {
             const token = localStorage.getItem("token");
-            const formData = new FormData();
-
-            formData.append("content", tweetContent);
-            formData.append("privacySetting", status);
-            formData.append("groupId", groupId || "");
-            if (status === "custom") formData.append("customListId", customListId);
-            if (selectedPlace?.locationName) {
-                formData.append("locationName", selectedPlace.locationName);
-            }
-
-            taggedUserIds.forEach((id) => formData.append("taggedUserIds", id));
-            mediaFiles.forEach((file) => formData.append("mediaFiles", file));
-
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/posts`, {
+            const postRes = await fetch(`${process.env.REACT_APP_API_URL}/posts`, {
                 method: "POST",
                 headers: {
+                    "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
-                body: formData,
+                body: JSON.stringify({
+                    content: tweetContent,
+                    privacySetting: status,
+                    taggedUserIds,
+                    customListId: status === "custom" ? customListId : null,
+                    groupId: groupId || null,
+                }),
             });
 
-            if (!response.ok) throw new Error("Không thể đăng bài!");
-            const newPost = await response.json();
+            if (!postRes.ok) throw new Error("Không thể đăng bài!");
+            const newPost = await postRes.json();
+            const postId = newPost.data.id;
 
-            // Reset form sau khi thành công
+            if (mediaFiles.length > 0) {
+                const formData = new FormData();
+                formData.append("userId", user.id);
+                formData.append("caption", tweetContent);
+                if (selectedPlace?.locationName) {
+                    formData.append('locationName', selectedPlace.locationName);
+                }
+                mediaFiles.forEach((file) => formData.append("files", file));
+
+                const mediaRes = await fetch(
+                    `${process.env.REACT_APP_API_URL}/media/posts/${postId}/media`,
+                    {
+                        method: "POST",
+                        headers: { Authorization: `Bearer ${token}` },
+                        body: formData,
+                    }
+                );
+
+                if (!mediaRes.ok) throw new Error("Tải lên media thất bại.");
+                toast.success("Media tải lên thành công!");
+            }
+
             setTweetContent("");
             setTaggedUserIds([]);
             setMediaFiles([]);
@@ -224,7 +240,6 @@ function TweetInput({ onPostSuccess, groupId }) {
             setSelectedPlace(null);
             setPlaceInput("");
             setError(null);
-
             toast.success("Đăng bài thành công!");
             if (onPostSuccess) onPostSuccess(newPost.data);
         } catch (err) {
