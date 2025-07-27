@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { FaSearch, FaEllipsisH } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import SidebarRight from "../../components/layout/SidebarRight/SidebarRight";
 import { AuthContext } from "../../context/AuthContext";
 import useSingleMedia from "../../hooks/useSingleMedia";
