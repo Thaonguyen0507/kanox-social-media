@@ -113,6 +113,8 @@ const PremiumPage = () => {
       });
 
       if (response.ok) {
+        // ✅ Xoá các query params sau khi xử lý
+        navigate("/premium", { replace: true });
         alert("🎉 Bạn đã đăng ký Premium thành công!");
       } else {
         alert("❌ Có lỗi xảy ra khi xác nhận premium.");
