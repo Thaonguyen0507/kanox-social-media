@@ -9,6 +9,9 @@ import {
   Alert,
 } from "react-bootstrap";
 import { AuthContext } from "../../context/AuthContext";
+import { useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+
 
 const PremiumPage = () => {
   const { user } = useContext(AuthContext);
@@ -70,7 +73,6 @@ const PremiumPage = () => {
 
     if (response.ok) {
       const data = await response.json();
-      // Giả sử server trả về link thanh toán ở trường `checkoutUrl`
       const checkoutUrl = data.checkoutUrl;
       if (checkoutUrl) {
         window.location.href = checkoutUrl; // Redirect user đến trang thanh toán
@@ -81,6 +83,50 @@ const PremiumPage = () => {
       console.error("Lỗi khi gọi API:", response.status);
     }
   };
+
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const status = searchParams.get("status");
+    const orderCode = searchParams.get("orderCode");
+    const transactionId = searchParams.get("id");
+    const cancel = searchParams.get("cancel");
+
+    if (status === "PAID" && cancel === "false") {
+      // Gọi API xác nhận và insert dữ liệu
+      confirmPremium(orderCode, transactionId);
+    }
+  }, []);
+
+  const confirmPremium = async (orderCode, transactionId) => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/api/payment/premium/confirm`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              orderCode,
+              transactionId,
+            }),
+          }
+      );
+
+      if (true) {
+        alert("🎉 Bạn đã đăng ký premium thành công!");
+        // Có thể cập nhật lại UI ở đây nếu cần
+      } else {
+        alert("❌ Xác nhận thất bại. Vui lòng liên hệ hỗ trợ.");
+      }
+    } catch (error) {
+      console.error("Lỗi xác nhận premium:", error);
+    }
+  };
+
 
   return (
     <Container className="mt-4">
