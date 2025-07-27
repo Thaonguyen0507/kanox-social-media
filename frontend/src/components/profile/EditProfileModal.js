@@ -193,8 +193,8 @@ function EditProfileModal({ show, handleClose, userProfile, onSave, username }) 
               className="bg-[var(--background-color)] text-[var(--text-color)]"
               dialogClassName="rounded-xl shadow-2xl"
           >
-            <Modal.Header className="border-b border-[var(--border-color)] p-4">
-              <div className="flex items-center w-full">
+            <Modal.Header className="border-b border-[var(--border-color)] p-4 flex justify-between items-center">
+              <div className="flex items-center">
                 <Button
                     variant="link"
                     className="text-[var(--text-color)] p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
@@ -202,11 +202,9 @@ function EditProfileModal({ show, handleClose, userProfile, onSave, username }) 
                 >
                   <FaTimes size={24} />
                 </Button>
-                <Modal.Title className="flex-1 text-center fw-bold text-xl">
-                  Chỉnh sửa hồ sơ
-                </Modal.Title>
-                <div className="w-10"></div>
               </div>
+              <Modal.Title className="fw-bold text-xl">Chỉnh sửa hồ sơ</Modal.Title>
+              <div className="w-10"></div> {/* Spacer để cân đối */}
             </Modal.Header>
 
             <Modal.Body className="p-6">
@@ -225,33 +223,33 @@ function EditProfileModal({ show, handleClose, userProfile, onSave, username }) 
                     />
                   </animated.div>
 
-                  {/* Upload Button */}
-                  <label
-                      htmlFor="avatar-upload"
-                      className="absolute bottom-0 right-0 mb-2 mr-2 btn bg-gray-800 text-white rounded-full flex items-center justify-center hover:bg-gray-700 transition-colors duration-200"
-                      style={{ width: "40px", height: "40px" }}
-                  >
-                    <FaCamera size={16} />
-                    <input
-                        type="file"
-                        id="avatar-upload"
-                        className="hidden"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                    />
-                  </label>
-
-                  {/* Clear Button */}
-                  {formData.avatar && (
-                      <Button
-                          variant="dark"
-                          className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 rounded-full flex items-center justify-center bg-red-500 hover:bg-red-600 transition-colors duration-200"
-                          style={{ width: "40px", height: "40px" }}
-                          onClick={handleClearImage}
-                      >
-                        <XMarkIcon className="h-5 w-5 text-white" />
-                      </Button>
-                  )}
+                  {/* Upload and Clear Buttons */}
+                  <div className="flex justify-center mt-2 space-x-3">
+                    <label
+                        htmlFor="avatar-upload"
+                        className="btn bg-gray-800 text-white rounded-full flex items-center justify-center hover:bg-gray-700 transition-colors duration-200"
+                        style={{ width: "40px", height: "40px" }}
+                    >
+                      <FaCamera size={16} />
+                      <input
+                          type="file"
+                          id="avatar-upload"
+                          className="hidden"
+                          accept="image/*"
+                          onChange={handleImageChange}
+                      />
+                    </label>
+                    {formData.avatar && (
+                        <Button
+                            variant="dark"
+                            className="rounded-full flex items-center justify-center bg-red-500 hover:bg-red-600 transition-colors duration-200"
+                            style={{ width: "40px", height: "40px" }}
+                            onClick={handleClearImage}
+                        >
+                          <XMarkIcon className="h-5 w-5 text-white" />
+                        </Button>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -347,20 +345,24 @@ function EditProfileModal({ show, handleClose, userProfile, onSave, username }) 
               <div className="space-y-2">
                 <button
                     onClick={handleSecuritySettings}
-                    className="w-full text-left p-3 rounded-lg hover:bg-gray-100 transition-colors duration-200 text-[var(--text-color-muted)] flex items-center"
+                    className="w-full text-left p-3 rounded-lg hover:bg-gray-100 transition-colors duration-200 text-[var(--text-color-muted)] flex items-center justify-between"
                 >
+                <span className="flex items-center">
                   <FaLock className="mr-2" /> Cài đặt bảo mật
+                </span>
                 </button>
                 <button
                     onClick={handleDeleteAccount}
-                    className="w-full text-left p-3 rounded-lg hover:bg-red-50 transition-colors duration-200 text-danger flex items-center"
+                    className="w-full text-left p-3 rounded-lg hover:bg-red-50 transition-colors duration-200 text-danger flex items-center justify-between"
                 >
+                <span className="flex items-center">
                   <FaTrash className="mr-2" /> Xóa tài khoản
+                </span>
                 </button>
               </div>
 
               {/* Save Button */}
-              <div className="text-end mt-6">
+              <div className="mt-6 flex justify-end">
                 <animated.div style={saveButtonAnimation}>
                   <Button
                       variant="dark"

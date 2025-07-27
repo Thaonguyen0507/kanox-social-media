@@ -7,12 +7,27 @@ import SidebarRight from "../../components/layout/SidebarRight/SidebarRight";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import BlockedUserItem from "./BlockedUserItem";
+import { useSpring, animated } from "react-spring";
 
 function BlockedUsersPage() {
     const { user } = useContext(AuthContext);
     const [blockedUsers, setBlockedUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isDarkMode, setIsDarkMode] = useState(false);
+
+    // Animation cho loading spinner
+    const loadingAnimation = useSpring({
+        from: { opacity: 0, transform: "scale(0.8)" },
+        to: { opacity: loading ? 1 : 0, transform: loading ? "scale(1)" : "scale(0.8)" },
+        config: { tension: 220, friction: 20 },
+    });
+
+    // Animation cho danh sách khi load
+    const listAnimation = useSpring({
+        from: { opacity: 0, transform: "translateY(20px)" },
+        to: { opacity: blockedUsers.length > 0 ? 1 : 0, transform: "translateY(0)" },
+        config: { tension: 180, friction: 12 },
+    });
 
     useEffect(() => {
         fetchBlockedUsers();
@@ -62,12 +77,6 @@ function BlockedUsersPage() {
 
     const handleUnblock = async (blockedUserId) => {
         const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-        // if (!token) {
-        //     toast.error("Không tìm thấy token! Vui lòng đăng nhập lại!");
-        //     navigate("/login");
-        //     return;
-        // }
-
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/blocks/${blockedUserId}`, {
                 method: "DELETE",
@@ -110,40 +119,44 @@ function BlockedUsersPage() {
 
     if (loading) {
         return (
-            <div className="d-flex justify-content-center align-items-center min-vh-100">
-                <Spinner animation="border" role="status" />
+            <div className="min-h-screen flex justify-center items-center bg-[var(--background-color)]">
+                <animated.div style={loadingAnimation}>
+                    <Spinner animation="border" role="status" className="text-[var(--primary-color)]" />
+                </animated.div>
             </div>
         );
     }
 
     return (
         <>
-            <ToastContainer />
-            <Container fluid className="min-vh-100 p-0">
-                <div className="sticky-top bg-white py-2 border-bottom" style={{ zIndex: 1020 }}>
+            <ToastContainer position="top-center" autoClose={3000} />
+            <Container fluid className="min-h-screen bg-[var(--background-color)] p-0">
+                <div className="sticky top-0 bg-[var(--background-color)] py-3 border-b border-[var(--border-color)] shadow-sm z-50">
                     <Container fluid>
-                        <Row>
-                            <Col xs={12} lg={12} className="mx-auto d-flex align-items-center ps-md-5">
-                                <Link to="/profile" className="btn btn-light">
-                                    <FaArrowLeft size={20} />
-                                </Link>
-                                <div>
-                                    <h5 className="mb-0 fw-bold text-dark">Người bị chặn</h5>
-                                    <span className="text-dark small">Quản lý danh sách chặn</span>
+                        <Row className="align-items-center">
+                            <Col xs={12} className="px-4">
+                                <div className="flex items-center gap-4">
+                                    <Link to="/profile" className="btn btn-light rounded-full p-2 hover:bg-gray-100 transition-colors duration-200">
+                                        <FaArrowLeft size={20} />
+                                    </Link>
+                                    <div>
+                                        <h5 className="mb-0 fw-bold text-[var(--text-color)]">Người bị chặn</h5>
+                                        <span className="text-[var(--text-color-muted)] text-sm">Quản lý danh sách chặn</span>
+                                    </div>
                                 </div>
                             </Col>
                         </Row>
                     </Container>
                 </div>
 
-                <Container fluid className="flex-grow-1">
+                <Container fluid className="flex-grow">
                     <Row className="h-100">
-                        <Col xs={12} lg={8} className="px-md-0">
-                            <div className="p-3">
-                                <h4 className="text-dark mb-3">Danh sách người bị chặn</h4>
-                                <ListGroup variant="flush">
+                        <Col xs={12} lg={8} className="px-4 py-3">
+                            <h4 className="text-[var(--text-color)] mb-4">Danh sách người bị chặn</h4>
+                            <animated.div style={listAnimation}>
+                                <ListGroup variant="flush" className="rounded-lg">
                                     {blockedUsers.length === 0 ? (
-                                        <p className="text-muted text-center p-4">Chưa chặn ai cả.</p>
+                                        <p className="text-[var(--text-color-muted)] text-center p-4">Chưa chặn ai cả.</p>
                                     ) : (
                                         blockedUsers.map((blockedUser) => (
                                             <BlockedUserItem
@@ -154,7 +167,7 @@ function BlockedUsersPage() {
                                         ))
                                     )}
                                 </ListGroup>
-                            </div>
+                            </animated.div>
                         </Col>
                         <Col xs={0} lg={4} className="d-none d-lg-block p-0">
                             <SidebarRight />
