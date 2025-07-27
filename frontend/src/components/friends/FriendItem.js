@@ -17,11 +17,9 @@ function FriendItem({ user, showActions, handleAccept, handleReject, onAction })
                 src={avatarUrl || "https://placehold.co/40x40"}
                 alt={user.displayName || user.username}
                 roundedCircle
-                width={50}
-                height={50}
-                className="me-3"
-                style={{ objectFit: "cover" }}
+                className="w-[50px] h-[50px] object-cover"
             />
+
         );
     };
 
