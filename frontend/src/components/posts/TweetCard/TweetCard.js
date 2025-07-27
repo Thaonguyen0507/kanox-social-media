@@ -834,20 +834,25 @@ function TweetCard({ tweet, onPostUpdate }) {
 
                 {/* Video */}
                 {Array.isArray(videoUrls) &&
-                  videoUrls.length > 0 &&
-                  videoUrls.map((url, idx) => (
-                    <div key={idx} className="mb-2">
-                      <video
-                        controls
-                        width="100%"
-                        className="rounded-2xl"
-                        aria-label={`Video bài đăng ${idx + 1}`}
-                      >
-                        <source src={url} type="video/mp4" />
-                        Trình duyệt không hỗ trợ phát video.
-                      </video>
-                    </div>
-                  ))}
+                    videoUrls.length > 0 &&
+                    videoUrls.map((url, idx) => {
+                      const safeUrl = typeof url === "string" ? url : url?.url;
+                      if (!safeUrl) return null;
+
+                      return (
+                          <div key={idx} className="mb-2">
+                            <video
+                                controls
+                                width="100%"
+                                className="rounded-2xl"
+                                aria-label={`Video bài đăng ${idx + 1}`}
+                            >
+                              <source src={safeUrl} type="video/mp4" />
+                              Trình duyệt không hỗ trợ phát video.
+                            </video>
+                          </div>
+                      );
+                    })}
               </>
             )}
 
