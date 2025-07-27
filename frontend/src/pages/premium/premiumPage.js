@@ -49,6 +49,8 @@ const PremiumPage = () => {
     const token =
         localStorage.getItem("token") || sessionStorage.getItem("token");
 
+    const returnUrl = "https://kanox-social-media.netlify.app/home";
+    const cancelUrl = "https://kanox-social-media.netlify.app/home"
     const response = await fetch(
         `${process.env.REACT_APP_API_URL}/payment/premium/subscribe`,
         {
@@ -60,8 +62,8 @@ const PremiumPage = () => {
           body: JSON.stringify({
             amount: "2000",
             description: "Kanox prenium",
-            returnUrl: "https://kanox-social-media.netlify.app/home",
-            cancelUrl: "https://kanox-social-media.netlify.app/home"
+            returnUrl: returnUrl,
+            cancelUrl: cancelUrl
           }),
         }
     );
