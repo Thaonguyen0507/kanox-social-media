@@ -719,67 +719,52 @@ function TweetCard({ tweet, onPostUpdate }) {
                   >
                     <FaEllipsisH />
                   </Dropdown.Toggle>
-                  <Dropdown.Menu>
+                  <Dropdown.Menu className="bg-[var(--background-color)] text-[var(--text-color)] shadow rounded-2xl overflow-hidden">
                     {isOwnTweet && (
-                      <>
-                        <Dropdown.Item onClick={handleEditTweet}>
-                          <FaEdit className="me-2 text-[var(--text-color)]" />{" "}
-                          Chỉnh sửa
-                        </Dropdown.Item>
-                        <Dropdown.Item onClick={handleDeleteTweet}>
-                          <FaTrash className="me-2 text-[var(--text-color)]" />{" "}
-                          Xóa
-                        </Dropdown.Item>
-                        <Dropdown drop="end">
-                          <Dropdown.Toggle
-                            variant="link"
-                            className="text-[var(--text-color)] p-0 w-100 text-start"
-                          >
-                            <FaShareAlt className="me-2 text-[var(--text-color)]" />{" "}
-                            Trạng thái: {renderStatusText(privacySetting)}
-                          </Dropdown.Toggle>
-                          <Dropdown.Menu>
-                            <Dropdown.Item
-                              onClick={() => handleStatusChange("public")}
+                        <>
+                          <Dropdown.Item onClick={handleEditTweet}>
+                            <FaEdit className="me-2 text-[var(--text-color)]" /> Chỉnh sửa
+                          </Dropdown.Item>
+                          <Dropdown.Item onClick={handleDeleteTweet}>
+                            <FaTrash className="me-2 text-[var(--text-color)]" /> Xóa
+                          </Dropdown.Item>
+
+                          <Dropdown drop="end">
+                            <Dropdown.Toggle
+                                variant="link"
+                                className="text-[var(--text-color)] p-0 w-100 text-start"
                             >
-                              <FaGlobeAmericas className="me-2 text-primary" />{" "}
-                              Công khai
-                            </Dropdown.Item>
-                            <Dropdown.Item
-                              onClick={() => handleStatusChange("friends")}
-                            >
-                              <FaUserFriends className="me-2 text-success" />{" "}
-                              Bạn bè
-                            </Dropdown.Item>
-                            <Dropdown.Item
-                              onClick={() => handleStatusChange("only_me")}
-                            >
-                              <FaLock className="me-2 text-danger" /> Chỉ mình
-                              tôi
-                            </Dropdown.Item>
-                            <Dropdown.Item
-                              onClick={() => handleStatusChange("custom")}
-                            >
-                              <FaList className="me-2 text-info" /> Tùy chỉnh
-                            </Dropdown.Item>
-                          </Dropdown.Menu>
-                        </Dropdown>
-                      </>
+                              <FaShareAlt className="me-2 text-[var(--text-color)]" /> Trạng thái:{" "}
+                              {renderStatusText(privacySetting)}
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu className="bg-[var(--background-color)] text-[var(--text-color)]">
+                              <Dropdown.Item onClick={() => handleStatusChange("public")}>
+                                <FaGlobeAmericas className="me-2 text-primary" /> Công khai
+                              </Dropdown.Item>
+                              <Dropdown.Item onClick={() => handleStatusChange("friends")}>
+                                <FaUserFriends className="me-2 text-success" /> Bạn bè
+                              </Dropdown.Item>
+                              <Dropdown.Item onClick={() => handleStatusChange("only_me")}>
+                                <FaLock className="me-2 text-danger" /> Chỉ mình tôi
+                              </Dropdown.Item>
+                              <Dropdown.Item onClick={() => handleStatusChange("custom")}>
+                                <FaList className="me-2 text-info" /> Tùy chỉnh
+                              </Dropdown.Item>
+                            </Dropdown.Menu>
+                          </Dropdown>
+                        </>
                     )}
                     {!isSaved ? (
-                      <Dropdown.Item onClick={handleSavePost}>
-                        <FaSave className="me-2 text-[var(--text-color)]" /> Lưu
-                        bài đăng
-                      </Dropdown.Item>
+                        <Dropdown.Item onClick={handleSavePost}>
+                          <FaSave className="me-2 text-[var(--text-color)]" /> Lưu bài đăng
+                        </Dropdown.Item>
                     ) : (
-                      <Dropdown.Item onClick={handleUnsavePost}>
-                        <FaRegBookmark className="me-2 text-[var(--text-color)]" />{" "}
-                        Bỏ lưu
-                      </Dropdown.Item>
+                        <Dropdown.Item onClick={handleUnsavePost}>
+                          <FaRegBookmark className="me-2 text-[var(--text-color)]" /> Bỏ lưu
+                        </Dropdown.Item>
                     )}
                     <Dropdown.Item onClick={() => setShowReportModal(true)}>
-                      <FaFlag className="me-2 text-[var(--text-color)]" /> Báo
-                      cáo
+                      <FaFlag className="me-2 text-[var(--text-color)]" /> Báo cáo
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
