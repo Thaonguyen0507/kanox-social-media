@@ -19,12 +19,11 @@ function FriendItem({ user, showActions, handleAccept, handleReject, onAction })
                 roundedCircle
                 className="w-[50px] h-[50px] object-cover"
             />
-
         );
     };
 
     return (
-        <div className="flex flex-col py-3 border-b last:border-b-0 border-gray-300">
+        <div className="group flex flex-col py-3 border-b last:border-b-0 border-gray-300">
             <div className="flex items-center gap-3">
                 <Link to={`/profile/${user.username}`} className="pl-4 pr-2 py-1 self-start">
                     {renderAvatar()}
@@ -40,6 +39,19 @@ function FriendItem({ user, showActions, handleAccept, handleReject, onAction })
                     <p className="text-muted text-sm mb-0">{user.reasonText}</p>
                 </div>
             </div>
+            {user.reason === "mutual_friends" && user.mutualFriends && user.mutualFriends.length > 0 && (
+                <div className="absolute hidden group-hover:block bg-white dark:bg-gray-800 text-dark dark:text-white text-xs rounded-lg p-2 shadow-lg mt-2 z-10 max-w-xs">
+                    Bạn chung: {user.mutualFriends.map(friend => (
+                    <Link
+                        key={friend.id}
+                        to={`/profile/${friend.username}`}
+                        className="text-dark dark:text-white text-decoration-none hover:underline"
+                    >
+                        {friend.displayName || friend.username}
+                    </Link>
+                )).reduce((prev, curr, index) => [prev, index > 0 ? ", " : "", curr], [])}
+                </div>
+            )}
             <div className="flex justify-center gap-2 mt-3">
                 {showActions ? (
                     <>
