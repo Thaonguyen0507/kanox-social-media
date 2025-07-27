@@ -52,7 +52,7 @@ const PremiumPage = () => {
     const token =
         localStorage.getItem("token") || sessionStorage.getItem("token");
 
-    const returnUrl = "https://kanox-social-media.netlify.app/home";
+    const returnUrl = "https://kanox-social-media.netlify.app/premium";
     const cancelUrl = "https://kanox-social-media.netlify.app/premium"
     const response = await fetch(
         `${process.env.REACT_APP_API_URL}/payment/premium/subscribe`,
