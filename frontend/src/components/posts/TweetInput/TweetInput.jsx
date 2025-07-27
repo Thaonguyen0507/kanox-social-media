@@ -63,6 +63,7 @@ function TweetInput({ onPostSuccess, groupId }) {
     const [showPlacePicker, setShowPlacePicker] = useState(false);
     const placeInputRef = useRef(null);
     const [ready, setReady] = useState(false);
+    const [mediaUploaded, setMediaUploaded] = useState(false);
     
 
     useEffect(() => {
@@ -214,7 +215,7 @@ function TweetInput({ onPostSuccess, groupId }) {
                 formData.append("userId", user.id);
                 formData.append("caption", tweetContent);
                 if (selectedPlace?.locationName) {
-                    formData.append('locationName', selectedPlace.locationName);
+                    formData.append("locationName", selectedPlace.locationName);
                 }
                 mediaFiles.forEach((file) => formData.append("files", file));
 
@@ -228,20 +229,26 @@ function TweetInput({ onPostSuccess, groupId }) {
                 );
 
                 if (!mediaRes.ok) throw new Error("Tải lên media thất bại.");
+                setMediaUploaded(true); // Đánh dấu upload thành công
                 toast.success("Media tải lên thành công!");
+            } else {
+                setMediaUploaded(true); // Nếu không có media, vẫn cho phép tiếp tục
             }
 
-            setTweetContent("");
-            setTaggedUserIds([]);
-            setMediaFiles([]);
-            setMediaPreviews([]);
-            setStatus("public");
-            setCustomListId(null);
-            setSelectedPlace(null);
-            setPlaceInput("");
-            setError(null);
-            toast.success("Đăng bài thành công!");
-            if (onPostSuccess) onPostSuccess(newPost.data);
+            // Chỉ làm mới sau khi media upload xong
+            if (mediaUploaded) {
+                setTweetContent("");
+                setTaggedUserIds([]);
+                setMediaFiles([]);
+                setMediaPreviews([]);
+                setStatus("public");
+                setCustomListId(null);
+                setSelectedPlace(null);
+                setPlaceInput("");
+                setError(null);
+                toast.success("Đăng bài thành công!");
+                if (onPostSuccess) onPostSuccess(newPost.data);
+            }
         } catch (err) {
             console.error("Submit error:", err);
             setError(err.message);
@@ -760,7 +767,8 @@ function TweetInput({ onPostSuccess, groupId }) {
                             disabled={
                                 !tweetContent.trim() ||
                                 (status === "custom" && !customListId) ||
-                                loading
+                                loading ||
+                                (mediaFiles.length > 0 && !mediaUploaded)
                             }
                         >
                             {loading ? "Đang đăng..." : "Đăng"}
