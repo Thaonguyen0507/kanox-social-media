@@ -40,8 +40,8 @@ function FriendItem({ user, showActions, handleAccept, handleReject, onAction })
                 </div>
             </div>
             {user.reason === "mutual_friends" && user.mutualFriends && user.mutualFriends.length > 0 && (
-                <div className="absolute hidden group-hover:block bg-white dark:bg-gray-800 text-dark dark:text-white text-xs rounded-lg p-2 shadow-lg mt-2 z-10 max-w-xs">
-                    Bạn chung: {user.mutualFriends.map(friend => (
+                <div className="absolute hidden group-hover:block bg-white dark:bg-gray-800 text-dark dark:text-white text-xs rounded-lg p-2 shadow-lg mt-2 left-4 z-20 max-w-xs">
+                    Bạn chung: {user.mutualFriends.slice(0, 5).map(friend => (
                     <Link
                         key={friend.id}
                         to={`/profile/${friend.username}`}
@@ -50,6 +50,7 @@ function FriendItem({ user, showActions, handleAccept, handleReject, onAction })
                         {friend.displayName || friend.username}
                     </Link>
                 )).reduce((prev, curr, index) => [prev, index > 0 ? ", " : "", curr], [])}
+                    {user.mutualFriends.length > 5 && ` và ${user.mutualFriends.length - 5} người khác`}
                 </div>
             )}
             <div className="flex justify-center gap-2 mt-3">
