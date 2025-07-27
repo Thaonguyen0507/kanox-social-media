@@ -22,6 +22,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import { AuthContext } from "../../../context/AuthContext";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useSpring, animated } from "react-spring";
 
 function EditPostModal({ show, onHide, post, onSave }) {
     const { user, token } = useContext(AuthContext);
@@ -31,9 +32,9 @@ function EditPostModal({ show, onHide, post, onSave }) {
         taggedUserIds: [],
         tagInput: "",
         customListId: null,
-        images: [], // New images to upload
-        existingImageUrls: [], // Existing image URLs from the post
-        imagesToDelete: [], // Image IDs to delete
+        images: [],
+        existingImageUrls: [],
+        imagesToDelete: [],
     });
     const [customLists, setCustomLists] = useState([]);
     const [error, setError] = useState(null);
@@ -43,7 +44,6 @@ function EditPostModal({ show, onHide, post, onSave }) {
     const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
     const dropdownRef = useRef(null);
 
-    // Fetch danh sách tùy chỉnh
     useEffect(() => {
         const fetchCustomLists = async () => {
             try {
@@ -61,7 +61,6 @@ function EditPostModal({ show, onHide, post, onSave }) {
         if (token) fetchCustomLists();
     }, [token]);
 
-    // Cập nhật formData khi post thay đổi
     useEffect(() => {
         if (post) {
             setFormData({
@@ -77,7 +76,6 @@ function EditPostModal({ show, onHide, post, onSave }) {
         }
     }, [post]);
 
-    // Xử lý thay đổi trạng thái quyền riêng tư
     const handleStatusChange = useCallback(
         async (newStatus) => {
             try {
@@ -179,7 +177,7 @@ function EditPostModal({ show, onHide, post, onSave }) {
     const handleImageUpload = useCallback((e) => {
         const files = Array.from(e.target.files);
         const validImageTypes = ["image/jpeg", "image/png", "image/gif"];
-        const maxSize = 5 * 1024 * 1024; // 5MB
+        const maxSize = 5 * 1024 * 1024;
 
         const validFiles = files.filter((file) => validImageTypes.includes(file.type) && file.size <= maxSize);
 
@@ -197,7 +195,7 @@ function EditPostModal({ show, onHide, post, onSave }) {
     const handleRemoveImage = useCallback((index, isExisting = false) => {
         if (isExisting) {
             const imageUrl = formData.existingImageUrls[index];
-            const imageId = imageUrl.split("/").pop(); // Giả định imageUrl chứa ID ở phần cuối
+            const imageId = imageUrl.split("/").pop();
             setFormData((prev) => ({
                 ...prev,
                 existingImageUrls: prev.existingImageUrls.filter((_, i) => i !== index),
@@ -337,7 +335,6 @@ function EditPostModal({ show, onHide, post, onSave }) {
         const filesToShow = allMedia.slice(0, 4);
         const extraCount = allMedia.length - 4;
 
-        // Single media
         if (allMedia.length === 1) {
             return (
                 <div className="overflow-hidden rounded-2xl mb-4 relative">
@@ -360,7 +357,6 @@ function EditPostModal({ show, onHide, post, onSave }) {
             );
         }
 
-        // Two media
         if (allMedia.length === 2) {
             return (
                 <Row className="overflow-hidden rounded-2xl g-2 mb-4">
@@ -387,7 +383,6 @@ function EditPostModal({ show, onHide, post, onSave }) {
             );
         }
 
-        // Three media
         if (allMedia.length === 3) {
             return (
                 <Row className="overflow-hidden rounded-2xl g-2 mb-4">
@@ -450,7 +445,6 @@ function EditPostModal({ show, onHide, post, onSave }) {
             );
         }
 
-        // Four or more media
         return (
             <Row className="overflow-hidden rounded-2xl g-2 mb-4">
                 {filesToShow.map((preview, idx) => (
@@ -484,223 +478,243 @@ function EditPostModal({ show, onHide, post, onSave }) {
         );
     };
 
+    const modalAnimation = useSpring({
+        opacity: show ? 1 : 0,
+        transform: show ? "translateY(0)" : "translateY(20px)",
+        config: { tension: 220, friction: 20 },
+    });
+
+    const mediaModalAnimation = useSpring({
+        opacity: showMediaModal ? 1 : 0,
+        transform: showMediaModal ? "scale(1)" : "scale(0.9)",
+        config: { tension: 220, friction: 20 },
+    });
+
     return (
         <>
-            <Modal show={show} onHide={onHide} centered className="text-[var(--text-color)]">
-                <Modal.Header closeButton className="bg-[var(--background-color)] border-[var(--border-color)]">
-                    <Modal.Title>Chỉnh sửa bài đăng</Modal.Title>
-                </Modal.Header>
-                <Modal.Body className="bg-[var(--background-color)]">
-                    <Form onSubmit={handleSubmit}>
-                        <FormGroup className="mb-3">
-                            <FormLabel>Nội dung</FormLabel>
-                            <FormControl
-                                as="textarea"
-                                rows={4}
-                                name="content"
-                                value={formData.content}
-                                onChange={handleChange}
-                                placeholder="Bạn đang nghĩ gì?"
-                                className="bg-[var(--hover-bg-color)] text-[var(--text-color)] border-[var(--border-color)]"
-                            />
-                        </FormGroup>
+            <animated.div style={modalAnimation}>
+                <Modal show={show} onHide={onHide} centered className="text-[var(--text-color)]">
+                    <Modal.Header className="bg-[var(--background-color)] border-[var(--border-color)]">
+                        <Modal.Title>Chỉnh sửa bài đăng</Modal.Title>
+                        <Button variant="link" onClick={onHide} className="text-[var(--text-color)]">
+                            <AiOutlineClose size={20} />
+                        </Button>
+                    </Modal.Header>
+                    <Modal.Body className="bg-[var(--background-color)] p-4">
+                        <Form onSubmit={handleSubmit}>
+                            <FormGroup className="mb-4">
+                                <FormLabel className="text-[var(--text-color)]">Nội dung</FormLabel>
+                                <FormControl
+                                    as="textarea"
+                                    rows={4}
+                                    name="content"
+                                    value={formData.content}
+                                    onChange={handleChange}
+                                    placeholder="Bạn đang nghĩ gì?"
+                                    className="bg-[var(--hover-bg-color)] text-[var(--text-color)] border border-[var(--border-color)] rounded-lg focus:ring-2 focus:ring-[var(--primary-color)]"
+                                />
+                            </FormGroup>
 
-                        <FormGroup className="mb-3">
-                            <FormLabel>Trạng thái hiển thị</FormLabel>
-                            <div className="relative" ref={dropdownRef}>
-                                <button
-                                    onClick={() => setShowCustomList(!showCustomList)}
-                                    className="rounded-full border px-3 py-1 flex items-center gap-2 text-sm text-[var(--text-color)] border-[var(--border-color)] bg-transparent hover:bg-[var(--hover-bg-color)] w-full"
-                                >
-                                    {renderStatusIcon(formData.privacySetting)}
-                                    {renderStatusText(formData.privacySetting)}
-                                </button>
-                                {showCustomList && (
-                                    <div className="absolute left-0 mt-1 w-full bg-[var(--background-color)] border border-[var(--border-color)] rounded shadow z-50 text-sm">
-                                        <button
-                                            onClick={() => {
-                                                handleStatusChange("public");
-                                                setShowCustomList(false);
-                                            }}
-                                            className="w-full px-4 py-2 text-left hover:bg-[var(--hover-bg-color)] flex items-center gap-2"
-                                        >
-                                            <FaGlobeAmericas className="text-primary" /> Công khai
-                                        </button>
-                                        <button
-                                            onClick={() => {
-                                                handleStatusChange("friends");
-                                                setShowCustomList(false);
-                                            }}
-                                            className="w-full px-4 py-2 text-left hover:bg-[var(--hover-bg-color)] flex items-center gap-2"
-                                        >
-                                            <FaUserFriends className="text-success" /> Bạn bè
-                                        </button>
-                                        <button
-                                            onClick={() => {
-                                                handleStatusChange("only_me");
-                                                setShowCustomList(false);
-                                            }}
-                                            className="w-full px-4 py-2 text-left hover:bg-[var(--hover-bg-color)] flex items-center gap-2"
-                                        >
-                                            <FaLock className="text-danger" /> Chỉ mình tôi
-                                        </button>
-                                        <button
-                                            onClick={() => {
-                                                handleStatusChange("custom");
-                                                setShowCustomList(false);
-                                            }}
-                                            className="w-full px-4 py-2 text-left hover:bg-[var(--hover-bg-color)] flex items-center gap-2"
-                                        >
-                                            <FaList className="text-info" /> Tùy chỉnh
-                                        </button>
-                                    </div>
-                                )}
-                            </div>
-                        </FormGroup>
-
-                        {formData.privacySetting === "custom" && (
-                            <FormGroup className="mb-3">
-                                <FormLabel>Danh sách tùy chỉnh</FormLabel>
-                                <div className="relative">
+                            <FormGroup className="mb-4">
+                                <FormLabel className="text-[var(--text-color)]">Trạng thái hiển thị</FormLabel>
+                                <div className="relative" ref={dropdownRef}>
                                     <button
                                         onClick={() => setShowCustomList(!showCustomList)}
-                                        className="w-full text-start rounded-full border border-[var(--border-color)] px-3 py-2 text-[var(--text-color)] bg-[var(--hover-bg-color)]"
+                                        className="rounded-full border border-[var(--border-color)] px-3 py-2 flex items-center gap-2 text-[var(--text-color)] bg-transparent hover:bg-[var(--hover-bg-color)] w-full transition-colors duration-200"
                                     >
-                                        {formData.customListId
-                                            ? customLists.find((l) => l.id === formData.customListId)?.listName
-                                            : "Chọn danh sách tùy chỉnh"}
+                                        {renderStatusIcon(formData.privacySetting)}
+                                        {renderStatusText(formData.privacySetting)}
                                     </button>
                                     {showCustomList && (
-                                        <div className="absolute z-50 mt-1 bg-[var(--background-color)] border border-[var(--border-color)] rounded shadow w-full">
-                                            {customLists.map((list) => (
-                                                <button
-                                                    key={list.id}
-                                                    onClick={() => {
-                                                        handleCustomListSelect(list.id);
-                                                        setShowCustomList(false);
-                                                    }}
-                                                    className="w-full text-left px-4 py-2 hover:bg-[var(--hover-bg-color)] text-[var(--text-color)]"
-                                                >
-                                                    {list.listName}
-                                                </button>
-                                            ))}
+                                        <div className="absolute left-0 mt-1 w-full bg-[var(--background-color)] border border-[var(--border-color)] rounded shadow-lg z-50">
+                                            <button
+                                                onClick={() => {
+                                                    handleStatusChange("public");
+                                                    setShowCustomList(false);
+                                                }}
+                                                className="w-full px-4 py-2 text-left hover:bg-[var(--hover-bg-color)] flex items-center gap-2 text-[var(--text-color)] transition-colors duration-200"
+                                            >
+                                                <FaGlobeAmericas className="text-primary" /> Công khai
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    handleStatusChange("friends");
+                                                    setShowCustomList(false);
+                                                }}
+                                                className="w-full px-4 py-2 text-left hover:bg-[var(--hover-bg-color)] flex items-center gap-2 text-[var(--text-color)] transition-colors duration-200"
+                                            >
+                                                <FaUserFriends className="text-success" /> Bạn bè
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    handleStatusChange("only_me");
+                                                    setShowCustomList(false);
+                                                }}
+                                                className="w-full px-4 py-2 text-left hover:bg-[var(--hover-bg-color)] flex items-center gap-2 text-[var(--text-color)] transition-colors duration-200"
+                                            >
+                                                <FaLock className="text-danger" /> Chỉ mình tôi
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    handleStatusChange("custom");
+                                                    setShowCustomList(false);
+                                                }}
+                                                className="w-full px-4 py-2 text-left hover:bg-[var(--hover-bg-color)] flex items-center gap-2 text-[var(--text-color)] transition-colors duration-200"
+                                            >
+                                                <FaList className="text-info" /> Tùy chỉnh
+                                            </button>
                                         </div>
                                     )}
                                 </div>
                             </FormGroup>
-                        )}
 
-                        <FormGroup className="mb-3">
-                            <FormLabel>Tag người dùng</FormLabel>
-                            <Row className="g-2">
-                                <Col xs={9}>
-                                    <FormControl
-                                        type="text"
-                                        placeholder="Nhập username"
-                                        value={formData.tagInput}
-                                        onChange={handleTagInputChange}
-                                        className="bg-[var(--hover-bg-color)] text-[var(--text-color)] border-[var(--border-color)]"
-                                    />
-                                </Col>
-                                <Col xs={3}>
-                                    <Button
-                                        variant="primary"
-                                        onClick={handleAddTag}
-                                        disabled={!formData.tagInput.trim()}
-                                        className="w-100"
-                                    >
-                                        Thêm
-                                    </Button>
-                                </Col>
-                            </Row>
-                            <div className="mt-2 flex flex-wrap">
-                                {formData.taggedUserIds.map((tagId) => (
-                                    <span
-                                        key={tagId}
-                                        className="bg-[var(--primary-color)] text-white px-2 py-1 rounded mr-2 mb-1 text-sm"
-                                    >
-                    @User_{tagId}
-                                        <Button
-                                            variant="link"
-                                            className="text-white p-0 ml-1"
-                                            onClick={() => handleRemoveTag(tagId)}
+                            {formData.privacySetting === "custom" && (
+                                <FormGroup className="mb-4">
+                                    <FormLabel className="text-[var(--text-color)]">Danh sách tùy chỉnh</FormLabel>
+                                    <div className="relative">
+                                        <button
+                                            onClick={() => setShowCustomList(!showCustomList)}
+                                            className="w-full text-left rounded-full border border-[var(--border-color)] px-3 py-2 text-[var(--text-color)] bg-[var(--hover-bg-color)] hover:bg-[var(--hover-bg-color-dark)] transition-colors duration-200"
                                         >
-                      ×
-                    </Button>
-                  </span>
-                                ))}
+                                            {formData.customListId
+                                                ? customLists.find((l) => l.id === formData.customListId)?.listName
+                                                : "Chọn danh sách tùy chỉnh"}
+                                        </button>
+                                        {showCustomList && (
+                                            <div className="absolute z-50 mt-1 bg-[var(--background-color)] border border-[var(--border-color)] rounded shadow-lg w-full">
+                                                {customLists.map((list) => (
+                                                    <button
+                                                        key={list.id}
+                                                        onClick={() => {
+                                                            handleCustomListSelect(list.id);
+                                                            setShowCustomList(false);
+                                                        }}
+                                                        className="w-full text-left px-4 py-2 hover:bg-[var(--hover-bg-color)] text-[var(--text-color)] transition-colors duration-200"
+                                                    >
+                                                        {list.listName}
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                </FormGroup>
+                            )}
+
+                            <FormGroup className="mb-4">
+                                <FormLabel className="text-[var(--text-color)]">Tag người dùng</FormLabel>
+                                <Row className="g-2">
+                                    <Col xs={9}>
+                                        <FormControl
+                                            type="text"
+                                            placeholder="Nhập username"
+                                            value={formData.tagInput}
+                                            onChange={handleTagInputChange}
+                                            className="bg-[var(--hover-bg-color)] text-[var(--text-color)] border border-[var(--border-color)] rounded-lg focus:ring-2 focus:ring-[var(--primary-color)]"
+                                        />
+                                    </Col>
+                                    <Col xs={3}>
+                                        <Button
+                                            variant="primary"
+                                            onClick={handleAddTag}
+                                            disabled={!formData.tagInput.trim()}
+                                            className="w-full rounded-lg"
+                                        >
+                                            Thêm
+                                        </Button>
+                                    </Col>
+                                </Row>
+                                <div className="mt-2 flex flex-wrap gap-2">
+                                    {formData.taggedUserIds.map((tagId) => (
+                                        <span
+                                            key={tagId}
+                                            className="bg-[var(--primary-color)] text-white px-2 py-1 rounded-full flex items-center"
+                                        >
+                      @User_{tagId}
+                                            <Button
+                                                variant="link"
+                                                className="text-white p-0 ml-1"
+                                                onClick={() => handleRemoveTag(tagId)}
+                                            >
+                        ×
+                      </Button>
+                    </span>
+                                    ))}
+                                </div>
+                            </FormGroup>
+
+                            <FormGroup className="mb-4">
+                                <FormLabel className="text-[var(--text-color)]">Ảnh</FormLabel>
+                                <FormControl
+                                    type="file"
+                                    multiple
+                                    accept="image/jpeg,image/png,image/gif"
+                                    onChange={handleImageUpload}
+                                    className="bg-[var(--hover-bg-color)] text-[var(--text-color)] border border-[var(--border-color)] rounded-lg"
+                                />
+                                <div className="mt-3">{renderMediaPreview()}</div>
+                            </FormGroup>
+
+                            {error && <p className="text-danger text-center">{error}</p>}
+
+                            <div className="flex justify-end gap-2">
+                                <Button
+                                    variant="secondary"
+                                    onClick={onHide}
+                                    className="rounded-lg"
+                                    disabled={loading}
+                                >
+                                    Hủy
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    variant="primary"
+                                    disabled={loading || (formData.privacySetting === "custom" && !formData.customListId)}
+                                    className="rounded-lg"
+                                >
+                                    {loading ? "Đang lưu..." : "Lưu"}
+                                </Button>
                             </div>
-                        </FormGroup>
+                        </Form>
+                    </Modal.Body>
+                </Modal>
+            </animated.div>
 
-                        <FormGroup className="mb-3">
-                            <FormLabel>Ảnh</FormLabel>
-                            <FormControl
-                                type="file"
-                                multiple
-                                accept="image/jpeg,image/png,image/gif"
-                                onChange={handleImageUpload}
-                                className="bg-[var(--hover-bg-color)] text-[var(--text-color)] border-[var(--border-color)]"
+            <animated.div style={mediaModalAnimation}>
+                {showMediaModal && (
+                    <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center">
+                        <div className="relative w-full max-w-4xl max-h-[80vh] overflow-hidden rounded-2xl">
+                            <button
+                                onClick={handleCloseMediaModal}
+                                className="absolute top-4 right-4 text-black bg-white/80 rounded-full w-10 h-10 flex items-center justify-center transition-opacity duration-200 hover:bg-white z-50"
+                            >
+                                <AiOutlineClose size={20} />
+                            </button>
+                            <button
+                                onClick={handlePrevMedia}
+                                className="absolute left-4 top-1/2 -translate-y-1/2 text-black bg-white/80 rounded-full w-10 h-10 flex items-center justify-center transition-opacity duration-200 hover:bg-white z-50"
+                            >
+                                <FaChevronLeft size={20} />
+                            </button>
+                            <button
+                                onClick={handleNextMedia}
+                                className="absolute right-4 top-1/2 -translate-y-1/2 text-black bg-white/80 rounded-full w-10 h-10 flex items-center justify-center transition-opacity duration-200 hover:bg-white z-50"
+                            >
+                                <FaChevronRight size={20} />
+                            </button>
+                            <BootstrapImage
+                                src={
+                                    currentMediaIndex < formData.existingImageUrls.length
+                                        ? formData.existingImageUrls[currentMediaIndex]
+                                        : URL.createObjectURL(formData.images[currentMediaIndex - formData.existingImageUrls.length])
+                                }
+                                alt="media"
+                                className="w-full max-h-[80vh] object-contain rounded-2xl"
+                                fluid
                             />
-                            <div className="mt-3">{renderMediaPreview()}</div>
-                        </FormGroup>
-
-                        {error && <p className="text-danger text-center">{error}</p>}
-
-                        <div className="d-flex justify-content-end">
-                            <Button
-                                variant="secondary"
-                                onClick={onHide}
-                                className="me-2"
-                                disabled={loading}
-                            >
-                                Hủy
-                            </Button>
-                            <Button
-                                type="submit"
-                                variant="primary"
-                                disabled={loading || (formData.privacySetting === "custom" && !formData.customListId)}
-                            >
-                                {loading ? "Đang lưu..." : "Lưu"}
-                            </Button>
                         </div>
-                    </Form>
-                </Modal.Body>
-            </Modal>
-
-            {showMediaModal && (
-                <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center">
-                    <div className="relative w-full max-w-4xl max-h-[80vh] overflow-hidden rounded-2xl">
-                        <button
-                            onClick={handleCloseMediaModal}
-                            className="absolute top-4 right-4 text-black bg-white/80 rounded-full w-10 h-10 flex items-center justify-center transition-opacity duration-200 hover:bg-white z-50"
-                        >
-                            <AiOutlineClose size={20} />
-                        </button>
-                        <button
-                            onClick={handlePrevMedia}
-                            className="absolute left-4 top-1/2 transform -translate-y-1/2 text-black bg-white/80 rounded-full w-10 h-10 flex items-center justify-center transition-opacity duration-200 hover:bg-white z-50"
-                        >
-                            <FaChevronLeft size={20} />
-                        </button>
-                        <button
-                            onClick={handleNextMedia}
-                            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-black bg-white/80 rounded-full w-10 h-10 flex items-center justify-center transition-opacity duration-200 hover:bg-white z-50"
-                        >
-                            <FaChevronRight size={20} />
-                        </button>
-                        <BootstrapImage
-                            src={
-                                currentMediaIndex < formData.existingImageUrls.length
-                                    ? formData.existingImageUrls[currentMediaIndex]
-                                    : URL.createObjectURL(formData.images[currentMediaIndex - formData.existingImageUrls.length])
-                            }
-                            alt="media"
-                            className="w-full max-h-[80vh] object-contain rounded-2xl"
-                            fluid
-                        />
                     </div>
-                </div>
-            )}
+                )}
+            </animated.div>
         </>
     );
 }

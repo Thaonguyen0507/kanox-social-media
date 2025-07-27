@@ -1,8 +1,5 @@
 import React, {useState, useEffect, useContext} from "react";
 import {
-    Container,
-    Row,
-    Col,
     Image,
     Button,
     Nav,
