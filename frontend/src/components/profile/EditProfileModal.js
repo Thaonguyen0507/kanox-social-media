@@ -3,17 +3,12 @@ import { Modal, Button, Form, Image, Spinner, Nav } from "react-bootstrap";
 import { FaCamera, FaTimes, FaLock, FaTrash } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import AutocompleteInput from "../location/AutocompleteInput"; // đường dẫn tùy bạn
-import MapView from "../location/MapView"; // đường dẫn đúng tới file
+import { useSpring, animated } from "react-spring";
+import { XMarkIcon } from "@heroicons/react/24/outline";
+import AutocompleteInput from "../location/AutocompleteInput";
+import MapView from "../location/MapView";
 
-
-function EditProfileModal({
-  show,
-  handleClose,
-  userProfile,
-  onSave,
-  username,
-}) {
+function EditProfileModal({ show, handleClose, userProfile, onSave, username }) {
   const [formData, setFormData] = useState({
     displayName: "",
     bio: "",
@@ -29,14 +24,33 @@ function EditProfileModal({
   const [errors, setErrors] = useState({});
   const placeInputRef = useRef(null);
 
+  // Animation cho modal
+  const modalAnimation = useSpring({
+    opacity: show ? 1 : 0,
+    transform: show ? "translateY(0%)" : "translateY(-10%)",
+    config: { tension: 220, friction: 20 },
+  });
+
+  // Animation cho avatar khi hover
+  const avatarAnimation = useSpring({
+    scale: formData.avatar ? 1.05 : 1,
+    config: { tension: 300, friction: 10 },
+  });
+
+  // Animation cho nút lưu khi hover
+  const saveButtonAnimation = useSpring({
+    scale: loading ? 1 : 1.1,
+    config: { tension: 300, friction: 10 },
+  });
+
   useEffect(() => {
     if (show && userProfile) {
       setFormData({
         displayName: userProfile.displayName || "",
         bio: userProfile.bio || "",
         dateOfBirth: userProfile.dateOfBirth
-          ? new Date(userProfile.dateOfBirth).toISOString().split("T")[0]
-          : "",
+            ? new Date(userProfile.dateOfBirth).toISOString().split("T")[0]
+            : "",
         gender: userProfile.gender != null ? String(userProfile.gender) : "",
         avatar: userProfile.profileImageUrl || "",
         locationName: userProfile.locationName || "",
@@ -47,8 +61,6 @@ function EditProfileModal({
       setErrors({});
     }
   }, [show, userProfile]);
-  
-
 
   const validateForm = () => {
     const newErrors = {};
@@ -120,14 +132,14 @@ function EditProfileModal({
       }
 
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/user/profile/${username}`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          body: form,
-        }
+          `${process.env.REACT_APP_API_URL}/user/profile/${username}`,
+          {
+            method: "PUT",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            body: form,
+          }
       );
 
       if (!response.ok) {
@@ -149,9 +161,9 @@ function EditProfileModal({
 
   const handleDeleteAccount = () => {
     if (
-      window.confirm(
-        "Bạn có chắc chắn muốn xóa tài khoản? Hành động này không thể hoàn tác!"
-      )
+        window.confirm(
+            "Bạn có chắc chắn muốn xóa tài khoản? Hành động này không thể hoàn tác!"
+        )
     ) {
       alert("Chuyển hướng đến trang xóa tài khoản...");
     }
@@ -169,210 +181,217 @@ function EditProfileModal({
   ];
 
   return (
-    <>
-      <ToastContainer position="top-center" autoClose={3000} />
-      <Modal
-        show={show}
-        onHide={handleClose}
-        fullscreen="sm-down"
-        centered
-        size="lg"
-        className="bg-[var(--background-color)] text-[var(--text-color)]"
-      >
-        <Modal.Header className="border-bottom-0 pb-0">
-          <div className="d-flex align-items-center">
-            <Button
-              variant="link"
-              className="text-[var(--text-color)] p-0 me-3"
-              onClick={handleClose}
-            >
-              <FaTimes size={24} />
-            </Button>
-            <Modal.Title className="fw-bold fs-5">Chỉnh sửa hồ sơ</Modal.Title>
-          </div>
-        </Modal.Header>
-
-        <Modal.Body className="p-3">
-          <div className="mb-5 text-center">
-            <div className="position-relative d-inline-block">
-              <Image
-                src={
-                  formData.avatar ||
-                  "https://source.unsplash.com/150x150/?portrait"
-                }
-                roundedCircle
-                className="border border-[var(--border-color)] border-4"
-                style={{ width: "150px", height: "150px", objectFit: "cover" }}
-              />
-
-              {/* Nút chọn ảnh: chuyển xuống dưới bên phải avatar */}
-              <label
-                htmlFor="avatar-upload"
-                className="position-absolute bottom-0 end-0 mb-2 me-2 btn btn-dark rounded-circle d-flex align-items-center justify-content-center"
-                style={{ width: "40px", height: "40px" }}
-              >
-                <FaCamera size={16} />
-                <input
-                  type="file"
-                  id="avatar-upload"
-                  className="d-none"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                />
-              </label>
-
-              {/* Nút xoá ảnh */}
-              {formData.avatar && (
+      <>
+        <ToastContainer position="top-center" autoClose={3000} />
+        <animated.div style={modalAnimation}>
+          <Modal
+              show={show}
+              onHide={handleClose}
+              fullscreen="sm-down"
+              centered
+              size="lg"
+              className="bg-[var(--background-color)] text-[var(--text-color)]"
+              dialogClassName="rounded-xl shadow-2xl"
+          >
+            <Modal.Header className="border-b border-[var(--border-color)] p-4 flex justify-between items-center">
+              <div className="flex items-center">
                 <Button
-                  variant="dark"
-                  className="rounded-circle d-flex align-items-center justify-content-center"
-                  style={{
-                    width: "40px",
-                    height: "40px",
-                    position: "absolute",
-                    top: "0",
-                    right: "0",
-                    transform: "translate(50%, -50%)",
-                  }}
-                  onClick={handleClearImage}
+                    variant="link"
+                    className="text-[var(--text-color)] p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                    onClick={handleClose}
                 >
-                  <FaTimes size={18} />
+                  <FaTimes size={24} />
                 </Button>
-              )}
-            </div>
-          </div>
+              </div>
+              <Modal.Title className="fw-bold text-xl">Chỉnh sửa hồ sơ</Modal.Title>
+              <div className="w-10"></div> {/* Spacer để cân đối */}
+            </Modal.Header>
 
-          <h6 className="fw-bold mb-3 text-[var(--text-color)]">Thông tin cá nhân</h6>
-          <Form className="mb-4">
-            <Form.Group className="mb-3" controlId="formDisplayName">
-              <Form.Label className="text-[var(--muted-text-color)] small mb-1">
-                Tên hiển thị
-              </Form.Label>
-              <Form.Control
-                type="text"
-                value={formData.displayName}
-                onChange={(e) =>
-                  handleInputChange("displayName", e.target.value)
-                }
-                className="border-0 border-b border-[var(--border-color)] rounded-0 px-0 py-1 text-[var(--text-color)]"
-                isInvalid={!!errors.displayName}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.displayName}
-              </Form.Control.Feedback>
-            </Form.Group>
+            <Modal.Body className="p-6">
+              {/* Avatar Section */}
+              <div className="mb-6 text-center">
+                <div className="relative inline-block">
+                  <animated.div
+                      style={avatarAnimation}
+                      onMouseEnter={() => formData.avatar && avatarAnimation.scale.set(1.05)}
+                      onMouseLeave={() => formData.avatar && avatarAnimation.scale.set(1)}
+                  >
+                    <Image
+                        src={formData.avatar || "https://source.unsplash.com/150x150/?portrait"}
+                        roundedCircle
+                        className="border-4 border-[var(--border-color)] w-[150px] h-[150px] object-cover transition-transform duration-300"
+                    />
+                  </animated.div>
 
-            <Form.Group className="mb-3" controlId="formBio">
-              <Form.Label className="text-[var(--muted-text-color)] small mb-1">Tiểu sử</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={3}
-                value={formData.bio}
-                onChange={(e) => handleInputChange("bio", e.target.value)}
-                className="border-0 border-b border-[var(--border-color)] rounded-0 px-0 py-1 text-[var(--text-color)]"
-                isInvalid={!!errors.bio}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.bio}
-              </Form.Control.Feedback>
-            </Form.Group>
+                  {/* Upload and Clear Buttons */}
+                  <div className="flex justify-center mt-2 space-x-3">
+                    <label
+                        htmlFor="avatar-upload"
+                        className="btn bg-gray-800 text-white rounded-full flex items-center justify-center hover:bg-gray-700 transition-colors duration-200"
+                        style={{ width: "40px", height: "40px" }}
+                    >
+                      <FaCamera size={16} />
+                      <input
+                          type="file"
+                          id="avatar-upload"
+                          className="hidden"
+                          accept="image/*"
+                          onChange={handleImageChange}
+                      />
+                    </label>
+                    {formData.avatar && (
+                        <Button
+                            variant="dark"
+                            className="rounded-full flex items-center justify-center bg-red-500 hover:bg-red-600 transition-colors duration-200"
+                            style={{ width: "40px", height: "40px" }}
+                            onClick={handleClearImage}
+                        >
+                          <XMarkIcon className="h-5 w-5 text-white" />
+                        </Button>
+                    )}
+                  </div>
+                </div>
+              </div>
 
-            <Form.Group className="mb-3" controlId="formDateOfBirth">
-              <Form.Label className="text-[var(--muted-text-color)] small mb-1">
-                Ngày sinh
-              </Form.Label>
-              <Form.Control
-                type="date"
-                value={formData.dateOfBirth}
-                onChange={(e) =>
-                  handleInputChange("dateOfBirth", e.target.value)
-                }
-                className="border-0 border-b border-[var(--border-color)] rounded-0 px-0 py-1 text-[var(--text-color)]"
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formGender">
-              <Form.Label className="text-[var(--muted-text-color)] small mb-1">
-                Giới tính
-              </Form.Label>
-              <Form.Select
-                value={formData.gender}
-                onChange={(e) => handleInputChange("gender", e.target.value)}
-                className="border-0 border-b border-[var(--border-color)] rounded-0 px-0 py-1 text-[var(--text-color)]"
-              >
-                {genderOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </Form.Select>
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formLocation">
-              <Form.Label className="text-[var(--muted-text-color)] small mb-1">
-                Địa điểm
-              </Form.Label>
-              <AutocompleteInput
-                  ref={placeInputRef}
-                  onPlaceSelected={(place) => {
-                    if (!place) return;
-                    setFormData((prev) => ({
-                      ...prev,
-                      locationName: place.address,
-                      latitude: place.lat,
-                      longitude: place.lng,
-                    }));
-                  }}
-              />
-              <Form.Control.Feedback type="invalid">
-                {errors.locationName}
-              </Form.Control.Feedback>
-            </Form.Group>
-          </Form>
-
-          <h6 className="fw-bold mb-3">Cài đặt tài khoản</h6>
-          <Nav className="flex-column">
-            <Nav.Link
-              onClick={handleSecuritySettings}
-              className="text-[var(--text-color-muted)] d-flex align-items-center py-2 px-0 border-bottom"
-            >
-              <FaLock className="me-2" /> Cài đặt bảo mật
-            </Nav.Link>
-            <Nav.Link
-              onClick={handleDeleteAccount}
-              className="text-danger d-flex align-items-center py-2 px-0"
-            >
-              <FaTrash className="me-2" /> Xóa tài khoản
-            </Nav.Link>
-          </Nav>
-
-          {/* Nút lưu */}
-          <div className="text-end mt-4">
-            <Button
-              variant="dark"
-              className="rounded-pill px-4 py-1 fw-bold"
-              onClick={handleSave}
-              disabled={loading}
-            >
-              {loading ? (
-                <>
-                  <Spinner
-                    as="span"
-                    animation="border"
-                    size="sm"
-                    role="status"
-                    aria-hidden="true"
-                    className="me-2"
+              {/* Personal Info */}
+              <h6 className="fw-bold text-lg mb-4 text-[var(--text-color)]">Thông tin cá nhân</h6>
+              <Form className="space-y-4">
+                <Form.Group controlId="formDisplayName">
+                  <Form.Label className="text-[var(--muted-text-color)] text-sm mb-1">
+                    Tên hiển thị
+                  </Form.Label>
+                  <Form.Control
+                      type="text"
+                      value={formData.displayName}
+                      onChange={(e) => handleInputChange("displayName", e.target.value)}
+                      className="border-0 border-b-2 border-[var(--border-color)] rounded-none p-1 bg-transparent text-[var(--text-color)] focus:border-[var(--primary-color)] transition-colors duration-200"
+                      isInvalid={!!errors.displayName}
                   />
-                  Đang lưu...
-                </>
-              ) : (
-                "Lưu"
-              )}
-            </Button>
-          </div>
-        </Modal.Body>
-      </Modal>
-    </>
+                  <Form.Control.Feedback type="invalid" className="text-red-500">
+                    {errors.displayName}
+                  </Form.Control.Feedback>
+                </Form.Group>
+
+                <Form.Group controlId="formBio">
+                  <Form.Label className="text-[var(--muted-text-color)] text-sm mb-1">
+                    Tiểu sử
+                  </Form.Label>
+                  <Form.Control
+                      as="textarea"
+                      rows={3}
+                      value={formData.bio}
+                      onChange={(e) => handleInputChange("bio", e.target.value)}
+                      className="border-0 border-b-2 border-[var(--border-color)] rounded-none p-1 bg-transparent text-[var(--text-color)] focus:border-[var(--primary-color)] transition-colors duration-200"
+                      isInvalid={!!errors.bio}
+                  />
+                  <Form.Control.Feedback type="invalid" className="text-red-500">
+                    {errors.bio}
+                  </Form.Control.Feedback>
+                </Form.Group>
+
+                <Form.Group controlId="formDateOfBirth">
+                  <Form.Label className="text-[var(--muted-text-color)] text-sm mb-1">
+                    Ngày sinh
+                  </Form.Label>
+                  <Form.Control
+                      type="date"
+                      value={formData.dateOfBirth}
+                      onChange={(e) => handleInputChange("dateOfBirth", e.target.value)}
+                      className="border-0 border-b-2 border-[var(--border-color)] rounded-none p-1 bg-transparent text-[var(--text-color)] focus:border-[var(--primary-color)] transition-colors duration-200"
+                  />
+                </Form.Group>
+
+                <Form.Group controlId="formGender">
+                  <Form.Label className="text-[var(--muted-text-color)] text-sm mb-1">
+                    Giới tính
+                  </Form.Label>
+                  <Form.Select
+                      value={formData.gender}
+                      onChange={(e) => handleInputChange("gender", e.target.value)}
+                      className="border-0 border-b-2 border-[var(--border-color)] rounded-none p-1 bg-transparent text-[var(--text-color)] focus:border-[var(--primary-color)] transition-colors duration-200"
+                  >
+                    {genderOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                    ))}
+                  </Form.Select>
+                </Form.Group>
+
+                <Form.Group controlId="formLocation">
+                  <Form.Label className="text-[var(--muted-text-color)] text-sm mb-1">
+                    Địa điểm
+                  </Form.Label>
+                  <AutocompleteInput
+                      ref={placeInputRef}
+                      onPlaceSelected={(place) => {
+                        if (!place) return;
+                        setFormData((prev) => ({
+                          ...prev,
+                          locationName: place.address,
+                          latitude: place.lat,
+                          longitude: place.lng,
+                        }));
+                      }}
+                  />
+                  <Form.Control.Feedback type="invalid" className="text-red-500">
+                    {errors.locationName}
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Form>
+
+              {/* Account Settings */}
+              <h6 className="fw-bold text-lg mb-4">Cài đặt tài khoản</h6>
+              <div className="space-y-2">
+                <button
+                    onClick={handleSecuritySettings}
+                    className="w-full text-left p-3 rounded-lg hover:bg-gray-100 transition-colors duration-200 text-[var(--text-color-muted)] flex items-center justify-between"
+                >
+                <span className="flex items-center">
+                  <FaLock className="mr-2" /> Cài đặt bảo mật
+                </span>
+                </button>
+                <button
+                    onClick={handleDeleteAccount}
+                    className="w-full text-left p-3 rounded-lg hover:bg-red-50 transition-colors duration-200 text-danger flex items-center justify-between"
+                >
+                <span className="flex items-center">
+                  <FaTrash className="mr-2" /> Xóa tài khoản
+                </span>
+                </button>
+              </div>
+
+              {/* Save Button */}
+              <div className="mt-6 flex justify-end">
+                <animated.div style={saveButtonAnimation}>
+                  <Button
+                      variant="dark"
+                      className="rounded-full px-6 py-2 fw-bold text-white hover:shadow-md transition-all duration-200"
+                      onClick={handleSave}
+                      disabled={loading}
+                  >
+                    {loading ? (
+                        <>
+                          <Spinner
+                              as="span"
+                              animation="border"
+                              size="sm"
+                              role="status"
+                              aria-hidden="true"
+                              className="me-2"
+                          />
+                          Đang lưu...
+                        </>
+                    ) : (
+                        "Lưu"
+                    )}
+                  </Button>
+                </animated.div>
+              </div>
+            </Modal.Body>
+          </Modal>
+        </animated.div>
+      </>
   );
 }
 

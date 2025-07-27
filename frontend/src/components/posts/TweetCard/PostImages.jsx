@@ -12,17 +12,10 @@ const PostImages = ({ images, onClickImage }) => {
 
     if (imageCount === 1) {
         return (
-            <div className="overflow-hidden rounded-2xl mb-2 d-flex justify-content-center">
+            <div className="overflow-hidden rounded-2xl mb-2">
                 <BootstrapImage
                     src={images[0]}
-                    className="rounded-2xl cursor-pointer"
-                    style={{
-                        width: "100%",
-                        maxWidth: "400px",
-                        height: "auto",
-                        maxHeight: "400px",
-                        objectFit: "cover",
-                    }}
+                    className="w-full max-h-[400px] object-cover block cursor-pointer rounded-2xl"
                     fluid
                     onClick={() => handleClick(images[0], 0)}
                 />
