@@ -73,7 +73,7 @@ export const adminService = {
   
   // Lấy danh sách người dùng
   async getUsers(page = 0, size = 10, search = '') {
-    const url = new URL(`${API_BASE_URL}/admin/users`);
+    const url = new URL(`${API_BASE_URL}/api/admin/users`);
     url.searchParams.append('page', page);
     url.searchParams.append('size', size);
     if (search) {
@@ -90,7 +90,7 @@ export const adminService = {
 
   // Lấy thông tin chi tiết một người dùng
   async getUserById(userId) {
-    const response = await fetch(`${API_BASE_URL}/admin/users/${userId}`, {
+    const response = await fetch(`${API_BASE_URL}/api/admin/users/${userId}`, {
       method: 'GET',
       headers: getHeaders(),
     });
@@ -100,7 +100,7 @@ export const adminService = {
 
   // Cập nhật thông tin người dùng
   async updateUser(userId, userUpdate) {
-    const response = await fetch(`${API_BASE_URL}/admin/users/${userId}`, {
+    const response = await fetch(`${API_BASE_URL}/api/admin/users/${userId}`, {
       method: 'PUT',
       headers: getHeaders(),
       body: JSON.stringify(userUpdate),
@@ -111,7 +111,7 @@ export const adminService = {
 
   // Cập nhật trạng thái người dùng (khóa/mở khóa)
   async updateUserStatus(userId, status) {
-    const url = `${API_BASE_URL}/admin/users/${userId}/status?status=${status}`;
+    const url = `${API_BASE_URL}/api/admin/users/${userId}/status?status=${status}`;
     const headers = getHeaders();
     
     console.log('=== UPDATE USER STATUS DEBUG ===');
@@ -139,7 +139,7 @@ export const adminService = {
 
   // Gửi thông báo cho người dùng
   async sendNotification(userId, message, type = 'ADMIN_MESSAGE') {
-    const response = await fetch(`${API_BASE_URL}/admin/users/send-notification`, {
+    const response = await fetch(`${API_BASE_URL}/api/admin/users/send-notification`, {
       method: 'POST',
       headers: getHeaders(),
       body: JSON.stringify({
