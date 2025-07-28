@@ -2,18 +2,33 @@ import React from "react";
 import { FaCheckCircle, FaCircle, FaEllipsisH } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
+import { toast } from "react-toastify";
 
 function NotificationItem({ notification, handleMarkRead, handleMarkUnread }) {
     const navigate = useNavigate();
-    const isRead = notification.status === "read";
+    const isRead = notification.isRead;
 
     const handleNotificationClick = () => {
         if (notification.targetType === "POST") {
+            if (!notification.targetId) {
+                toast.error("Không thể điều hướng: Thiếu ID bài đăng.");
+                return;
+            }
             navigate(`/home?postId=${notification.targetId}`);
         } else if (notification.targetType === "GROUP") {
+            if (!notification.targetId) {
+                toast.error("Không thể điều hướng: Thiếu ID nhóm.");
+                return;
+            }
             navigate(`/community/${notification.targetId}`);
-        } else {
+        } else if (
+            notification.targetType === "PROFILE" &&
+            notification.username &&
+            notification.username !== "unknown"
+        ) {
             navigate(`/profile/${notification.username}`);
+        } else {
+            toast.error("Không thể điều hướng: Thông tin không hợp lệ.");
         }
     };
 
@@ -30,8 +45,8 @@ function NotificationItem({ notification, handleMarkRead, handleMarkUnread }) {
                         className="font-bold text-[var(--primary-color)] cursor-pointer hover:underline"
                         onClick={() => navigate(`/community/${notification.targetId}`)}
                     >
-                        {displayName}
-                    </span>
+            {displayName}
+          </span>
                     {parts[1]}
                 </p>
             );
@@ -66,11 +81,17 @@ function NotificationItem({ notification, handleMarkRead, handleMarkUnread }) {
                         <p
                             className="font-bold text-[var(--primary-color)] cursor-pointer m-0"
                             onClick={(e) => {
-                                e.stopPropagation(); // Ngăn click vào tên gọi handleNotificationClick
+                                e.stopPropagation();
                                 if (notification.targetType === "GROUP") {
+                                    if (!notification.targetId) {
+                                        toast.error("Không thể điều hướng: Thiếu ID nhóm.");
+                                        return;
+                                    }
                                     navigate(`/community/${notification.targetId}`);
-                                } else {
+                                } else if (notification.username && notification.username !== "unknown") {
                                     navigate(`/profile/${notification.username}`);
+                                } else {
+                                    toast.error("Không thể điều hướng: Thiếu thông tin người dùng.");
                                 }
                             }}
                         >
@@ -81,7 +102,7 @@ function NotificationItem({ notification, handleMarkRead, handleMarkUnread }) {
                                 <button
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        handleMarkRead(notification.id);
+                                        handleMarkRead(notification.id, notification);
                                     }}
                                     className="text-[var(--text-color)] hover:text-[var(--primary-color)]"
                                     title="Đánh dấu đã đọc"
@@ -116,8 +137,8 @@ function NotificationItem({ notification, handleMarkRead, handleMarkUnread }) {
                             <p className="text-[var(--primary-color)] text-sm mb-1">
                                 {notification.tags.map((tag, idx) => (
                                     <span key={idx} className="mr-2">
-                                        {tag}
-                                    </span>
+                    {tag}
+                  </span>
                                 ))}
                             </p>
                         )}
