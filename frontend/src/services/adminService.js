@@ -73,7 +73,7 @@ export const adminService = {
   
   // Lấy danh sách người dùng
   async getUsers(page = 0, size = 10, search = '') {
-    const url = new URL(`${API_BASE_URL}/api/admin/users`);
+    const url = new URL(`${API_BASE_URL}/api/users`);
     url.searchParams.append('page', page);
     url.searchParams.append('size', size);
     if (search) {
