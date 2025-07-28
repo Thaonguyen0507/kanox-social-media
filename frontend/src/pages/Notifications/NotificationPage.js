@@ -15,14 +15,7 @@ function NotificationPage({ onToggleDarkMode, isDarkMode, onShowCreatePost }) {
     const [loading, setLoading] = useState(true);
     const { subscribe, unsubscribe } = useContext(WebSocketContext);
     const [unreadCount, setUnreadCount] = useState(0);
-
-    jsx
-
-    Thu gọn
-
-    Bọc lại
-
-    Sao chép
+    
     const fetchNotifications = async () => {
         setLoading(true);
         try {
@@ -154,16 +147,32 @@ function NotificationPage({ onToggleDarkMode, isDarkMode, onShowCreatePost }) {
                     timestamp: notification.createdAt * 1000,
                     isRead: notification.status === "read",
                     image: notification.image || null,
-                    targetId: notification.targetId || user.id,
+                    targetId: notification.targetId, // Bỏ fallback user.id
                     targetType: notification.targetType || "PROFILE",
                 };
+
+                // Kiểm tra targetId cho POST
+                if (newNotification.targetType === "POST" && !newNotification.targetId) {
+                    console.warn("Thông báo POST qua WebSocket thiếu targetId:", newNotification);
+                    return; // Bỏ qua thông báo không hợp lệ
+                }
 
                 toast.info(notification.message, {
                     onClick: () => {
                         if (notification.type === "REPORT_STATUS_UPDATED" || notification.type === "REPORT_ABUSE_WARNING") {
                             navigate(`/profile/${notification.adminDisplayName || notification.username}`);
                         } else if (notification.targetType === "GROUP") {
+                            if (!notification.targetId) {
+                                toast.error("Không thể điều hướng: Thiếu ID nhóm.");
+                                return;
+                            }
                             navigate(`/community/${notification.targetId}`);
+                        } else if (notification.targetType === "POST") {
+                            if (!notification.targetId) {
+                                toast.error("Không thể điều hướng: Thiếu ID bài đăng.");
+                                return;
+                            }
+                            navigate(`/home?postId=${notification.targetId}`);
                         }
                     },
                 });
