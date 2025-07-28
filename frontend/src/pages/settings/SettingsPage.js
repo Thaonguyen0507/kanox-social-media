@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Container, Row, Col, Form, Button, Spinner, Modal } from "react-bootstrap";
-import { FaArrowLeft, FaLock, FaList } from "react-icons/fa";
+import { FaArrowLeft, FaLock, FaList, FaEyeSlash, FaKey } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 import { ToastContainer, toast } from "react-toastify";
@@ -343,7 +343,7 @@ function SettingsPage() {
                                         type="password"
                                         name="currentPassword"
                                         value={passwordForm.currentPassword}
-                                        onChange={handlePasswordChangeInput}
+                                        onChange={handlePasswordChange}
                                         required
                                         className="bg-input"
                                     />
@@ -355,7 +355,7 @@ function SettingsPage() {
                                         type="password"
                                         name="newPassword"
                                         value={passwordForm.newPassword}
-                                        onChange={handlePasswordChangeInput}
+                                        onChange={handlePasswordChange}
                                         required
                                         className="bg-input"
                                     />
@@ -367,7 +367,7 @@ function SettingsPage() {
                                         type="password"
                                         name="confirmPassword"
                                         value={passwordForm.confirmPassword}
-                                        onChange={handlePasswordChangeInput}
+                                        onChange={handlePasswordChange}
                                         required
                                         className="bg-input"
                                     />
