@@ -156,7 +156,7 @@ export const adminService = {
   
   // Lấy danh sách báo cáo
   async getReports(page = 0, size = 10, status = '') {
-    const url = new URL(`${API_BASE_URL}/admin/list`);
+    const url = new URL(`${API_BASE_URL}/api/admin/list`);
     url.searchParams.append('page', page);
     url.searchParams.append('size', size);
     if (status) {
@@ -173,7 +173,7 @@ export const adminService = {
 
   // Lấy chi tiết một báo cáo
   async getReportById(reportId) {
-    const response = await fetch(`${API_BASE_URL}/admin/${reportId}`, {
+    const response = await fetch(`${API_BASE_URL}/api/admin/${reportId}`, {
       method: 'GET',
       headers: getHeaders(),
     });
@@ -183,7 +183,7 @@ export const adminService = {
 
   // Cập nhật trạng thái báo cáo
   async updateReportStatus(reportId, status, adminNote = '') {
-    const response = await fetch(`${API_BASE_URL}/admin/${reportId}/status`, {
+    const response = await fetch(`${API_BASE_URL}/api/admin/${reportId}/status`, {
       method: 'PUT',
       headers: getHeaders(),
       body: JSON.stringify({
@@ -197,7 +197,7 @@ export const adminService = {
 
   // Xóa báo cáo (dismiss)
   async deleteReport(reportId) {
-    const response = await fetch(`${API_BASE_URL}/admin/${reportId}`, {
+    const response = await fetch(`${API_BASE_URL}/api/admin/${reportId}`, {
       method: 'DELETE',
       headers: getHeaders(),
     });
