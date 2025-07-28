@@ -128,7 +128,7 @@ const ReportsManagement = () => {
                 throw new Error(data.message || "Lỗi khi xóa báo cáo");
             }
             toast.success("Đã xóa báo cáo!");
-            loadReports();
+            loadReports(activeMainTab, activeSubTab);
         } catch (error) {
             toast.error("Lỗi khi xóa báo cáo: " + error.message);
         }
@@ -181,7 +181,7 @@ const ReportsManagement = () => {
             
             // Thêm delay nhỏ để đảm bảo database đã được cập nhật
             setTimeout(() => {
-                loadReports();
+                loadReports(activeMainTab, activeSubTab);
             }, 500);
         } catch (error) {
             console.error("Lỗi khi cập nhật trạng thái:", error, { reportId, statusId });
