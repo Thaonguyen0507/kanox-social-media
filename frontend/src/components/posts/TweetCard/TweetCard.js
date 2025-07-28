@@ -127,7 +127,7 @@ const TweetCard = forwardRef(({ tweet, onPostUpdate }, ref) => {
   const targetTypeId = tweet?.targetTypeId || 1;
 
   const avatarMedia = useMedia([ownerId], "PROFILE", "image");
-  const { imageData, videoData } = usePostMedia(postId);
+  const { imageData, videoData } = usePostMedia(id);
   const avatarData = !loading && token && ownerId ? avatarMedia.mediaData : {};
   const avatarError = avatarMedia.error;
   const { emojiList: mainEmojiList, emojiMap } = useEmojiContext();
