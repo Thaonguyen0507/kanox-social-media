@@ -14,7 +14,7 @@ function FollowActionButton({ targetId, disabled, onFollowChange }) {
         const token = sessionStorage.getItem("token") || localStorage.getItem("token");
         if (!token) throw new Error("Không tìm thấy token");
 
-        const response = await fetch(
+        const res = await fetch(
             `${process.env.REACT_APP_API_URL}/follows/status/${targetId}`,
             {
               headers: {
@@ -23,8 +23,8 @@ function FollowActionButton({ targetId, disabled, onFollowChange }) {
               },
             }
         );
-        if (!response.ok) throw new Error("Không thể lấy trạng thái theo dõi");
-        const data = await response.json();
+        if (!res.ok) throw new Error("Không thể lấy trạng thái theo dõi");
+        const data = await res.json();
         setIsFollowing(data.isFollowing);
       } catch (err) {
         console.error("Lỗi khi lấy trạng thái theo dõi:", err);
@@ -41,20 +41,18 @@ function FollowActionButton({ targetId, disabled, onFollowChange }) {
       const token = sessionStorage.getItem("token") || localStorage.getItem("token");
       if (!token) throw new Error("Không tìm thấy token");
 
-      const response = await fetch(
-          `${process.env.REACT_APP_API_URL}/follows/${targetId}`,
-          {
-            method: action === "follow" ? "POST" : "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-      );
-      if (!response.ok) throw new Error(await response.text());
-      const newIsFollowing = action === "follow";
-      setIsFollowing(newIsFollowing);
-      if (onFollowChange) onFollowChange(newIsFollowing);
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/follows/${targetId}`, {
+        method: action === "follow" ? "POST" : "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) throw new Error(await res.text());
+      const newStatus = action === "follow";
+      setIsFollowing(newStatus);
+      if (onFollowChange) onFollowChange(newStatus);
     } catch (err) {
       console.error("Lỗi:", err);
     } finally {
@@ -69,12 +67,16 @@ function FollowActionButton({ targetId, disabled, onFollowChange }) {
           onClick={() => handleAction(isFollowing ? "unfollow" : "follow")}
           disabled={loading || disabled}
           className={`
-        rounded-full px-2 py-1 text-sm font-medium transition-colors duration-200 ml-1
+        group inline-flex items-center justify-center 
+        border rounded-full px-3 py-1 text-sm font-medium 
+        transition-all duration-200 ease-in-out
+        focus:outline-none focus:ring-2 focus:ring-black/30 dark:focus:ring-white/30
         ${
               isFollowing
-                  ? "border border-gray-500 text-gray-500 bg-white hover:bg-gray-200 dark:border-gray-400 dark:text-gray-400 dark:bg-black dark:hover:bg-gray-800"
-                  : "border border-black text-black bg-white hover:bg-gray-200 dark:border-white dark:text-white dark:bg-black dark:hover:bg-gray-800"
+                  ? "border-gray-500 text-gray-700 hover:bg-gray-100 dark:border-gray-400 dark:text-gray-300 dark:hover:bg-gray-800"
+                  : "border-black text-black hover:bg-black hover:text-white dark:border-white dark:text-white dark:hover:bg-white dark:hover:text-black"
           }
+        ${loading ? "opacity-50 cursor-not-allowed" : ""}
       `}
       >
         {loading ? "Đang xử lý..." : isFollowing ? "Bỏ theo dõi" : "Theo dõi"}

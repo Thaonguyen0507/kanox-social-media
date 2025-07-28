@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { toast } from "react-toastify";
 import { WebSocketContext } from "../../context/WebSocketContext";
 import { useLocation, useNavigate } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
 
 const ReportsManagement = () => {
     const { subscribe, unsubscribe } = useContext(WebSocketContext);
@@ -475,9 +476,11 @@ const ReportsManagement = () => {
                                         {selectedReport.targetTypeId === 1 && (
                                             <div className="mt-4">
                                                 <h5 className="text-lg font-semibold dark:text-white">Nội dung bài viết</h5>
-                                                <p className="text-text dark:text-white bg-gray-200 dark:bg-gray-700 p-3 rounded-md">
-                                                    {selectedReport.content || "Không có nội dung"}
-                                                </p>
+                                                <div className="prose prose-sm sm:prose lg:prose-lg dark:prose-invert bg-gray-200 dark:bg-gray-700 p-3 rounded-md overflow-x-auto">
+                                                    <ReactMarkdown>
+                                                        {selectedReport.content || "Không có nội dung"}
+                                                    </ReactMarkdown>
+                                                </div>
                                                 {selectedReport.imageUrls && selectedReport.imageUrls.length > 0 && (
                                                     <div className="mt-3">
                                                         <h6 className="text-md font-semibold dark:text-white">Hình ảnh</h6>
@@ -511,7 +514,7 @@ const ReportsManagement = () => {
                                             {reportHistory.map((history) => (
                                                 <tr key={history.id} className="border-t border-gray-200 dark:border-gray-700">
                                                     <td className="p-3 text-gray-900 dark:text-gray-300">
-                                                        {new Date(history.actionTime).toLocaleString("vi-VN")}
+                                                        {new Date(history.actionTime).toLocaleString("vi-VN")}  
                                                     </td>
                                                     <td className="p-3 text-gray-900 dark:text-gray-300">
                                                         {history.reporterUsername || "Không xác định"}
