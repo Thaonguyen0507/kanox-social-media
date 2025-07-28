@@ -395,7 +395,7 @@ const Chat = ({ chatId, messages, onMessageUpdate, onSendMessage }) => {
                         alt="Avatar"
                         className="w-10 h-10 rounded-full object-cover shadow-sm"
                     />
-                    <h5 className="text-base font-semibold text-dark mb-0">{recipientName}</h5>
+                    <h5 className="text-base font-semibold mb-0 text-dark">{recipientName}</h5>
                 </div>
                 <div className="flex items-center gap-2">
                     <OverlayTrigger
@@ -406,9 +406,9 @@ const Chat = ({ chatId, messages, onMessageUpdate, onSendMessage }) => {
                             </Tooltip>
                         }
                     >
-                        <Button variant="outline-primary" size="sm" onClick={handleStartCall}>
+                        <button onClick={handleStartCall} className="btn-outline">
                             <FaPhone />
-                        </Button>
+                        </button>
                     </OverlayTrigger>
                     <OverlayTrigger
                         placement="left"
@@ -418,22 +418,20 @@ const Chat = ({ chatId, messages, onMessageUpdate, onSendMessage }) => {
                             </Tooltip>
                         }
                     >
-                        <Button
-                            variant={isSpam ? "outline-success" : "outline-warning"}
-                            size="sm"
+                        <button
                             onClick={isSpam ? handleUnmarkSpam : handleMarkSpam}
+                            className={`btn-outline ${
+                                isSpam ? "border-green-500 text-green-500 hover:bg-green-100 dark:hover:bg-green-900" : "border-yellow-500 text-yellow-500 hover:bg-yellow-100 dark:hover:bg-yellow-900"
+                            }`}
                         >
                             {isSpam ? <FaCheckCircle /> : <FaExclamationTriangle />}
-                        </Button>
+                        </button>
                     </OverlayTrigger>
                 </div>
             </div>
 
             {/* Message List */}
-            <div
-                className="flex-grow overflow-y-auto p-4 max-h-[calc(100vh-200px)]"
-                ref={chatContainerRef}
-            >
+            <div className="flex-grow overflow-y-auto p-4 max-h-[calc(100vh-200px)] scrollbar-hide" ref={chatContainerRef}>
                 {messages.map((msg) => {
                     const isOwn = msg.senderId === user?.id;
                     const isMissedCall = msg.typeId === 4;
@@ -492,11 +490,7 @@ const Chat = ({ chatId, messages, onMessageUpdate, onSendMessage }) => {
                                         )}
 
                                         <div className="text-end mt-1">
-                                            <small
-                                                className={`text-xs ${
-                                                    isOwn ? "text-white/80" : "text-light"
-                                                }`}
-                                            >
+                                            <small className="text-xs text-light">
                                                 {new Date(msg.createdAt).toLocaleTimeString()}
                                             </small>
                                         </div>

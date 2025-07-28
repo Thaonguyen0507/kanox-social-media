@@ -234,245 +234,160 @@ function SettingsPage() {
     }
 
     return (
-        <>
-            <ToastContainer />
-            <Container fluid className="min-vh-100 p-0">
-                <div className="sticky-top bg-white py-2 border-bottom" style={{ zIndex: 1020 }}>
-                    <Container fluid>
-                        <Row>
-                            <Col xs={12} lg={12} className="mx-auto d-flex align-items-center ps-md-5">
-                                <Link to="/home" className="btn btn-light me-3">
-                                    <FaArrowLeft size={20} />
-                                </Link>
-                                <div>
-                                    <h5 className="mb-0 fw-bold text-dark">Cài đặt Quyền riêng tư</h5>
-                                    <span className="text-dark small">Quản lý quyền truy cập nội dung</span>
-                                </div>
-                            </Col>
-                        </Row>
-                    </Container>
-                </div>
-                <Container fluid className="flex-grow-1">
-                    <Row className="h-100">
-                        <Col xs={12} lg={8} className="px-md-0">
-                            <div className="p-3">
-                                <h4 className="text-dark mb-4">
-                                    <FaLock className="me-2" /> Quyền riêng tư
-                                </h4>
-                                <Form>
-                                    <Form.Group className="mb-3">
-                                        <Form.Label className="fw-bold text-dark">Ai có thể xem bài đăng của bạn?</Form.Label>
-                                        <Form.Select
-                                            name="postVisibility"
-                                            value={settings.postVisibility}
-                                            onChange={handleChange}
-                                        >
-                                            <option value="public">Mọi người</option>
-                                            <option value="friends">Bạn bè</option>
-                                            <option value="only_me">Chỉ mình tôi</option>
-                                            <option value="custom">Tùy chỉnh</option>
-                                        </Form.Select>
-                                    </Form.Group>
-                                    <Form.Group className="mb-3">
-                                        <Form.Label className="fw-bold text-dark">Ai có thể bình luận bài đăng của bạn?</Form.Label>
-                                        <Form.Select
-                                            name="commentPermission"
-                                            value={settings.commentPermission}
-                                            onChange={handleChange}
-                                        >
-                                            <option value="public">Mọi người</option>
-                                            <option value="friends">Bạn bè</option>
-                                            <option value="only_me">Chỉ mình tôi</option>
-                                            <option value="custom">Tùy chỉnh</option>
-                                        </Form.Select>
-                                    </Form.Group>
-                                    <Form.Group className="mb-4">
-                                        <Form.Label className="fw-bold text-dark">Ai có thể xem trang cá nhân của bạn?</Form.Label>
-                                        <Form.Select
-                                            name="profileViewer"
-                                            value={settings.profileViewer}
-                                            onChange={handleChange}
-                                        >
-                                            <option value="public">Mọi người</option>
-                                            <option value="friends">Bạn bè</option>
-                                            <option value="only_me">Chỉ mình tôi</option>
-                                            <option value="custom">Tùy chỉnh</option>
-                                        </Form.Select>
-                                    </Form.Group>
-                                    <div className="mb-4">
-                                        <Link to="/privacy/lists" className="btn btn-outline-primary rounded-pill px-4">
-                                            <FaList className="me-2" /> Quản lý danh sách tùy chỉnh
-                                        </Link>
-                                    </div>
-                                    <Button
-                                        variant="primary"
-                                        className="rounded-pill px-4 py-2 fw-bold"
-                                        onClick={handleSave}
-                                        disabled={saving}
+        <div className="sticky-top bg-white dark:bg-[var(--background-color)] py-2 border-bottom dark:border-[var(--border-color)]" style={{ zIndex: 1020 }}>
+            <Container>
+                <Row className="justify-content-center">
+                    <Col md={8}>
+                        <div className="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <h5 className="mb-0 fw-bold text-[var(--text-color)]">Cài đặt Quyền riêng tư</h5>
+                                <span className="text-[var(--text-color-muted)] small">Quản lý quyền truy cập nội dung</span>
+                            </div>
+                        </div>
+
+                        <div className="bg-[var(--comment-bg-color)] rounded-xl shadow-sm border border-[var(--border-color)] p-4 mb-4">
+                            <h4 className="text-[var(--text-color)] mb-4">
+                                <FaLock className="me-2" />
+                                Quyền riêng tư
+                            </h4>
+
+                            <Form.Group controlId="postVisibility" className="mb-3">
+                                <Form.Label className="text-[var(--text-color)]">Ai có thể xem bài viết của bạn?</Form.Label>
+                                <Form.Select
+                                    name="postVisibility"
+                                    value={settings.postVisibility}
+                                    onChange={handleChange}
+                                    className="bg-input"
+                                >
+                                    <option value="everyone">Mọi người</option>
+                                    <option value="friends">Bạn bè</option>
+                                    <option value="onlyme">Chỉ mình tôi</option>
+                                </Form.Select>
+                            </Form.Group>
+
+                            <Form.Group controlId="messagePrivacy" className="mb-3">
+                                <Form.Label className="text-[var(--text-color)]">Ai có thể nhắn tin cho bạn?</Form.Label>
+                                <Form.Select
+                                    name="messagePrivacy"
+                                    value={settings.messagePrivacy}
+                                    onChange={handleChange}
+                                    className="bg-input"
+                                >
+                                    <option value="everyone">Mọi người</option>
+                                    <option value="friends">Bạn bè</option>
+                                    <option value="noone">Không ai</option>
+                                </Form.Select>
+                            </Form.Group>
+
+                            <Form.Group controlId="tagging" className="mb-4">
+                                <Form.Label className="text-[var(--text-color)]">Ai có thể gắn thẻ bạn trong bài viết?</Form.Label>
+                                <Form.Select
+                                    name="tagging"
+                                    value={settings.tagging}
+                                    onChange={handleChange}
+                                    className="bg-input"
+                                >
+                                    <option value="everyone">Mọi người</option>
+                                    <option value="friends">Bạn bè</option>
+                                    <option value="noone">Không ai</option>
+                                </Form.Select>
+                            </Form.Group>
+
+                            <div className="d-flex justify-content-end">
+                                <button
+                                    className="btn-primary"
+                                    onClick={handleSave}
+                                    disabled={saving}
+                                >
+                                    {saving ? 'Đang lưu...' : 'Lưu thay đổi'}
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="bg-[var(--comment-bg-color)] rounded-xl shadow-sm border border-[var(--border-color)] p-4 mb-4">
+                            <h4 className="text-[var(--text-color)] mb-4">
+                                <FaEyeSlash className="me-2" />
+                                Ẩn hoạt động
+                            </h4>
+
+                            <Form.Check
+                                type="switch"
+                                id="hideOnlineStatus"
+                                name="hideOnlineStatus"
+                                label={<span className="text-[var(--text-color)]">Ẩn trạng thái trực tuyến</span>}
+                                checked={settings.hideOnlineStatus}
+                                onChange={handleChange}
+                                className="mb-3"
+                            />
+
+                            <Form.Check
+                                type="switch"
+                                id="hideLastSeen"
+                                name="hideLastSeen"
+                                label={<span className="text-[var(--text-color)]">Ẩn lần truy cập cuối</span>}
+                                checked={settings.hideLastSeen}
+                                onChange={handleChange}
+                            />
+                        </div>
+
+                        <div className="bg-[var(--comment-bg-color)] rounded-xl shadow-sm border border-[var(--border-color)] p-4">
+                            <h4 className="text-[var(--text-color)] mb-4">
+                                <FaKey className="me-2" />
+                                Đổi mật khẩu
+                            </h4>
+
+                            <Form onSubmit={handlePasswordChange}>
+                                <Form.Group controlId="currentPassword" className="mb-3">
+                                    <Form.Label className="text-[var(--text-color)]">Mật khẩu hiện tại</Form.Label>
+                                    <Form.Control
+                                        type="password"
+                                        name="currentPassword"
+                                        value={passwordForm.currentPassword}
+                                        onChange={handlePasswordChangeInput}
+                                        required
+                                        className="bg-input"
+                                    />
+                                </Form.Group>
+
+                                <Form.Group controlId="newPassword" className="mb-3">
+                                    <Form.Label className="text-[var(--text-color)]">Mật khẩu mới</Form.Label>
+                                    <Form.Control
+                                        type="password"
+                                        name="newPassword"
+                                        value={passwordForm.newPassword}
+                                        onChange={handlePasswordChangeInput}
+                                        required
+                                        className="bg-input"
+                                    />
+                                </Form.Group>
+
+                                <Form.Group controlId="confirmPassword" className="mb-4">
+                                    <Form.Label className="text-[var(--text-color)]">Xác nhận mật khẩu mới</Form.Label>
+                                    <Form.Control
+                                        type="password"
+                                        name="confirmPassword"
+                                        value={passwordForm.confirmPassword}
+                                        onChange={handlePasswordChangeInput}
+                                        required
+                                        className="bg-input"
+                                    />
+                                </Form.Group>
+
+                                <div className="d-flex justify-content-end">
+                                    <button
+                                        type="submit"
+                                        className="btn-warning"
+                                        disabled={changingPassword}
                                     >
-                                        {saving ? (
-                                            <>
-                                                <Spinner animation="border" size="sm" className="me-2" />
-                                                Đang lưu...
-                                            </>
-                                        ) : (
-                                            "Lưu thay đổi"
-                                        )}
-                                    </Button>
-                                    <hr className="my-4" />
-                                    <h4 className="text-dark mb-4">Bảo mật tài khoản</h4>
-                                    <div className="d-flex flex-wrap gap-3">
-                                        <Button
-                                            variant="warning"
-                                            className="rounded-pill px-4 py-2 fw-bold"
-                                            onClick={() => setShowPasswordModal(true)}
-                                        >
-                                            Đổi mật khẩu
-                                        </Button>
-
-                                        <Button
-                                            variant="success"
-                                            className="rounded-pill px-4 py-2 fw-bold"
-                                            onClick={() => setShowEmailModal(true)}
-                                        >
-                                            Thêm email để xác minh
-                                        </Button>
-                                    </div>
-                                </Form>
-                            </div>
-                        </Col>
-                        <Col xs={0} lg={3} className="d-none d-lg-block p-0" />
-                    </Row>
-                </Container>
+                                        {changingPassword ? 'Đang đổi...' : 'Đổi mật khẩu'}
+                                    </button>
+                                </div>
+                            </Form>
+                        </div>
+                    </Col>
+                </Row>
             </Container>
-            <Modal show={showPasswordModal} onHide={() => {
-                setShowPasswordModal(false);
-                setShowNewPasswordForm(false);
-                setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
-            }} centered>
-                <Modal.Header closeButton>
-                    <Modal.Title>Đổi mật khẩu</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    {!showNewPasswordForm ? (
-                        <>
-                            <Form.Group>
-                                <Form.Label>Mật khẩu hiện tại</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    name="currentPassword"
-                                    value={passwordForm.currentPassword}
-                                    onChange={handlePasswordChange}
-                                />
-                            </Form.Group>
-                            <div className="mt-3 text-end">
-                                <Button
-                                    variant="primary"
-                                    onClick={() => {
-                                        if (!passwordForm.currentPassword) {
-                                            toast.warn("Vui lòng nhập mật khẩu hiện tại");
-                                            return;
-                                        }
-                                        setShowNewPasswordForm(true);
-                                    }}
-                                >
-                                    Tiếp tục
-                                </Button>
-                            </div>
-                        </>
-                    ) : (
-                        <>
-                            <Form.Group>
-                                <Form.Label>Mật khẩu mới</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    name="newPassword"
-                                    value={passwordForm.newPassword}
-                                    onChange={handlePasswordChange}
-                                />
-                            </Form.Group>
-                            <Form.Group className="mt-2">
-                                <Form.Label>Xác nhận mật khẩu mới</Form.Label>
-                                <Form.Control
-                                    type="password"
-                                    name="confirmPassword"
-                                    value={passwordForm.confirmPassword}
-                                    onChange={handlePasswordChange}
-                                />
-                            </Form.Group>
-                            <div className="mt-3 text-end">
-                                <Button
-                                    variant="secondary"
-                                    className="me-2"
-                                    onClick={() => {
-                                        setShowPasswordModal(false);
-                                        setShowNewPasswordForm(false);
-                                        setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
-                                    }}
-                                >
-                                    Hủy
-                                </Button>
-                                <Button variant="warning" onClick={submitChangePassword} disabled={changingPassword}>
-                                    {changingPassword ? "Đang đổi mật khẩu..." : "Đổi mật khẩu"}
-                                </Button>
-                            </div>
-                        </>
-                    )}
-                </Modal.Body>
-            </Modal>
-
-            <Modal show={showEmailModal} onHide={() => {
-                setShowEmailModal(false);
-                setVerifyCode("");
-                setEmailSent(false);
-            }} centered>
-                <Modal.Header closeButton>
-                    <Modal.Title>Xác minh Email</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form.Group>
-                        <Form.Label>Email mới</Form.Label>
-                        <Form.Control
-                            type="email"
-                            value={emailForm.email}
-                            onChange={(e) => setEmailForm({ ...emailForm, email: e.target.value })}
-                        />
-                    </Form.Group>
-                    <div className="mt-3 text-end">
-                        <Button
-                            variant="success"
-                            onClick={submitSendVerifyEmail}
-                            disabled={emailForm.sending}
-                        >
-                            {emailForm.sending ? "Đang gửi..." : "Gửi mã xác minh"}
-                        </Button>
-                    </div>
-
-                    {emailSent && (
-                        <>
-                            <Form.Group className="mt-3">
-                                <Form.Label>Mã xác minh</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    value={verifyCode}
-                                    onChange={(e) => setVerifyCode(e.target.value)}
-                                    placeholder="Nhập mã xác minh bạn nhận được trong email"
-                                />
-                            </Form.Group>
-                            <div className="mt-3 text-end">
-                                <Button
-                                    variant="info"
-                                    onClick={handleVerifyCode}
-                                    disabled={verifying}
-                                >
-                                    {verifying ? "Đang xác minh..." : "Xác minh mã"}
-                                </Button>
-                            </div>
-                        </>
-                    )}
-                </Modal.Body>
-            </Modal>
-        </>
+        </div>
     );
 }
 
