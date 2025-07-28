@@ -9,30 +9,32 @@ function FriendItemSocial({ user, showActions, handleAccept, handleReject, onAct
     const { mediaUrl: avatarUrl, loading: mediaLoading } = useMedia(user.id, "PROFILE", "image");
 
     return (
-        <div className="flex justify-between items-center gap-4 px-4 py-3 border-b last:border-b-0 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200">
+        <div className="flex justify-between items-center gap-4 px-4 py-3 border-b last:border-b-0 border-dark hover-bg-dark">
             {/* Avatar + Info */}
             <div className="flex items-center gap-4">
                 <Link to={`/profile/${user.username}`}>
-                    {mediaLoading ? (
-                        <Spinner animation="border" size="sm" />
-                    ) : (
-                        <img
-                            src={avatarUrl || "https://placehold.co/48x48"}
-                            alt={user.displayName || user.username}
-                            className="w-12 h-12 rounded-full object-cover"
-                        />
-                    )}
+                    <div className="w-12 h-12 flex items-center justify-center">
+                        {mediaLoading ? (
+                            <Spinner animation="border" size="sm" />
+                        ) : (
+                            <img
+                                src={avatarUrl || "https://placehold.co/48x48"}
+                                alt={user.displayName || user.username}
+                                className="w-12 h-12 rounded-full object-cover shadow-sm hover:scale-105 transition-transform"
+                            />
+                        )}
+                    </div>
                 </Link>
-                <div>
+                <div className="flex flex-col">
                     <Link
                         to={`/profile/${user.username}`}
-                        className="text-base font-semibold text-black dark:text-white hover:underline"
+                        className="text-base font-semibold text-dark hover:underline"
                     >
                         {user.displayName || user.username}
                     </Link>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">@{user.username}</p>
+                    <p className="text-sm text-muted">@{user.username}</p>
                     {user.reasonText && (
-                        <p className="text-xs text-gray-500 dark:text-gray-400">{user.reasonText}</p>
+                        <p className="text-xs text-muted mt-1 italic">{user.reasonText}</p>
                     )}
                 </div>
             </div>
@@ -43,13 +45,13 @@ function FriendItemSocial({ user, showActions, handleAccept, handleReject, onAct
                     <>
                         <button
                             onClick={() => handleAccept(user.id)}
-                            className="px-4 py-1 text-sm font-medium rounded-full border border-black dark:border-white text-black dark:text-white bg-transparent hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition"
+                            className="px-4 py-1 text-sm font-medium rounded-full border border-dark text-dark bg-transparent hover:bg-[var(--text-color)] hover:text-white dark:hover:text-black dark:hover:bg-white transition shadow-sm"
                         >
                             Chấp nhận
                         </button>
                         <button
                             onClick={() => handleReject(user.id)}
-                            className="px-4 py-1 text-sm font-medium rounded-full border border-gray-400 text-gray-500 bg-transparent hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                            className="px-4 py-1 text-sm font-medium rounded-full border border-[var(--text-color-muted)] text-[var(--text-color-muted)] bg-transparent hover:bg-[var(--hover-bg-color)] transition shadow-sm"
                         >
                             Từ chối
                         </button>

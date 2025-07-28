@@ -6,6 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="c6c17ae2-c6cb-4c94-a6b8-91c54839fa5e" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/friends/FriendItem.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/friends/FriendItem.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/friends/FriendItemSocial.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/friends/FriendItemSocial.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/messages/Chat.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/messages/Chat.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/utils/MediaActionBar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/utils/MediaActionBar.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/profile/ProfilePage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/profile/ProfilePage.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -172,7 +177,7 @@
       <workItem from="1753279860308" duration="3196000" />
       <workItem from="1753287145502" duration="661000" />
       <workItem from="1753342814863" duration="2656000" />
-      <workItem from="1753716214252" duration="4003000" />
+      <workItem from="1753716214252" duration="5979000" />
     </task>
     <servers />
   </component>
