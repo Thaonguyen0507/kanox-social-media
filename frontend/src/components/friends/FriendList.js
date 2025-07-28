@@ -3,7 +3,7 @@ import { ListGroup, Alert } from "react-bootstrap";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AuthContext } from "../../context/AuthContext";
-import FriendItem from "./FriendItem"; // Import FriendItem
+import FriendItemSocial from "./FriendItemSocial"; // Import FriendItem
 
 function FriendList({ users, showActions = false, onAction }) {
     const { user } = useContext(AuthContext);
@@ -91,7 +91,7 @@ function FriendList({ users, showActions = false, onAction }) {
             )}
             <ListGroup variant="flush">
                 {users.map((user) => (
-                    <FriendItem
+                    <FriendItemSocial
                         key={user.id}
                         user={user}
                         showActions={showActions}

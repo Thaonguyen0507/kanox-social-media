@@ -67,19 +67,36 @@ function FollowActionButton({ targetId, disabled, onFollowChange }) {
           onClick={() => handleAction(isFollowing ? "unfollow" : "follow")}
           disabled={loading || disabled}
           className={`
-        group inline-flex items-center justify-center 
-        border rounded-full px-3 py-1 text-sm font-medium 
-        transition-all duration-200 ease-in-out
-        focus:outline-none focus:ring-2 focus:ring-black/30 dark:focus:ring-white/30
-        ${
-              isFollowing
-                  ? "border-gray-500 text-gray-700 hover:bg-gray-100 dark:border-gray-400 dark:text-gray-300 dark:hover:bg-gray-800"
-                  : "border-black text-black hover:bg-black hover:text-white dark:border-white dark:text-white dark:hover:bg-white dark:hover:text-black"
-          }
-        ${loading ? "opacity-50 cursor-not-allowed" : ""}
+        inline-flex items-center justify-center px-4 py-2 rounded-full border
+        font-medium text-sm transition-all duration-200 ease-in-out
+        disabled:opacity-50 disabled:cursor-not-allowed
+        hover:shadow-md hover:-translate-y-[1px] active:scale-[0.98]
+        bg-white text-black border-gray-300 dark:bg-gray-900 dark:text-white dark:border-gray-600
       `}
       >
-        {loading ? "Đang xử lý..." : isFollowing ? "Bỏ theo dõi" : "Theo dõi"}
+        {loading ? (
+            <svg
+                className="animate-spin h-4 w-4 mr-2 text-gray-500 dark:text-gray-300"
+                viewBox="0 0 24 24"
+            >
+              <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  fill="none"
+              />
+              <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+              />
+            </svg>
+        ) : null}
+
+        {isFollowing ? "Bỏ theo dõi" : "Theo dõi"}
       </button>
   );
 }
