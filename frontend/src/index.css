@@ -1,3 +1,6 @@
+/* ================================
+   Font + Smooth Rendering
+================================== */
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -12,11 +15,16 @@ code {
   monospace;
 }
 
-/* Thêm Tailwind CSS */
+/* ================================
+   Tailwind Imports
+================================== */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ================================
+   Root Variables (Light Theme)
+================================== */
 :root {
   --background-color: #ffffff;
   --text-color: #212529;
@@ -27,8 +35,13 @@ code {
   --text-color-filter: none;
   --tooltip-bg-color: #222;
   --message-other-bg: #e5e7eb;
+  --comment-bg-color: #f1f3f5;
+  --input-bg: #f0f2f5;
 }
 
+/* ================================
+   Dark Theme Overrides
+================================== */
 .dark {
   --background-color: #222222;
   --text-color: #ffffff;
@@ -39,10 +52,19 @@ code {
   --text-color-filter: invert(1);
   --tooltip-bg-color: #444;
   --message-other-bg: #374151;
+  --comment-bg-color: #2e2e2e;
+  --input-bg: #2e2e2e;
 }
 
+/* ================================
+   Base Styling with Tailwind Apply
+================================== */
 body {
   @apply bg-[var(--background-color)] text-[var(--text-color)] transition-colors duration-200;
+}
+
+* {
+  @apply transition-colors duration-200;
 }
 
 .text-dark {
@@ -65,52 +87,37 @@ body {
   @apply bg-[var(--hover-bg-color)];
 }
 
-* {
-  @apply transition-colors duration-200;
-}
-
-/* Bootstrap override for dark mode */
+/* ================================
+   Bootstrap Dark Mode Overrides
+================================== */
 .dark .modal-content {
   background-color: var(--background-color) !important;
   color: var(--text-color) !important;
 }
 
 .dark .modal-header,
-.dark .modal-footer {
-  border-color: var(--border-color) !important;
-}
-
-.dark .text-muted {
-  color: var(--text-color-muted) !important;
-}
-
-.dark .bg-light {
-  background-color: var(--hover-bg-color) !important;
-}
-
+.dark .modal-footer,
+.dark .border-bottom,
 .dark .border {
   border-color: var(--border-color) !important;
 }
 
-.dark .btn-light {
+.dark .text-muted,
+.dark .text-secondary {
+  color: var(--text-color-muted) !important;
+}
+
+.dark .bg-light,
+.dark .btn-light,
+.dark .list-group-item {
   background-color: var(--hover-bg-color) !important;
   color: var(--text-color) !important;
   border-color: var(--border-color) !important;
 }
 
-.dark .text-secondary {
-  color: var(--text-color-muted) !important;
-}
-
-.dark .border-bottom {
-  border-color: var(--border-color) !important;
-}
-
-.dark .list-group-item {
-  background-color: var(--background-color) !important;
-  color: var(--text-color) !important;
-}
-
+/* ================================
+   Scrollbar Utilities
+================================== */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
@@ -119,20 +126,9 @@ body {
   scrollbar-width: none;
 }
 
-:root {
-  --comment-bg-color: #f1f3f5;
-}
-.dark {
-  --comment-bg-color: #2e2e2e;
-}
-
-:root {
-  --input-bg: #f0f2f5;
-}
-.dark {
-  --input-bg: #2e2e2e;
-}
-
+/* ================================
+   Loader Animation
+================================== */
 .loader {
   width: 4px;
   height: 24px;
@@ -141,8 +137,7 @@ body {
   margin: 12px auto;
   position: relative;
   background: currentColor;
-  color: #6c757d; /* Màu xám nhạt của Bootstrap */
-  box-sizing: border-box;
+  color: #6c757d;
   animation: animloader 0.4s linear infinite alternate;
 }
 
@@ -156,7 +151,6 @@ body {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  box-sizing: border-box;
   animation: animloader 0.4s linear infinite alternate;
 }
 
@@ -179,11 +173,9 @@ body {
   }
 }
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* Custom utility classes */
+/* ================================
+   Custom Utility Classes
+================================== */
 @layer utilities {
   .text-light {
     @apply text-gray-500 dark:text-gray-400;
@@ -198,7 +190,7 @@ body {
   }
 
   .bg-message-other {
-    @apply bg-gray-200 text-black dark:bg-gray-700 dark:text-white;
+    @apply bg-gray-100 text-black dark:bg-gray-800 dark:text-white;
   }
 
   .hover-card {
@@ -212,4 +204,11 @@ body {
   .btn-outline {
     @apply px-4 py-2 rounded-full border border-gray-400 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition;
   }
+}
+
+/* ================================
+   Global HTML Behavior
+================================== */
+html {
+  scroll-behavior: smooth;
 }

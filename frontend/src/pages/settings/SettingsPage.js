@@ -238,15 +238,17 @@ function SettingsPage() {
             <Container>
                 <Row className="justify-content-center">
                     <Col md={8}>
-                        <div className="d-flex justify-content-between align-items-center mb-3">
+                        {/* Header */}
+                        <div className="d-flex justify-content-between align-items-center mb-4">
                             <div>
                                 <h5 className="mb-0 fw-bold text-[var(--text-color)]">Cài đặt Quyền riêng tư</h5>
                                 <span className="text-[var(--text-color-muted)] small">Quản lý quyền truy cập nội dung</span>
                             </div>
                         </div>
 
-                        <div className="bg-[var(--comment-bg-color)] rounded-xl shadow-sm border border-[var(--border-color)] p-4 mb-4">
-                            <h4 className="text-[var(--text-color)] mb-4">
+                        {/* Privacy Settings */}
+                        <div className="bg-[var(--comment-bg-color)] rounded-2xl shadow-sm border border-[var(--border-color)] p-4 mb-5">
+                            <h4 className="text-[var(--text-color)] mb-4 flex items-center">
                                 <FaLock className="me-2" />
                                 Quyền riêng tư
                             </h4>
@@ -304,34 +306,9 @@ function SettingsPage() {
                             </div>
                         </div>
 
-                        <div className="bg-[var(--comment-bg-color)] rounded-xl shadow-sm border border-[var(--border-color)] p-4 mb-4">
-                            <h4 className="text-[var(--text-color)] mb-4">
-                                <FaEyeSlash className="me-2" />
-                                Ẩn hoạt động
-                            </h4>
-
-                            <Form.Check
-                                type="switch"
-                                id="hideOnlineStatus"
-                                name="hideOnlineStatus"
-                                label={<span className="text-[var(--text-color)]">Ẩn trạng thái trực tuyến</span>}
-                                checked={settings.hideOnlineStatus}
-                                onChange={handleChange}
-                                className="mb-3"
-                            />
-
-                            <Form.Check
-                                type="switch"
-                                id="hideLastSeen"
-                                name="hideLastSeen"
-                                label={<span className="text-[var(--text-color)]">Ẩn lần truy cập cuối</span>}
-                                checked={settings.hideLastSeen}
-                                onChange={handleChange}
-                            />
-                        </div>
-
-                        <div className="bg-[var(--comment-bg-color)] rounded-xl shadow-sm border border-[var(--border-color)] p-4">
-                            <h4 className="text-[var(--text-color)] mb-4">
+                        {/* Password Change */}
+                        <div className="bg-[var(--comment-bg-color)] rounded-2xl shadow-sm border border-[var(--border-color)] p-4">
+                            <h4 className="text-[var(--text-color)] mb-4 flex items-center">
                                 <FaKey className="me-2" />
                                 Đổi mật khẩu
                             </h4>

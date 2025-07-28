@@ -386,16 +386,16 @@ const Chat = ({ chatId, messages, onMessageUpdate, onSendMessage }) => {
 
 
     return (
-        <div className="flex flex-col h-full bg-dark text-dark">
+        <div className="flex flex-col h-full bg-white text-black dark:bg-[#121212] dark:text-white">
             {/* Header */}
-            <div className="p-4 border-b border-dark bg-dark shadow-sm flex items-center justify-between">
+            <div className="p-4 border-b border-[var(--border-color)] bg-[var(--card-bg)] shadow-sm flex items-center justify-between">
                 <div className="flex items-center gap-3">
                     <img
                         src={avatarUrl}
                         alt="Avatar"
                         className="w-10 h-10 rounded-full object-cover shadow-sm"
                     />
-                    <h5 className="text-base font-semibold mb-0 text-dark">{recipientName}</h5>
+                    <h5 className="text-base font-semibold mb-0 text-[var(--text-color)]">{recipientName}</h5>
                 </div>
                 <div className="flex items-center gap-2">
                     <OverlayTrigger
@@ -501,7 +501,7 @@ const Chat = ({ chatId, messages, onMessageUpdate, onSendMessage }) => {
                     );
                 })}
                 {typingUsers.length > 0 && (
-                    <div className="text-sm text-light mt-2">
+                    <div className="text-sm text-[var(--text-color-muted)] mt-2">
                         {typingUsers.join(", ")} đang nhập...
                     </div>
                 )}
@@ -541,7 +541,7 @@ const Chat = ({ chatId, messages, onMessageUpdate, onSendMessage }) => {
                 )}
 
                 {/* Input */}
-                <div className="flex items-center bg-input gap-2">
+                <div className="flex items-center bg-input gap-2 rounded-xl px-3 py-2 shadow-sm border border-[var(--border-color)]">
                     <MediaActionBar
                         onFileSelect={handleFileSelect}
                         onSelectEmoji={(emoji) => {
@@ -572,11 +572,11 @@ const Chat = ({ chatId, messages, onMessageUpdate, onSendMessage }) => {
                             sendTyping();
                         }}
                         onKeyPress={handleKeyPress}
-                        className="flex-grow bg-transparent outline-none text-dark placeholder:text-light"
+                        className="flex-grow bg-transparent outline-none text-[var(--text-color)] placeholder:text-[var(--text-color-muted)]"
                     />
                     <button
                         onClick={sendMessage}
-                        className="p-2 text-dark hover:text-[var(--primary-color)] transition"
+                        className="p-2 text-[var(--text-color)] hover:text-[var(--primary-color)]"
                     >
                         <FaPaperPlane />
                     </button>
