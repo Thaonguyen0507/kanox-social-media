@@ -148,7 +148,7 @@ const ReportsManagement = () => {
         // Cảnh báo khi duyệt báo cáo về người dùng
         if (parseInt(statusId) === 3 && selectedReport?.targetTypeId === 4) {
             const confirmApprove = window.confirm(
-                "⚠️ LƯU Ý: Khi duyệt báo cáo về người dùng, nếu người dùng này có 3 báo cáo được duyệt, tài khoản sẽ tự động bị khóa.\n\nBạn có chắc chắn muốn duyệt báo cáo này?"
+                "⚠️ LƯU Ý: Khi duyệt báo cáo về người dùng, nếu đây là báo cáo thứ 3 được duyệt cho người dùng này, tài khoản sẽ tự động bị khóa.\n\nBạn có thể tiếp tục duyệt báo cáo mà không bị giới hạn số lần.\n\nBạn có chắc chắn muốn duyệt báo cáo này?"
             );
             if (!confirmApprove) {
                 return;
@@ -173,12 +173,16 @@ const ReportsManagement = () => {
 
             let successMessage = "Đã cập nhật trạng thái báo cáo!";
             if (parseInt(statusId) === 3 && selectedReport?.targetTypeId === 4) {
-                successMessage += " Hệ thống sẽ tự động kiểm tra và khóa tài khoản nếu đạt 3 báo cáo được duyệt.";
+                successMessage += " Hệ thống sẽ tự động kiểm tra và khóa tài khoản nếu đây là báo cáo thứ 3 được duyệt.";
             }
 
             toast.success(successMessage);
             setShowDetailModal(false);
-            loadReports();
+            
+            // Thêm delay nhỏ để đảm bảo database đã được cập nhật
+            setTimeout(() => {
+                loadReports();
+            }, 500);
         } catch (error) {
             console.error("Lỗi khi cập nhật trạng thái:", error, { reportId, statusId });
             toast.error("Lỗi khi cập nhật trạng thái: " + error.message);
