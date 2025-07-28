@@ -531,10 +531,13 @@ function MessengerPage() {
   return (
       <div className="flex h-screen bg-[var(--background-color)] text-[var(--text-color)]">
         <div className="flex flex-col flex-grow h-full">
+          {/* Header */}
           <div className="bg-[var(--card-bg)] border-b border-[var(--border-color)] p-4">
-            <h5 className="fw-bold mb-0">Tin nhắn</h5>
+            <h5 className="font-bold mb-0">Tin nhắn</h5>
+
+            {/* Search + New message */}
             <div className="flex items-center gap-2 mt-3">
-              <div className="relative w-full">
+              <div className="relative flex-grow">
                 <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
                     type="text"
@@ -544,16 +547,18 @@ function MessengerPage() {
                       if (showUserSelectionModal) setSearchKeyword(e.target.value);
                     }}
                     placeholder="Tìm kiếm người dùng hoặc tin nhắn"
-                    className="w-full pl-10 pr-4 py-2 rounded-full border border-[var(--border-color)] bg-gray-100 dark:bg-gray-800 focus:outline-none text-sm"
+                    className="w-full pl-10 pr-4 py-2 rounded-full border border-[var(--border-color)] bg-[var(--input-bg)] text-sm transition focus:outline-none"
                 />
               </div>
               <button
                   onClick={handleOpenUserSelectionModal}
-                  className="bg-blue-500 text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-1 hover:bg-blue-600"
+                  className="flex items-center gap-1 px-4 py-2 text-sm font-semibold rounded-full bg-blue-500 text-white hover:bg-blue-600 transition"
               >
                 <FaPenSquare /> Tin nhắn mới
               </button>
             </div>
+
+            {/* Tabs */}
             <Nav variant="tabs" activeKey={activeTab} onSelect={(key) => setActiveTab(key)} className="mt-3">
               <Nav.Item>
                 <Nav.Link eventKey="inbox">Hộp thư đến</Nav.Link>
@@ -563,8 +568,11 @@ function MessengerPage() {
               </Nav.Item>
             </Nav>
           </div>
+
+          {/* Main Content */}
           <div className="flex flex-grow h-full overflow-hidden min-h-0">
-            <div className="w-1/3 border-r border-[var(--border-color)] bg-[var(--card-bg)] overflow-y-auto">
+            {/* Chat list */}
+            <div className="w-1/3 bg-[var(--card-bg)] border-r border-[var(--border-color)] overflow-y-auto">
               {filteredChats.map((chat) => {
                 const isUnread = unreadChats.has(chat.id) && selectedChatId !== chat.id;
                 const isFromOthers = chat.lastSenderId && chat.lastSenderId !== user.id;
@@ -574,21 +582,21 @@ function MessengerPage() {
                     <div
                         key={chat.id}
                         onClick={() => handleSelectChat(chat.id)}
-                        className={`flex items-center justify-between p-4 border-b border-[var(--border-color)] hover:bg-[var(--hover-bg-color)] cursor-pointer ${
+                        className={`flex items-center justify-between gap-2 px-4 py-3 border-b border-[var(--border-color)] cursor-pointer transition hover:bg-[var(--hover-bg-color)] ${
                             selectedChatId === chat.id ? "bg-gray-200 dark:bg-gray-700" : ""
                         }`}
                     >
                       <img
                           src={avatarUrl}
                           alt="Avatar"
-                          className="w-10 h-10 rounded-full object-cover mr-3"
+                          className="w-10 h-10 rounded-full object-cover"
                       />
-                      <div className="flex-1">
-                        <p className={`text-sm ${isUnread ? "font-bold" : ""}`}>
+                      <div className="flex-1 overflow-hidden">
+                        <p className={`text-sm truncate ${isUnread ? "font-bold" : ""}`}>
                           {chat.name || "Unknown User"}
                         </p>
                         <p className={`text-xs truncate ${isUnread ? "font-semibold" : "text-gray-500"}`}>
-                          {isFromOthers ? <span className="text-blue-500">Họ:</span> : null} {chat.lastMessage}
+                          {isFromOthers && <span className="text-blue-500">Họ:</span>} {chat.lastMessage}
                         </p>
                       </div>
                       <button
@@ -596,7 +604,7 @@ function MessengerPage() {
                             e.stopPropagation();
                             handleDeleteChat(chat.id);
                           }}
-                          className="text-red-500 hover:text-red-700"
+                          className="text-red-500 hover:text-red-700 transition"
                           title="Xóa chat"
                       >
                         <FaTrash />
@@ -605,11 +613,17 @@ function MessengerPage() {
                 );
               })}
             </div>
-            <div className="w-2/3 bg-[var(--background-color)] h-full">
+
+            {/* Chat view */}
+            <div className="w-2/3 h-full bg-[var(--background-color)]">
               {selectedChatId ? (
                   <Chat
                       chatId={selectedChatId}
-                      messages={activeTab === "spam" ? (spamMessages[selectedChatId] || []) : (messages[selectedChatId] || [])}
+                      messages={
+                        activeTab === "spam"
+                            ? spamMessages[selectedChatId] || []
+                            : messages[selectedChatId] || []
+                      }
                       onMessageUpdate={(newMessage) => {
                         setMessages((prev) => {
                           const existing = prev[selectedChatId] || [];
@@ -642,6 +656,8 @@ function MessengerPage() {
               )}
             </div>
           </div>
+
+          {/* User Modal + Toast */}
           <UserSelectionModal
               show={showUserSelectionModal}
               handleClose={handleCloseUserSelectionModal}
