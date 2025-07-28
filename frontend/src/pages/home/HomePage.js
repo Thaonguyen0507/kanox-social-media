@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { Container, Row, Col, Spinner } from "react-bootstrap";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import SidebarRight from "../../components/layout/SidebarRight/SidebarRight";
 import TweetInput from "../../components/posts/TweetInput/TweetInput";
 import TweetCard from "../../components/posts/TweetCard/TweetCard";
@@ -12,6 +13,11 @@ function HomePage({ onShowCreatePost, onToggleDarkMode }) {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const postRefs = useRef({});
+
+  const postId = searchParams.get("postId");
 
   const fetchPosts = async () => {
     if (!user) return;
@@ -29,7 +35,6 @@ function HomePage({ onShowCreatePost, onToggleDarkMode }) {
         throw new Error(errorData.message || "Failed to fetch posts!");
       }
       const { message, data } = await response.json();
-      console.log("Fetched posts:", data);
       if (Array.isArray(data)) {
         setPosts(data);
         toast.success(message || "Lấy newsfeed thành công");
@@ -49,6 +54,16 @@ function HomePage({ onShowCreatePost, onToggleDarkMode }) {
   useEffect(() => {
     fetchPosts();
   }, [user]);
+
+  useEffect(() => {
+    if (postId && postRefs.current[postId]) {
+      postRefs.current[postId].scrollIntoView({ behavior: "smooth", block: "center" });
+      // Xóa query parameter sau khi cuộn để tránh lặp lại
+      setTimeout(() => {
+        setSearchParams({}, { replace: true });
+      }, 1000);
+    }
+  }, [postId, posts, setSearchParams]);
 
   const handlePostSuccess = (newPost) => {
     setPosts((prev) => [newPost, ...prev]);
@@ -71,7 +86,12 @@ function HomePage({ onShowCreatePost, onToggleDarkMode }) {
                   <p className="text-danger text-center">{error}</p>
               ) : posts.length > 0 ? (
                   posts.map((tweet) => (
-                      <TweetCard key={tweet.id} tweet={tweet} onPostUpdate={fetchPosts} />
+                      <TweetCard
+                          key={tweet.id}
+                          tweet={tweet}
+                          onPostUpdate={fetchPosts}
+                          ref={(el) => (postRefs.current[tweet.id] = el)}
+                      />
                   ))
               ) : (
                   <p className="text-center p-4 text-[var(--text-color)]">No posts found.</p>

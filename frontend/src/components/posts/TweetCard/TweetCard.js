@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useRef, useMemo } from "react";
+import React, { useState, useContext, useEffect, useRef, useMemo, forwardRef } from "react";
 import {
   Card,
   Button,
@@ -45,7 +45,7 @@ import { WebSocketContext } from "../../../context/WebSocketContext";
 import EditPostModal from "../TweetInput/EditPostModal";
 import useMedia from "../../../hooks/useMedia";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import CommentItem from "./CommentItem";
 import CommentThread from "./CommentThread";
 import "./TweetCard.css";
@@ -61,10 +61,13 @@ import usePostMedia from "../../../hooks/usePostMedia";
 import { useEmojiContext } from "../../../context/EmojiContext";
 import SharePostModal from "../SharePostModal/SharePostModal";
 
-function TweetCard({ tweet, onPostUpdate }) {
+const TweetCard = forwardRef(({ tweet, onPostUpdate }, ref) => {
   const { user, loading, token } = useContext(AuthContext);
   const { publish } = useContext(WebSocketContext);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const postId = searchParams.get("postId");
+  const [isHighlighted, setIsHighlighted] = useState(false);
   const {
     id,
     owner,
@@ -80,6 +83,15 @@ function TweetCard({ tweet, onPostUpdate }) {
     groupAvatarUrl,
     sharedPost,
   } = tweet || {};
+
+  useEffect(() => {
+    if (postId && postId === String(id)) {
+      setIsHighlighted(true);
+      const timer = setTimeout(() => setIsHighlighted(false), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [postId, id]);
+
   const isSaved = tweet?.isSaved ?? false;
   const isOwnTweet = user && user.username === owner?.username;
   const [showEditModal, setShowEditModal] = useState(false);
@@ -103,16 +115,15 @@ function TweetCard({ tweet, onPostUpdate }) {
   const [reportReasonId, setReportReasonId] = useState("");
   const [reasons, setReasons] = useState([]);
   const [isSubmittingReport, setIsSubmittingReport] = useState(false);
-  const memoizedInitialReactionCountMap = useMemo(
-    () => tweet.reactionCountMap || {},
-    [tweet.reactionCountMap]
+  const memoizedInitialReactionCountMap = React.useMemo(
+      () => tweet.reactionCountMap || {},
+      [tweet.reactionCountMap]
   );
   const [commentCount, setCommentCount] = useState(tweet.commentCount || 0);
   const [showShareModal, setShowShareModal] = useState(false);
 
   const currentUserId = user?.id;
   const ownerId = owner?.id || null;
-  const postId = id || null;
   const targetTypeId = tweet?.targetTypeId || 1;
 
   const avatarMedia = useMedia([ownerId], "PROFILE", "image");
@@ -209,7 +220,7 @@ function TweetCard({ tweet, onPostUpdate }) {
   };
 
   const handleCopyLink = () => {
-    const postUrl = `${window.location.origin}/posts/${id}`;
+    const postUrl = `${window.location.origin}/home?postId=${id}`;
     navigator.clipboard.writeText(postUrl);
     toast.info("Đã sao chép liên kết!");
   };
@@ -610,7 +621,20 @@ function TweetCard({ tweet, onPostUpdate }) {
 
   return (
     <>
-      <Card className="mb-3 rounded-2xl shadow-sm border-0 bg-[var(--background-color)]">
+      <style>{`
+  .highlight-post {
+    animation: highlight 2s ease-in-out;
+    border: 2px solid var(--primary-color) !important;
+  }
+  @keyframes highlight {
+    0%, 100% { background-color: var(--background-color); }
+    50% { background-color: rgba(var(--primary-color-rgb), 0.1); }
+  }
+`}</style>
+      <Card
+          ref={ref}
+          className={`mb-3 rounded-2xl shadow-sm border-0 bg-[var(--background-color)] ${isHighlighted ? "highlight-post" : ""}`}
+      >
         <Card.Body className="d-flex p-3">
           {/* Avatar và info */}
           <div className="d-flex align-items-start">
@@ -1380,6 +1404,6 @@ function TweetCard({ tweet, onPostUpdate }) {
       )}
     </>
   );
-}
+});
 
 export default TweetCard;
