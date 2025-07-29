@@ -34,7 +34,8 @@ import MainLayout from "./components/layout/Layout/MainLayout";
 import CommunityWrapper from "./pages/community/CommunityWrapper";
 import GroupCommunityWrapper from "./pages/community/GroupCommunityWrapper";
 import GroupMembersWrapper from "./pages/community/GroupMembersWrapper";
-// Import các page
+import GroupReportsWrapper from "./pages/community/GroupReportsWrapper"
+// Import các page 
 import SignupPage from "./pages/auth/signup/signupPage";
 import HomePage from "./pages/home/HomePage";
 import ProfilePage from "./pages/profile/ProfilePage";
@@ -469,9 +470,9 @@ function AppContent() {
                 path="/groups/:groupId/reports"
                 element={
                   <PrivateRoute>
-                    <GroupCommunityWrapper>
+                    <GroupReportsWrapper>
                       <GroupReportsPage />
-                    </GroupCommunityWrapper>
+                    </GroupReportsWrapper>
                   </PrivateRoute>
                 }
             />
