@@ -135,6 +135,32 @@ export const adminService = {
     }
   },
 
+  // Cập nhật trạng thái khóa người dùng (is_locked field)
+  async updateUserLockStatus(userId, isLocked) {
+    const url = `${API_BASE_URL}/admin/users/${userId}/lock?isLocked=${isLocked}`;
+    const headers = getHeaders();
+    
+    console.log('=== UPDATE USER LOCK STATUS DEBUG ===');
+    console.log('URL:', url);
+    console.log('Method: PATCH');
+    console.log('Headers:', headers);
+    console.log('User ID:', userId);
+    console.log('Is Locked:', isLocked);
+    
+    try {
+      const response = await fetch(url, {
+        method: 'PATCH',
+        headers: headers,
+      });
+      
+      return await handleResponse(response);
+    } catch (error) {
+      console.error('=== FETCH ERROR ===');
+      console.error('Error in updateUserLockStatus:', error);
+      throw error;
+    }
+  },
+
 
 
   // Gửi thông báo cho người dùng
@@ -195,7 +221,15 @@ export const adminService = {
     return await handleResponse(response);
   },
 
+  // Xóa báo cáo (dismiss)
+  async deleteReport(reportId) {
+    const response = await fetch(`${API_BASE_URL}/admin/${reportId}`, {
+      method: 'DELETE',
+      headers: getHeaders(),
+    });
 
+    return await handleResponse(response);
+  },
 
   // === CÁC TÍNH NĂNG ADMIN KHÁC CÓ THỂ ĐƯỢC THÊM VÀO ĐÂY ===
   
