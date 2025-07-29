@@ -12,6 +12,7 @@ const GroupAdminPage = () => {
         const loadGroup = async () => {
             try {
                 const data = await fetchGroupDetailById(id);
+                console.log("Chi tiết group:", data);
                 setGroupInfo(data);
             } catch (error) {
                 console.error("❌ Lỗi khi lấy thông tin nhóm:", error.message);
