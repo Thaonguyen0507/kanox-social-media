@@ -73,7 +73,7 @@ const GroupAdminPage = () => {
                                 <ListGroup.Item><strong>Số thành viên:</strong> {groupInfo.totalMembers}</ListGroup.Item>
                                 <ListGroup.Item>
                                     <strong>Trạng thái:</strong>{" "}
-                                    {groupInfo.status ? (
+                                    {groupInfo.status === "active" ? (
                                         <Badge bg="success">Hoạt động</Badge>
                                     ) : (
                                         <Badge bg="danger">Vô hiệu</Badge>
