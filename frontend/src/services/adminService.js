@@ -4,7 +4,12 @@ const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
 
 // Lấy token từ localStorage hoặc sessionStorage
 const getAuthToken = () => {
-  return localStorage.getItem('token') || sessionStorage.getItem('token');
+  const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+  console.log('=== TOKEN DEBUG ===');
+  console.log('Token exists:', !!token);
+  console.log('Token length:', token ? token.length : 0);
+  console.log('Token preview:', token ? token.substring(0, 20) + '...' : 'null');
+  return token;
 };
 
 // Tạo headers cho API request
@@ -109,31 +114,7 @@ export const adminService = {
     return await handleResponse(response);
   },
 
-  // Cập nhật trạng thái người dùng (khóa/mở khóa)
-  async updateUserStatus(userId, status) {
-    const url = `${API_BASE_URL}/admin/users/${userId}/status?status=${status}`;
-    const headers = getHeaders();
-    
-    console.log('=== UPDATE USER STATUS DEBUG ===');
-    console.log('URL:', url);
-    console.log('Method: PATCH');
-    console.log('Headers:', headers);
-    console.log('User ID:', userId);
-    console.log('Status:', status);
-    
-    try {
-      const response = await fetch(url, {
-        method: 'PATCH',
-        headers: headers,
-      });
-      
-      return await handleResponse(response);
-    } catch (error) {
-      console.error('=== FETCH ERROR ===');
-      console.error('Error in updateUserStatus:', error);
-      throw error;
-    }
-  },
+
 
   // Cập nhật trạng thái khóa người dùng (is_locked field)
   async updateUserLockStatus(userId, isLocked) {
@@ -146,17 +127,26 @@ export const adminService = {
     console.log('Headers:', headers);
     console.log('User ID:', userId);
     console.log('Is Locked:', isLocked);
+    console.log('API_BASE_URL:', API_BASE_URL);
     
     try {
+      console.log('=== SENDING REQUEST ===');
       const response = await fetch(url, {
         method: 'PATCH',
         headers: headers,
       });
       
+      console.log('=== RESPONSE RECEIVED ===');
+      console.log('Response status:', response.status);
+      console.log('Response statusText:', response.statusText);
+      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+      
       return await handleResponse(response);
     } catch (error) {
       console.error('=== FETCH ERROR ===');
       console.error('Error in updateUserLockStatus:', error);
+      console.error('Error type:', error.constructor.name);
+      console.error('Error message:', error.message);
       throw error;
     }
   },
