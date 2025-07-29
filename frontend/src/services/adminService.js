@@ -9,6 +9,28 @@ const getAuthToken = () => {
   console.log('Token exists:', !!token);
   console.log('Token length:', token ? token.length : 0);
   console.log('Token preview:', token ? token.substring(0, 20) + '...' : 'null');
+  
+  // Kiểm tra token có hợp lệ không
+  if (token) {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const currentTime = Date.now() / 1000;
+      console.log('Token payload:', payload);
+      console.log('Token expires at:', new Date(payload.exp * 1000));
+      console.log('Current time:', new Date());
+      console.log('Token expired:', payload.exp < currentTime);
+      
+      if (payload.exp < currentTime) {
+        console.warn('Token has expired!');
+        localStorage.removeItem('token');
+        sessionStorage.removeItem('token');
+        return null;
+      }
+    } catch (error) {
+      console.error('Error parsing token:', error);
+    }
+  }
+  
   return token;
 };
 
@@ -27,6 +49,8 @@ const handleResponse = async (response) => {
   console.log('Response status:', response.status);
   console.log('Response ok:', response.ok);
   console.log('Response url:', response.url);
+  console.log('Response type:', response.type);
+  console.log('Response redirected:', response.redirected);
   
   if (!response.ok) {
     let errorData = {};
@@ -73,6 +97,22 @@ const handleResponse = async (response) => {
   }
 };
 
+// Test function để debug API endpoint
+const testUpdateUserLockStatus = async () => {
+  console.log('=== TESTING UPDATE USER LOCK STATUS ===');
+  try {
+    const result = await adminService.updateUserLockStatus(1, true);
+    console.log('Test result:', result);
+  } catch (error) {
+    console.error('Test error:', error);
+  }
+};
+
+// Expose test function to window for manual testing
+if (typeof window !== 'undefined') {
+  window.testUpdateUserLockStatus = testUpdateUserLockStatus;
+}
+
 export const adminService = {
   // === QUẢN LÝ NGƯỜI DÙNG ===
   
@@ -118,6 +158,12 @@ export const adminService = {
 
   // Cập nhật trạng thái khóa người dùng (is_locked field)
   async updateUserLockStatus(userId, isLocked) {
+    // Kiểm tra token trước khi gọi API
+    const token = getAuthToken();
+    if (!token) {
+      throw new Error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+    }
+    
     const url = `${API_BASE_URL}/admin/users/${userId}/lock?isLocked=${isLocked}`;
     const headers = getHeaders();
     
@@ -141,12 +187,25 @@ export const adminService = {
       console.log('Response statusText:', response.statusText);
       console.log('Response headers:', Object.fromEntries(response.headers.entries()));
       
+      // Xử lý đặc biệt cho lỗi 403 (token hết hạn)
+      if (response.status === 403) {
+        localStorage.removeItem('token');
+        sessionStorage.removeItem('token');
+        throw new Error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+      }
+      
       return await handleResponse(response);
     } catch (error) {
       console.error('=== FETCH ERROR ===');
       console.error('Error in updateUserLockStatus:', error);
       console.error('Error type:', error.constructor.name);
       console.error('Error message:', error.message);
+      
+      // Nếu là network error, cung cấp thông báo rõ ràng hơn
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        throw new Error('Không thể kết nối đến server. Vui lòng kiểm tra kết nối mạng.');
+      }
+      
       throw error;
     }
   },
