@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col, Tab, Navbar } from "react-bootstrap";
+import { Container, Row, Col, Navbar, Tab, Button } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -12,20 +12,20 @@ import PostsManagement from "../../components/admin/PostsManagement";
 import UsersManagement from "../../components/admin/UsersManagement";
 import { useLocation } from "react-router-dom";
 
+// Main Admin Dashboard App Component - Component ứng dụng Dashboard Admin chính
 const AdminDashboardApp = () => {
-  const [activeTab, setActiveTab] = useState("dashboard");
+  const [activeTab, setActiveTab] = useState("dashboard"); // Tab mặc định là 'Tổng quan'
   const location = useLocation();
   const newReport = location.state?.newReport;
 
   useEffect(() => {
     if (newReport) {
-      toast.info(
-          `Báo cáo mới từ ${newReport.reporterUsername}: ${newReport.reason}`
-      );
+      toast.info(`Báo cáo mới từ ${newReport.reporterUsername}: ${newReport.reason}`);
+      // Tự động chuyển sang tab Reports nếu có báo cáo mới
       setActiveTab("reports");
     }
   }, [newReport]);
-
+  // Hàm render nội dung dựa trên tab đang hoạt động
   const renderContent = () => {
     switch (activeTab) {
       case "dashboard":
@@ -46,44 +46,26 @@ const AdminDashboardApp = () => {
   };
 
   return (
-      <div className="min-vh-100 d-flex flex-column bg-light">
-        {/* Header */}
-        <Navbar bg="white" className="shadow-sm px-4" fixed="top">
-          <Navbar.Brand className="fw-bold text-primary">
-            KaNox Admin Dashboard
-          </Navbar.Brand>
-        </Navbar>
-
-        {/* Content */}
-        <Container fluid className="flex-grow-1 mt-5 pt-4">
+      <div className="min-h-screen bg-light">
+        <Container fluid>
           <Row>
-            {/* Sidebar */}
-            <Col md={3} lg={2} className="mb-4">
-              <div className="bg-white rounded shadow-sm h-100 p-3">
-                <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-              </div>
+            <Col md={3}>
+              <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
             </Col>
-
-            {/* Main content */}
-            <Col md={9} lg={10}>
-              <div className="bg-white rounded shadow-sm p-4">
-                <Tab.Container
-                    activeKey={activeTab}
-                    onSelect={(k) => setActiveTab(k)}
-                >
-                  <Tab.Content>{renderContent()}</Tab.Content>
-                </Tab.Container>
-              </div>
+            <Col md={9}>
+              <Tab.Container
+                  activeKey={activeTab}
+                  onSelect={(k) => setActiveTab(k)}
+                  className="h-full"
+              >
+                <Tab.Content className="p-4">{renderContent()}</Tab.Content>
+              </Tab.Container>
             </Col>
           </Row>
         </Container>
-
-        <footer className="text-center py-3 bg-white border-top mt-auto">
-          <small className="text-muted">
-            Quản lý hệ thống mạng xã hội KaNox.
-          </small>
-        </footer>
-
+        <Container className="text-center mt-4">
+          <p className="text-muted">Quản lý hệ thống mạng xã hội KaNox.</p>
+        </Container>
         <ToastContainer
             position="top-right"
             autoClose={3000}
