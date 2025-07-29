@@ -88,7 +88,6 @@ function SidebarRight() {
   const handleSubscribePremiumClick = () => navigate("/premium");
 
   const handleAction = () => {
-    // Làm mới danh sách gợi ý sau khi thực hiện hành động (gửi/hủy yêu cầu kết bạn)
     const fetchSuggestions = async () => {
       setLoadingSuggestions(true);
       try {

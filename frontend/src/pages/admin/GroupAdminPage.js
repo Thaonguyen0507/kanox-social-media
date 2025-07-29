@@ -12,6 +12,7 @@ const GroupAdminPage = () => {
         const loadGroup = async () => {
             try {
                 const data = await fetchGroupDetailById(id);
+                console.log("Chi tiết group:", data);
                 setGroupInfo(data);
             } catch (error) {
                 console.error("❌ Lỗi khi lấy thông tin nhóm:", error.message);
@@ -73,7 +74,7 @@ const GroupAdminPage = () => {
                                 <ListGroup.Item><strong>Số thành viên:</strong> {groupInfo.totalMembers}</ListGroup.Item>
                                 <ListGroup.Item>
                                     <strong>Trạng thái:</strong>{" "}
-                                    {groupInfo.status ? (
+                                    {groupInfo.status === "active" || groupInfo.status === true ? (
                                         <Badge bg="success">Hoạt động</Badge>
                                     ) : (
                                         <Badge bg="danger">Vô hiệu</Badge>
