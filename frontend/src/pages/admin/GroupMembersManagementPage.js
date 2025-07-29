@@ -118,19 +118,6 @@ const GroupMembersManagementPage = () => {
                       </span>
                                         </Card.Text>
                                     </div>
-
-                                    {!member.isOwner && member.username !== getUsernameFromToken() && (
-                                        <div className="mt-3 d-flex gap-2">
-                                            <Button variant="outline-danger" size="sm" onClick={() => handleRemove(member.id)}>
-                                                ❌ Xoá
-                                            </Button>
-                                            {!member.isAdmin && (
-                                                <Button variant="outline-warning" size="sm" onClick={() => handlePromoteToAdmin(member.id)}>
-                                                    🚀 Trao Admin
-                                                </Button>
-                                            )}
-                                        </div>
-                                    )}
                                 </Card.Body>
                             </Card>
                         </Col>

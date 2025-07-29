@@ -84,11 +84,7 @@ const GroupAdminPage = () => {
                         </Card.Body>
                     </Card>
 
-                    <div className="d-flex flex-wrap gap-2 justify-content-end">
-                        <Button variant="outline-primary" className="px-4">Quản lý thành viên</Button>
-                        <Button variant="outline-warning" className="px-4">Cập nhật nhóm</Button>
-                        <Button variant="outline-danger" className="px-4">Xoá nhóm</Button>
-                    </div>
+
                 </Col>
             </Row>
         </div>

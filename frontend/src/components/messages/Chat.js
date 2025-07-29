@@ -301,47 +301,34 @@ const Chat = ({ chatId, messages, onMessageUpdate, onSendMessage }) => {
     const sendMessage = async () => {
         if (!message.trim() && selectedMediaPreviews.length === 0) return;
 
-        if (selectedMediaPreviews.length > 0) {
-            const formData = new FormData();
-            formData.append("content", message.trim() || "");
-            selectedMediaPreviews.forEach((media, index) => {
-                formData.append(`media[${index}].url`, media.uploadedUrl);
-                formData.append(`media[${index}].type`, media.mediaType);
+        const formData = new FormData();
+        formData.append("content", message.trim() || "");
+        selectedMediaPreviews.forEach((media, index) => {
+            formData.append(`media[${index}].url`, media.uploadedUrl);
+            formData.append(`media[${index}].type`, media.mediaType);
+        });
+
+        try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/chat/${chatId}/send-message-with-media`, {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                body: formData,
             });
 
-            try {
-                const response = await fetch(`${process.env.REACT_APP_API_URL}/chat/${chatId}/send-message-with-media`, {
-                    method: "POST",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: formData,
-                });
-
-                if (!response.ok) {
-                    const error = await response.json();
-                    throw new Error(error.message || "Lỗi khi gửi tin nhắn với media");
-                }
-
-                const data = await response.json();
-                console.log("📤 Sent via REST API:", data);
-
-                setMessage("");
-                setSelectedMediaPreviews([]);
-                setSelectedMediaFiles([]);
-            } catch (err) {
-                toast.error("Không thể gửi tin nhắn với media: " + err.message);
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || "Lỗi khi gửi tin nhắn");
             }
-        } else {
-            const msg = {
-                chatId: Number(chatId),
-                senderId: user.id,
-                content: message.trim(),
-                mediaList: [],
-                typeId: 1, // text
-            };
-            publish("/app/sendMessage", msg);
+
+            const data = await response.json();
+            console.log("📤 Sent message via REST API:", data);
             setMessage("");
+            setSelectedMediaPreviews([]);
+            setSelectedMediaFiles([]);
+        } catch (err) {
+            toast.error("Không thể gửi tin nhắn: " + err.message);
         }
 
         publish("/app/typing", {
