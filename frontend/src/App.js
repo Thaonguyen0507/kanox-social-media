@@ -35,7 +35,7 @@ import CommunityWrapper from "./pages/community/CommunityWrapper";
 import GroupCommunityWrapper from "./pages/community/GroupCommunityWrapper";
 import GroupMembersWrapper from "./pages/community/GroupMembersWrapper";
 import GroupReportsWrapper from "./pages/community/GroupReportsWrapper"
-// Import các page 
+// Import các page
 import SignupPage from "./pages/auth/signup/signupPage";
 import HomePage from "./pages/home/HomePage";
 import ProfilePage from "./pages/profile/ProfilePage";
@@ -136,6 +136,42 @@ function AppContent() {
     }
 
     const subscriptions = [];
+    //topic for user notification
+    subscriptions.push(
+        subscribe(
+            `/topic/notifications/${user.id}`,
+            (message) => {
+              console.log("Received notification:", message);
+              if (message.type === "bulk-read") {
+                // Xử lý thông báo đánh dấu tất cả là đã đọc
+                setNotifications([]);
+                toast.info(message.message, {
+                  position: "top-right",
+                  autoClose: 3000,
+                });
+              } else {
+                // Xử lý thông báo cá nhân
+                setNotifications((prev) => [...prev, message]);
+                toast.info(`${message.displayName}: ${message.message}`, {
+                  position: "top-right",
+                  autoClose: 3000,
+                  onClick: () => {
+                    if (message.targetType === "GROUP") {
+                      navigate(`/community/${message.targetId}`);
+                    } else if (message.targetType === "POST") {
+                      navigate(`/post/${message.targetId}`);
+                    } else {
+                      navigate(`/profile/${message.username}`);
+                    }
+                  },
+                });
+              }
+            },
+            `notifications-${user.id}`
+        )
+    );
+
+    // topic for call
     chatIds.forEach((chatId) => {
       subscriptions.push(
         subscribe(
