@@ -12,6 +12,7 @@ const GroupAdminPage = () => {
         const loadGroup = async () => {
             try {
                 const data = await fetchGroupDetailById(id);
+                console.log("Chi tiết group:", data);
                 setGroupInfo(data);
             } catch (error) {
                 console.error("❌ Lỗi khi lấy thông tin nhóm:", error.message);
@@ -73,7 +74,7 @@ const GroupAdminPage = () => {
                                 <ListGroup.Item><strong>Số thành viên:</strong> {groupInfo.totalMembers}</ListGroup.Item>
                                 <ListGroup.Item>
                                     <strong>Trạng thái:</strong>{" "}
-                                    {groupInfo.status === "active" ? (
+                                    {groupInfo.status === "active" || groupInfo.status === true ? (
                                         <Badge bg="success">Hoạt động</Badge>
                                     ) : (
                                         <Badge bg="danger">Vô hiệu</Badge>
@@ -83,11 +84,7 @@ const GroupAdminPage = () => {
                         </Card.Body>
                     </Card>
 
-                    <div className="d-flex flex-wrap gap-2 justify-content-end">
-                        <Button variant="outline-primary" className="px-4">Quản lý thành viên</Button>
-                        <Button variant="outline-warning" className="px-4">Cập nhật nhóm</Button>
-                        <Button variant="outline-danger" className="px-4">Xoá nhóm</Button>
-                    </div>
+
                 </Col>
             </Row>
         </div>
