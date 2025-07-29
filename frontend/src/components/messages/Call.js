@@ -318,7 +318,7 @@
             }
             let stream;
             try {
-                stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+                // stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
                 console.log("🎥 Đã lấy được quyền truy cập camera/mic");
             } catch (err) {
                 console.error("❌ Không lấy được cam/mic:", err);
@@ -440,11 +440,11 @@
             } catch (err) {
                 console.error("Start call error:", err);
                 toast.error("Lỗi khi bắt đầu cuộc gọi: " + err.message);
-            } finally {
-                // Dừng stream tạm thời nếu không sử dụng
-                if (!callStarted) {
-                    stream.getTracks().forEach(track => track.stop());
-                }
+            // } finally {
+            //     // Dừng stream tạm thời nếu không sử dụng
+            //     if (!callStarted) {
+            //         stream.getTracks().forEach(track => track.stop());
+            //     }
             }
         };
 
@@ -561,6 +561,32 @@
             navigator.mediaDevices.enumerateDevices().then((devices) => {
                 console.log("🎧 Thiết bị sau khi endCall:", devices);
             });
+
+            // Dọn dẹp triệt để sau 500ms để tránh bị giữ camera/mic
+            setTimeout(() => {
+                [localVideoRef, remoteVideoRef].forEach((ref) => {
+                    if (ref.current && ref.current.srcObject) {
+                        ref.current.srcObject.getTracks().forEach((track) => {
+                            if (track.readyState !== "ended") {
+                                console.log(`🧹 Cleanup: forcibly stopping lingering track (${track.kind})`);
+                                track.stop();
+                            }
+                        });
+                        ref.current.srcObject = null;
+                    }
+                });
+
+                if (localStreamRef.current) {
+                    localStreamRef.current.getTracks().forEach((track) => {
+                        if (track.readyState !== "ended") {
+                            console.log(`🧹 Cleanup: stopped lingering ${track.kind}`);
+                            track.stop();
+                        }
+                    });
+                    localStreamRef.current = null;
+                }
+            }, 500);
+
 
             // Điều hướng về trang chat
             navigate(`/messages?chatId=${chatId}`);
