@@ -471,18 +471,26 @@
                 incomingCallRef.current = null;
             }
 
-            // Dừng tất cả media tracks
+            // Dừng local stream nếu có
             if (localStreamRef.current) {
                 localStreamRef.current.getTracks().forEach((track) => {
-                    console.log(`🛑 Stopped track: ${track.kind}`);
+                    console.log(`🛑 Stopped track from localStreamRef: ${track.kind}`);
                     track.stop();
                 });
                 localStreamRef.current = null;
             }
 
-            // Xóa stream khỏi video elements
-            if (localVideoRef.current) localVideoRef.current.srcObject = null;
-            if (remoteVideoRef.current) remoteVideoRef.current.srcObject = null;
+            // Dừng tất cả stream còn gắn trong video element (kể cả nếu không nằm trong localStreamRef)
+            [localVideoRef, remoteVideoRef].forEach((ref) => {
+                if (ref.current && ref.current.srcObject) {
+                    const stream = ref.current.srcObject;
+                    stream.getTracks().forEach((track) => {
+                        console.log(`🛑 Forcibly stopped track from videoRef: ${track.kind}`);
+                        track.stop();
+                    });
+                    ref.current.srcObject = null;
+                }
+            });
 
             // Gửi tín hiệu kết thúc cuộc gọi qua WebSocket
             if (publish && chatId && user) {
@@ -494,7 +502,6 @@
                 };
                 publish("/app/sendMessage", endCallMsg);
                 console.log("📨 Gửi tín hiệu kết thúc cuộc gọi đến chatId:", chatId);
-                // Gửi tín hiệu từ chối/kết thúc cuộc gọi
                 if (callSessionId) {
                     publish("/app/call/end", {
                         chatId: Number(chatId),
@@ -504,7 +511,7 @@
                 }
             }
 
-            // Cập nhật trạng thái và điều hướng
+            // Gửi message nếu cần
             if (!callStarted && signalingCode !== null) {
                 switch (signalingCode) {
                     case 5:
@@ -550,9 +557,15 @@
                 setCallSessionId(null);
             }
 
+            // Kiểm tra thiết bị sau khi kết thúc
+            navigator.mediaDevices.enumerateDevices().then((devices) => {
+                console.log("🎧 Thiết bị sau khi endCall:", devices);
+            });
+
             // Điều hướng về trang chat
             navigate(`/messages?chatId=${chatId}`);
         };
+
 
 
         const toggleMute = () => {
