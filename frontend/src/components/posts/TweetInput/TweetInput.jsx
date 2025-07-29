@@ -765,7 +765,7 @@ function TweetInput({ onPostSuccess, groupId }) {
                             className="rounded-pill px-4 fw-bold"
                             onClick={handleSubmitTweet}
                             disabled={
-                                !tweetContent.trim() ||
+                                (!tweetContent.trim() && mediaFiles.length === 0) ||
                                 (status === "custom" && !customListId) ||
                                 loading ||
                                 (mediaFiles.length > 0 && !mediaUploaded)
