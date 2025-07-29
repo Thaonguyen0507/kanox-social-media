@@ -386,107 +386,79 @@ const Chat = ({ chatId, messages, onMessageUpdate, onSendMessage }) => {
 
 
     return (
-        <div className="flex flex-col h-full bg-[var(--background-color)] text-[var(--text-color)]">
-            {/* Header */}
-            <header className="p-4 border-b border-[var(--border-color)] bg-[var(--background-color)] shadow-sm flex items-center justify-between">
-                <div className="flex items-center gap-4">
+        <div className="flex flex-col h-full bg-[var(--background-color)]">
+            <div className="p-3 border-b border-[var(--border-color)] bg-[var(--background-color)] shadow-sm flex items-center">
+                <div className="flex items-center gap-2 flex-grow">
                     <img
                         src={avatarUrl}
                         alt="Avatar"
-                        className="w-12 h-12 rounded-full object-cover border border-[var(--border-color)]"
+                        className="w-8 h-8 rounded-full object-cover"
                     />
-                    <h5 className="text-lg font-semibold">{recipientName}</h5>
+                    <h5 className="mb-0 text-[var(--text-color)]">{recipientName}</h5>
                 </div>
-                <div className="flex items-center gap-3">
-                    <OverlayTrigger
-                        placement="left"
-                        overlay={
-                            <Tooltip className="!bg-[var(--tooltip-bg-color)] !text-[var(--text-color)]">
-                                Gọi video
-                            </Tooltip>
-                        }
-                    >
-                        <button onClick={handleStartCall} className="btn-outline hover:text-[var(--primary-color)]">
-                            <FaPhone className="w-5 h-5" />
-                        </button>
-                    </OverlayTrigger>
-                    <OverlayTrigger
-                        placement="left"
-                        overlay={
-                            <Tooltip className="!bg-[var(--tooltip-bg-color)] !text-[var(--text-color)]">
-                                {isSpam ? "Bỏ đánh dấu spam" : "Đánh dấu spam"}
-                            </Tooltip>
-                        }
-                    >
-                        <button
-                            onClick={isSpam ? handleUnmarkSpam : handleMarkSpam}
-                            className={`btn-outline ${isSpam ? "text-green-500 hover:bg-green-100 dark:hover:bg-green-900" : "text-yellow-500 hover:bg-yellow-100 dark:hover:bg-yellow-900"}`}
-                        >
-                            {isSpam ? <FaCheckCircle className="w-5 h-5" /> : <FaExclamationTriangle className="w-5 h-5" />}
-                        </button>
-                    </OverlayTrigger>
-                </div>
-            </header>
 
-            {/* Message List */}
-            <div className="flex-grow overflow-y-auto p-4 sm:p-6 max-h-[calc(100vh-200px)] scrollbar-custom" ref={chatContainerRef}>
+                <OverlayTrigger placement="left" overlay={<Tooltip className="!bg-[var(--tooltip-bg-color)] !text-[var(--text-color)] dark:!bg-gray-800 dark:!text-white">
+                    Gọi video
+                </Tooltip>}>
+                    <Button variant="outline-primary" size="sm" onClick={handleStartCall} className="ms-2">
+                        <FaPhone />
+                    </Button>
+                </OverlayTrigger>
+                <OverlayTrigger placement="left" overlay={<Tooltip className="!bg-[var(--tooltip-bg-color)] !text-[var(--text-color)] dark:!bg-gray-800 dark:!text-white">
+                    {isSpam ? "Bỏ đánh dấu spam" : "Đánh dấu spam"}
+                </Tooltip>}>
+                    <Button
+                        variant={isSpam ? "outline-success" : "outline-warning"}
+                        size="sm"
+                        onClick={isSpam ? handleUnmarkSpam : handleMarkSpam}
+                        className="ms-2"
+                    >
+                        {isSpam ? <FaCheckCircle /> : <FaExclamationTriangle />}
+                    </Button>
+                </OverlayTrigger>
+            </div>
+            <div className="flex-grow overflow-y-auto p-3 max-h-[calc(100vh-200px)]" ref={chatContainerRef}>
                 {messages.map((msg) => {
-                    const isOwn = msg.senderId === user?.id;
                     const isMissedCall = msg.typeId === 4;
                     return (
-                        <div key={msg.id} className={`mb-4 flex ${isOwn ? "justify-end" : "justify-start"}`}>
-                            <div
-                                className={`p-3 rounded-lg shadow-sm max-w-[70%] text-sm break-words ${
-                                    isMissedCall
-                                        ? "bg-yellow-100 text-yellow-800 italic dark:bg-yellow-900 dark:text-yellow-200"
-                                        : isOwn
-                                            ? "bg-message-own"
-                                            : "bg-message-other"
-                                }`}
-                            >
+                        <div key={msg.id} className={`mb-2 flex ${msg.senderId === user?.id ? "justify-end" : "justify-start"}`}>
+                            <div className={`p-3 rounded-3xl shadow-md max-w-[70%] ${isMissedCall
+                                ? "bg-yellow-100 text-yellow-800 italic"
+                                : msg.senderId === user?.id
+                                    ? "bg-[var(--primary-color)] text-white"
+                                    : "bg-[var(--message-other-bg)] text-[var(--text-color)]"
+                            }`}>
                                 {isMissedCall ? (
-                                    <div className="flex items-center justify-between gap-3">
-                                        <span>{msg.content}</span>
+                                    <div className="flex items-center justify-between gap-2">
+                                        <span className="mr-2">{msg.content}</span>
                                         <button
                                             onClick={() => navigate(`/call/${chatId}`)}
-                                            className="text-sm text-[var(--primary-color)] hover:underline"
+                                            className="text-sm text-blue-600 hover:underline"
                                         >
                                             Gọi lại
                                         </button>
                                     </div>
                                 ) : (
                                     <>
-                                        <div>{msg.content}</div>
-                                        {msg.mediaList?.length > 0 && (
-                                            <div className="grid grid-cols-2 gap-2 mt-3">
+                                        {msg.content}
+                                        {/* ✅ Hiển thị media nếu có */}
+                                        {msg.mediaList && msg.mediaList.length > 0 && (
+                                            <div className="grid grid-cols-3 gap-1 mt-2">
                                                 {msg.mediaList.map((media, idx) => (
-                                                    <div
-                                                        key={idx}
-                                                        className="relative w-full aspect-square overflow-hidden rounded-lg hover-card"
-                                                    >
+                                                    <div key={idx} className="relative w-full aspect-square">
                                                         {media.type === "image" ? (
-                                                            <img
-                                                                src={media.url}
-                                                                className="w-full h-full object-cover"
-                                                                alt="media"
-                                                            />
+                                                            <img src={media.url} className="w-full h-full object-cover rounded" alt="media" />
                                                         ) : media.type === "video" ? (
-                                                            <video
-                                                                src={media.url}
-                                                                className="w-full h-full object-cover"
-                                                                controls
-                                                            />
+                                                            <video src={media.url} className="w-full h-full object-cover rounded" controls />
                                                         ) : (
-                                                            <div className="text-xs text-red-500 dark:text-red-400">
-                                                                Không hỗ trợ media
-                                                            </div>
+                                                            <div className="text-xs text-red-500">Không hỗ trợ media</div>
                                                         )}
                                                     </div>
                                                 ))}
                                             </div>
                                         )}
-                                        <div className="text-end mt-2">
-                                            <small className="text-xs text-[var(--text-color-muted)]">
+                                        <div className="text-end mt-1">
+                                            <small className={`${msg.senderId === user?.id ? "text-[var(--light-text-color)]" : "text-[var(--text-color-muted)]"} text-xs`}>
                                                 {new Date(msg.createdAt).toLocaleTimeString()}
                                             </small>
                                         </div>
@@ -496,25 +468,14 @@ const Chat = ({ chatId, messages, onMessageUpdate, onSendMessage }) => {
                         </div>
                     );
                 })}
-                {typingUsers.length > 0 && (
-                    <div className="typing-indicator mt-2">
-                        <span className="typing-dot"></span>
-                        <span className="typing-dot"></span>
-                        <span className="typing-dot"></span>
-                    </div>
-                )}
+                {typingUsers.length > 0 && <div className="text-[var(--text-color-muted)]">{typingUsers.join(", ")} đang nhập...</div>}
             </div>
-
-            {/* Input + Upload + Emoji */}
-            <footer className="p-4 sm:p-6 border-t border-[var(--border-color)] bg-[var(--background-color)]">
+            <div className="p-3 border-t border-[var(--border-color)] bg-[var(--background-color)] relative">
                 {/* Media preview */}
                 {selectedMediaPreviews.length > 0 && (
-                    <div className="flex gap-3 overflow-x-auto mb-4 scrollbar-custom">
+                    <div className="flex gap-2 overflow-x-auto mb-2">
                         {selectedMediaPreviews.map((media, idx) => (
-                            <div
-                                key={idx}
-                                className="relative w-20 h-20 border border-[var(--border-color)] rounded-lg overflow-hidden hover-card"
-                            >
+                            <div key={idx} className="relative w-20 h-20 border rounded overflow-hidden">
                                 {media.type.startsWith("image/") ? (
                                     <img src={media.url} className="w-full h-full object-cover" alt="preview" />
                                 ) : (
@@ -525,7 +486,7 @@ const Chat = ({ chatId, messages, onMessageUpdate, onSendMessage }) => {
                                         setSelectedMediaPreviews((prev) => prev.filter((_, i) => i !== idx));
                                         setSelectedMediaFiles((prev) => prev.filter((_, i) => i !== idx));
                                     }}
-                                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600 transition"
+                                    className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
                                 >
                                     ×
                                 </button>
@@ -534,17 +495,23 @@ const Chat = ({ chatId, messages, onMessageUpdate, onSendMessage }) => {
                     </div>
                 )}
 
-                {/* Input */}
-                <div className="flex items-center bg-input gap-3 rounded-lg px-4 py-2.5 shadow-sm">
+                {/* Input + Action Bar */}
+                <div className="flex items-center bg-[var(--input-bg-color)] rounded-xl shadow-sm overflow-hidden px-2">
                     <MediaActionBar
-                        onFileSelect={handleFileSelect}
+                        onFileSelect={(files) => {
+                            handleFileSelect(files); // Upload
+                        }}
                         onSelectEmoji={(emoji) => {
                             const input = inputRef.current;
                             if (!input) return;
+
                             const start = input.selectionStart;
                             const end = input.selectionEnd;
-                            const newText = message.substring(0, start) + emoji.emoji + message.substring(end);
+
+                            const newText =
+                                message.substring(0, start) + emoji.emoji + message.substring(end);
                             setMessage(newText);
+
                             setTimeout(() => {
                                 input.focus();
                                 const cursorPosition = start + emoji.emoji.length;
@@ -552,6 +519,7 @@ const Chat = ({ chatId, messages, onMessageUpdate, onSendMessage }) => {
                             }, 0);
                         }}
                     />
+
                     <input
                         ref={inputRef}
                         type="text"
@@ -562,18 +530,14 @@ const Chat = ({ chatId, messages, onMessageUpdate, onSendMessage }) => {
                             sendTyping();
                         }}
                         onKeyPress={handleKeyPress}
-                        className="flex-grow bg-transparent outline-none text-[var(--text-color)] placeholder:text-[var(--text-color-muted)] text-sm"
+                        className="flex-grow bg-transparent border-none px-2 py-2 text-[var(--text-color)] placeholder:text-[var(--text-color-muted)] outline-none"
                     />
-                    <button
-                        onClick={sendMessage}
-                        className="p-2.5 rounded-full bg-[var(--primary-color)] text-white hover:bg-blue-600 dark:hover:bg-blue-500 transition"
-                    >
-                        <FaPaperPlane className="w-5 h-5" />
+                    <button onClick={sendMessage} className="p-2 text-[var(--text-color)] hover:opacity-80">
+                        <FaPaperPlane />
                     </button>
                 </div>
-            </footer>
-
-            <ToastContainer position="top-right" autoClose={3000} />
+            </div>
+            <ToastContainer />
         </div>
     );
 };
