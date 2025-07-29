@@ -100,18 +100,35 @@ function FriendshipButton({ targetId, disabled, onAction }) {
           }
           disabled={loading || disabled}
           className={`
-        rounded-full px-2 py-1 text-sm font-medium transition-colors duration-200
-        ${
-              status === "accepted"
-                  ? "border border-black text-black bg-white hover:bg-gray-200 dark:border-white dark:text-white dark:bg-black dark:hover:bg-gray-800"
-                  : status === "pendingSent"
-                      ? "border border-gray-500 text-gray-500 bg-white hover:bg-gray-200 dark:border-gray-400 dark:text-gray-400 dark:bg-black dark:hover:bg-gray-800"
-                      : status === "pendingReceived"
-                          ? "border border-black text-black bg-white hover:bg-gray-200 dark:border-white dark:text-white dark:bg-black dark:hover:bg-gray-800"
-                          : "border border-black text-black bg-white hover:bg-gray-200 dark:border-white dark:text-white dark:bg-black dark:hover:bg-gray-800"
-          }
-      `}
+      inline-flex items-center justify-center px-4 py-2 rounded-full border
+      font-medium text-sm transition-all duration-200 ease-in-out
+      disabled:opacity-50 disabled:cursor-not-allowed
+      hover:shadow-md hover:-translate-y-[1px] active:scale-[0.98]
+      bg-white text-black border-gray-300 dark:bg-gray-900 dark:text-white dark:border-gray-600
+    `}
       >
+        {loading ? (
+            <svg
+                className="animate-spin h-4 w-4 mr-2 text-gray-500 dark:text-gray-300"
+                viewBox="0 0 24 24"
+            >
+              <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  fill="none"
+              />
+              <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+              />
+            </svg>
+        ) : null}
+
         {status === "none" && "Kết bạn"}
         {status === "pendingSent" && "Đã gửi"}
         {status === "pendingReceived" && "Chấp nhận"}

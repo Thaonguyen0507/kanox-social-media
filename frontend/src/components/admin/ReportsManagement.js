@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { toast } from "react-toastify";
 import { WebSocketContext } from "../../context/WebSocketContext";
 import { useLocation, useNavigate } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
 
 const ReportsManagement = () => {
     const { subscribe, unsubscribe } = useContext(WebSocketContext);
@@ -109,29 +110,7 @@ const ReportsManagement = () => {
         }
     };
 
-    const handleDismissReport = async (id) => {
-        if (!token) {
-            toast.error("Vui lòng đăng nhập để xóa báo cáo!");
-            return;
-        }
-        try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/${id}`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            if (!response.ok) {
-                const data = await response.json();
-                throw new Error(data.message || "Lỗi khi xóa báo cáo");
-            }
-            toast.success("Đã xóa báo cáo!");
-            loadReports();
-        } catch (error) {
-            toast.error("Lỗi khi xóa báo cáo: " + error.message);
-        }
-    };
+
 
     const handleUpdateStatus = async (reportId, statusId) => {
         if (!token) {
@@ -147,7 +126,7 @@ const ReportsManagement = () => {
         // Cảnh báo khi duyệt báo cáo về người dùng
         if (parseInt(statusId) === 3 && selectedReport?.targetTypeId === 4) {
             const confirmApprove = window.confirm(
-                "⚠️ LƯU Ý: Khi duyệt báo cáo về người dùng, nếu người dùng này có 3 báo cáo được duyệt, tài khoản sẽ tự động bị khóa.\n\nBạn có chắc chắn muốn duyệt báo cáo này?"
+                "⚠️ LƯU Ý: Khi duyệt báo cáo về người dùng, nếu đây là báo cáo thứ 3 được duyệt cho người dùng này, tài khoản sẽ tự động bị khóa.\n\nBạn có thể tiếp tục duyệt báo cáo mà không bị giới hạn số lần.\n\nBạn có chắc chắn muốn duyệt báo cáo này?"
             );
             if (!confirmApprove) {
                 return;
@@ -172,12 +151,16 @@ const ReportsManagement = () => {
 
             let successMessage = "Đã cập nhật trạng thái báo cáo!";
             if (parseInt(statusId) === 3 && selectedReport?.targetTypeId === 4) {
-                successMessage += " Hệ thống sẽ tự động kiểm tra và khóa tài khoản nếu đạt 3 báo cáo được duyệt.";
+                successMessage += " Hệ thống sẽ tự động kiểm tra và khóa tài khoản nếu đây là báo cáo thứ 3 được duyệt.";
             }
 
             toast.success(successMessage);
             setShowDetailModal(false);
-            loadReports();
+            
+            // Thêm delay nhỏ để đảm bảo database đã được cập nhật
+            setTimeout(() => {
+                loadReports(activeMainTab, activeSubTab);
+            }, 500);
         } catch (error) {
             console.error("Lỗi khi cập nhật trạng thái:", error, { reportId, statusId });
             toast.error("Lỗi khi cập nhật trạng thái: " + error.message);
@@ -391,12 +374,6 @@ const ReportsManagement = () => {
                                         >
                                             Chi tiết
                                         </button>
-                                        <button
-                                            onClick={() => handleDismissReport(report.id)}
-                                            className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors duration-150"
-                                        >
-                                            Xóa
-                                        </button>
                                     </td>
                                 </tr>
                             ))}
@@ -475,9 +452,11 @@ const ReportsManagement = () => {
                                         {selectedReport.targetTypeId === 1 && (
                                             <div className="mt-4">
                                                 <h5 className="text-lg font-semibold dark:text-white">Nội dung bài viết</h5>
-                                                <p className="text-text dark:text-white bg-gray-200 dark:bg-gray-700 p-3 rounded-md">
-                                                    {selectedReport.content || "Không có nội dung"}
-                                                </p>
+                                                <div className="prose prose-sm sm:prose lg:prose-lg dark:prose-invert bg-gray-200 dark:bg-gray-700 p-3 rounded-md overflow-x-auto">
+                                                    <ReactMarkdown>
+                                                        {selectedReport.content || "Không có nội dung"}
+                                                    </ReactMarkdown>
+                                                </div>
                                                 {selectedReport.imageUrls && selectedReport.imageUrls.length > 0 && (
                                                     <div className="mt-3">
                                                         <h6 className="text-md font-semibold dark:text-white">Hình ảnh</h6>
@@ -511,7 +490,7 @@ const ReportsManagement = () => {
                                             {reportHistory.map((history) => (
                                                 <tr key={history.id} className="border-t border-gray-200 dark:border-gray-700">
                                                     <td className="p-3 text-gray-900 dark:text-gray-300">
-                                                        {new Date(history.actionTime).toLocaleString("vi-VN")}
+                                                        {new Date(history.actionTime).toLocaleString("vi-VN")}  
                                                     </td>
                                                     <td className="p-3 text-gray-900 dark:text-gray-300">
                                                         {history.reporterUsername || "Không xác định"}

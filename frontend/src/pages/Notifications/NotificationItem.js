@@ -2,17 +2,42 @@ import React from "react";
 import { FaCheckCircle, FaCircle, FaEllipsisH } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
+import { toast } from "react-toastify";
 
 function NotificationItem({ notification, handleMarkRead, handleMarkUnread }) {
     const navigate = useNavigate();
-    const isRead = notification.status === "read";
+    const isRead = notification.isRead;
 
-    const renderMessageWithGroupNameLink = () => {
-        const groupName = notification.displayName;
-        const message = notification.message;
+    const handleNotificationClick = () => {
+        if (notification.targetType === "POST") {
+            if (!notification.targetId) {
+                toast.error("Không thể điều hướng: Thiếu ID bài đăng.");
+                return;
+            }
+            navigate(`/home?postId=${notification.targetId}`);
+        } else if (notification.targetType === "GROUP") {
+            if (!notification.targetId) {
+                toast.error("Không thể điều hướng: Thiếu ID nhóm.");
+                return;
+            }
+            navigate(`/community/${notification.targetId}`);
+        } else if (
+            notification.targetType === "PROFILE" &&
+            notification.username &&
+            notification.username !== "unknown"
+        ) {
+            navigate(`/profile/${notification.username}`);
+        } else {
+            toast.error("Không thể điều hướng: Thông tin không hợp lệ.");
+        }
+    };
 
-        if (notification.targetType === "GROUP" && groupName && message?.includes(groupName)) {
-            const parts = message.split(groupName);
+    const renderMessageWithLink = () => {
+        const displayName = notification.displayName || notification.username || "Người dùng";
+        const message = notification.message || "Không có nội dung";
+
+        if (notification.targetType === "GROUP" && displayName && message.includes(displayName)) {
+            const parts = message.split(displayName);
             return (
                 <p className="mb-1 text-[var(--text-color)]">
                     {parts[0]}
@@ -20,20 +45,24 @@ function NotificationItem({ notification, handleMarkRead, handleMarkUnread }) {
                         className="font-bold text-[var(--primary-color)] cursor-pointer hover:underline"
                         onClick={() => navigate(`/community/${notification.targetId}`)}
                     >
-                    {groupName}
-                </span>
+            {displayName}
+          </span>
                     {parts[1]}
                 </p>
             );
         }
 
-        return <p className="mb-1 text-[var(--text-color)]">{message}</p>;
+        return (
+            <p className="mb-1 text-[var(--text-color)]">
+                {message.replace("{displayName}", displayName)}
+            </p>
+        );
     };
 
     const renderAvatar = () => (
         <img
             src={notification.image || "https://placehold.co/40x40?text=Avatar"}
-            alt={`Avatar của ${notification.displayName}`}
+            alt={`Avatar của ${notification.displayName || "Người dùng"}`}
             className={`w-10 h-10 object-cover mr-3 ${notification.targetType === "GROUP" ? "rounded-none" : "rounded-full"}`}
         />
     );
@@ -42,7 +71,8 @@ function NotificationItem({ notification, handleMarkRead, handleMarkUnread }) {
         <div
             className={`p-3 border-b ${
                 !isRead ? "bg-[var(--hover-bg-color)]" : "opacity-75"
-            } transition-colors duration-200`}
+            } transition-colors duration-200 hover:bg-[var(--hover-bg-color)] cursor-pointer`}
+            onClick={handleNotificationClick}
         >
             <div className="flex items-start">
                 {renderAvatar()}
@@ -50,20 +80,30 @@ function NotificationItem({ notification, handleMarkRead, handleMarkUnread }) {
                     <div className="flex justify-between items-center">
                         <p
                             className="font-bold text-[var(--primary-color)] cursor-pointer m-0"
-                            onClick={() => {
+                            onClick={(e) => {
+                                e.stopPropagation();
                                 if (notification.targetType === "GROUP") {
+                                    if (!notification.targetId) {
+                                        toast.error("Không thể điều hướng: Thiếu ID nhóm.");
+                                        return;
+                                    }
                                     navigate(`/community/${notification.targetId}`);
-                                } else {
+                                } else if (notification.username && notification.username !== "unknown") {
                                     navigate(`/profile/${notification.username}`);
+                                } else {
+                                    toast.error("Không thể điều hướng: Thiếu thông tin người dùng.");
                                 }
                             }}
                         >
-                            {notification.displayName}
+                            {notification.displayName || notification.username || "Người dùng"}
                         </p>
                         <div className="flex items-center space-x-2">
                             {!isRead ? (
                                 <button
-                                    onClick={() => handleMarkRead(notification.id)}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleMarkRead(notification.id, notification);
+                                    }}
                                     className="text-[var(--text-color)] hover:text-[var(--primary-color)]"
                                     title="Đánh dấu đã đọc"
                                 >
@@ -71,7 +111,10 @@ function NotificationItem({ notification, handleMarkRead, handleMarkUnread }) {
                                 </button>
                             ) : (
                                 <button
-                                    onClick={() => handleMarkUnread(notification.id)}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleMarkUnread(notification.id);
+                                    }}
                                     className="text-[var(--text-color)] hover:text-[var(--primary-color)]"
                                     title="Đánh dấu chưa đọc"
                                 >
@@ -81,6 +124,7 @@ function NotificationItem({ notification, handleMarkRead, handleMarkUnread }) {
                             <button
                                 className="text-[var(--text-color)] hover:text-[var(--primary-color)]"
                                 title="Tùy chọn"
+                                onClick={(e) => e.stopPropagation()}
                             >
                                 <FaEllipsisH />
                             </button>
@@ -88,8 +132,7 @@ function NotificationItem({ notification, handleMarkRead, handleMarkUnread }) {
                     </div>
 
                     <div className="mt-1 p-2 rounded-md hover:bg-black/5 dark:hover:bg-white/5 transition-colors duration-150">
-                        {renderMessageWithGroupNameLink()}
-
+                        {renderMessageWithLink()}
                         {notification.tags?.length > 0 && (
                             <p className="text-[var(--primary-color)] text-sm mb-1">
                                 {notification.tags.map((tag, idx) => (
@@ -99,13 +142,12 @@ function NotificationItem({ notification, handleMarkRead, handleMarkUnread }) {
                                 ))}
                             </p>
                         )}
-
                         <p className="text-muted text-xs mt-2">
-                            {notification.timestamp
+                            {notification.createdAt
                                 ? moment(
-                                    typeof notification.timestamp === "number"
-                                        ? notification.timestamp * 1000
-                                        : notification.timestamp
+                                    typeof notification.createdAt === "number"
+                                        ? notification.createdAt * 1000
+                                        : notification.createdAt
                                 ).fromNow()
                                 : "Thời gian không xác định"}
                         </p>

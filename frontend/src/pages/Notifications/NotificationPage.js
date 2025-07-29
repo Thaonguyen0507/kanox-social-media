@@ -15,12 +15,11 @@ function NotificationPage({ onToggleDarkMode, isDarkMode, onShowCreatePost }) {
     const [loading, setLoading] = useState(true);
     const { subscribe, unsubscribe } = useContext(WebSocketContext);
     const [unreadCount, setUnreadCount] = useState(0);
-
+    
     const fetchNotifications = async () => {
         setLoading(true);
         try {
-            const token =
-                sessionStorage.getItem("token") || localStorage.getItem("token");
+            const token = sessionStorage.getItem("token") || localStorage.getItem("token");
             if (!token) {
                 toast.error("Không tìm thấy token. Vui lòng đăng nhập lại.");
                 return;
@@ -43,29 +42,40 @@ function NotificationPage({ onToggleDarkMode, isDarkMode, onShowCreatePost }) {
             }
 
             const data = await response.json();
+            console.log("API /notifications response:", data); // Kiểm tra dữ liệu API
+
             const formattedNotifications = Array.isArray(data.data?.content)
-                ? data.data.content.map((notif) => ({
-                    id: notif.id,
-                    type: notif.type,
-                    userId: notif.userId || null,
-                    displayName:
-                        notif.targetType === "GROUP"
-                            ? notif.groupName || "Nhóm"
-                            : notif.displayName || "Người dùng",
-                    username: notif.username || "unknown",
-                    message: notif.message,
-                    tags: notif.tags || [],
-                    timestamp: notif.createdAt,
-                    isRead: notif.status === "read",
-                    image: notif.image || null,
-                    targetId: notif.targetId || notif.userId,
-                    targetType: notif.targetType || "PROFILE",
-                }))
+                ? data.data.content
+                    .filter((notif) => {
+                        if (notif.targetType === "POST" && !notif.targetId) {
+                            console.warn("Thông báo POST thiếu targetId:", notif);
+                            return false;
+                        }
+                        return true;
+                    })
+                    .map((notif) => ({
+                        id: notif.id,
+                        type: notif.type,
+                        userId: notif.userId || null,
+                        displayName:
+                            notif.targetType === "GROUP"
+                                ? notif.groupName || "Nhóm"
+                                : notif.displayName || "Người dùng",
+                        username: notif.username || "unknown",
+                        message: notif.message,
+                        tags: notif.tags || [],
+                        timestamp: notif.createdAt,
+                        isRead: notif.status === "read",
+                        image: notif.image || null,
+                        targetId: notif.targetId, // Bỏ fallback notif.userId
+                        targetType: notif.targetType || "PROFILE",
+                    }))
                 : [];
+
             formattedNotifications.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
             setNotifications(formattedNotifications);
-            setUnreadCount(formattedNotifications.filter(n => !n.isRead).length);
+            setUnreadCount(formattedNotifications.filter((n) => !n.isRead).length);
         } catch (error) {
             console.error("Lỗi khi lấy thông báo:", error);
             toast.error(error.message || "Không thể lấy thông báo!");
@@ -137,16 +147,32 @@ function NotificationPage({ onToggleDarkMode, isDarkMode, onShowCreatePost }) {
                     timestamp: notification.createdAt * 1000,
                     isRead: notification.status === "read",
                     image: notification.image || null,
-                    targetId: notification.targetId || user.id,
+                    targetId: notification.targetId, // Bỏ fallback user.id
                     targetType: notification.targetType || "PROFILE",
                 };
+
+                // Kiểm tra targetId cho POST
+                if (newNotification.targetType === "POST" && !newNotification.targetId) {
+                    console.warn("Thông báo POST qua WebSocket thiếu targetId:", newNotification);
+                    return; // Bỏ qua thông báo không hợp lệ
+                }
 
                 toast.info(notification.message, {
                     onClick: () => {
                         if (notification.type === "REPORT_STATUS_UPDATED" || notification.type === "REPORT_ABUSE_WARNING") {
                             navigate(`/profile/${notification.adminDisplayName || notification.username}`);
                         } else if (notification.targetType === "GROUP") {
+                            if (!notification.targetId) {
+                                toast.error("Không thể điều hướng: Thiếu ID nhóm.");
+                                return;
+                            }
                             navigate(`/community/${notification.targetId}`);
+                        } else if (notification.targetType === "POST") {
+                            if (!notification.targetId) {
+                                toast.error("Không thể điều hướng: Thiếu ID bài đăng.");
+                                return;
+                            }
+                            navigate(`/home?postId=${notification.targetId}`);
                         }
                     },
                 });
@@ -167,9 +193,8 @@ function NotificationPage({ onToggleDarkMode, isDarkMode, onShowCreatePost }) {
         };
     }, [user, subscribe, unsubscribe, navigate]);
 
-    const handleMarkRead = async (id, username = null) => {
-        const token =
-            sessionStorage.getItem("token") || localStorage.getItem("token");
+    const handleMarkRead = async (id, notification) => {
+        const token = sessionStorage.getItem("token") || localStorage.getItem("token");
         if (!token) {
             toast.error("Không tìm thấy token!");
             return;
@@ -194,13 +219,29 @@ function NotificationPage({ onToggleDarkMode, isDarkMode, onShowCreatePost }) {
             }
 
             setNotifications((prev) =>
-                prev.map((notif) =>
-                    notif.id === id ? { ...notif, isRead: true } : notif
-                )
+                prev.map((notif) => (notif.id === id ? { ...notif, isRead: true } : notif))
             );
+            setUnreadCount((prev) => prev - 1);
 
-            if (username && username !== "unknown") {
-                navigate(`/profile/${username}`);
+            // Điều hướng theo loại thông báo
+            if (notification.targetType === "POST") {
+                if (!notification.targetId) {
+                    toast.error("Không thể điều hướng: Thiếu ID bài đăng.");
+                    return;
+                }
+                navigate(`/home?postId=${notification.targetId}`);
+            } else if (
+                notification.targetType === "PROFILE" &&
+                notification.username &&
+                notification.username !== "unknown"
+            ) {
+                navigate(`/profile/${notification.username}`);
+            } else if (notification.targetType === "GROUP") {
+                if (!notification.targetId) {
+                    toast.error("Không thể điều hướng: Thiếu ID nhóm.");
+                    return;
+                }
+                navigate(`/community/${notification.targetId}`);
             }
         } catch (error) {
             console.error("Lỗi khi đánh dấu đã đọc:", error);

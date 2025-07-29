@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="c6c17ae2-c6cb-4c94-a6b8-91c54839fa5e" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/layout/SidebarRight/SidebarRight.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/layout/SidebarRight/SidebarRight.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,8 +16,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="CSS File" />
-        <option value="JavaScript File" />
         <option value="JSX File" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -172,8 +171,12 @@
       <workItem from="1753279860308" duration="3196000" />
       <workItem from="1753287145502" duration="661000" />
       <workItem from="1753342814863" duration="2656000" />
-      <workItem from="1753707280891" duration="2428000" />
-      <workItem from="1753791157850" duration="210000" />
+      <workItem from="1753716214252" duration="13324000" />
+      <workItem from="1753731197902" duration="3499000" />
+      <workItem from="1753762455120" duration="1122000" />
+      <workItem from="1753765264806" duration="652000" />
+      <workItem from="1753780404482" duration="1414000" />
+      <workItem from="1753785658023" duration="3671000" />
     </task>
     <servers />
   </component>

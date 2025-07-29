@@ -1,3 +1,6 @@
+/* ================================
+   Font + Smooth Rendering
+================================== */
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -12,11 +15,16 @@ code {
   monospace;
 }
 
-/* Thêm Tailwind CSS */
+/* ================================
+   Tailwind Imports
+================================== */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ================================
+   Root Variables (Light Theme)
+================================== */
 :root {
   --background-color: #ffffff;
   --text-color: #212529;
@@ -27,10 +35,17 @@ code {
   --text-color-filter: none;
   --tooltip-bg-color: #222;
   --message-other-bg: #e5e7eb;
+  --comment-bg-color: #f1f3f5;
+  --input-bg: #f0f2f5;
+  --message-own-bg: linear-gradient(135deg, #007bff 0%, #4dabf7 100%);
+  --primary-color-rgb: 29, 155, 240;
 }
 
+/* ================================
+   Dark Theme Overrides
+================================== */
 .dark {
-  --background-color: #222222;
+  --background-color: #121212;
   --text-color: #ffffff;
   --text-color-muted: #adb5bd;
   --hover-bg-color: #333333;
@@ -39,10 +54,20 @@ code {
   --text-color-filter: invert(1);
   --tooltip-bg-color: #444;
   --message-other-bg: #374151;
+  --comment-bg-color: #2e2e2e;
+  --input-bg: #2e2e2e;
+  --message-own-bg: linear-gradient(135deg, #4dabf7 0%, #80c4ff 100%);
 }
 
+/* ================================
+   Base Styling with Tailwind Apply
+================================== */
 body {
   @apply bg-[var(--background-color)] text-[var(--text-color)] transition-colors duration-200;
+}
+
+* {
+  @apply transition-colors duration-200;
 }
 
 .text-dark {
@@ -65,52 +90,37 @@ body {
   @apply bg-[var(--hover-bg-color)];
 }
 
-* {
-  @apply transition-colors duration-200;
-}
-
-/* Bootstrap override for dark mode */
+/* ================================
+   Bootstrap Dark Mode Overrides
+================================== */
 .dark .modal-content {
   background-color: var(--background-color) !important;
   color: var(--text-color) !important;
 }
 
 .dark .modal-header,
-.dark .modal-footer {
-  border-color: var(--border-color) !important;
-}
-
-.dark .text-muted {
-  color: var(--text-color-muted) !important;
-}
-
-.dark .bg-light {
-  background-color: var(--hover-bg-color) !important;
-}
-
+.dark .modal-footer,
+.dark .border-bottom,
 .dark .border {
   border-color: var(--border-color) !important;
 }
 
-.dark .btn-light {
+.dark .text-muted,
+.dark .text-secondary {
+  color: var(--text-color-muted) !important;
+}
+
+.dark .bg-light,
+.dark .btn-light,
+.dark .list-group-item {
   background-color: var(--hover-bg-color) !important;
   color: var(--text-color) !important;
   border-color: var(--border-color) !important;
 }
 
-.dark .text-secondary {
-  color: var(--text-color-muted) !important;
-}
-
-.dark .border-bottom {
-  border-color: var(--border-color) !important;
-}
-
-.dark .list-group-item {
-  background-color: var(--background-color) !important;
-  color: var(--text-color) !important;
-}
-
+/* ================================
+   Scrollbar Utilities
+================================== */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
@@ -119,20 +129,46 @@ body {
   scrollbar-width: none;
 }
 
-:root {
-  --comment-bg-color: #f1f3f5;
-}
-.dark {
-  --comment-bg-color: #2e2e2e;
-}
-
-:root {
-  --input-bg: #f0f2f5;
-}
-.dark {
-  --input-bg: #2e2e2e;
+/* ================================
+   Typing Animation
+================================== */
+.typing-indicator {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  height: 24px;
 }
 
+.typing-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--text-color-muted);
+  border-radius: 50%;
+  animation: typing 1.2s infinite ease-in-out;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing {
+  0%, 80%, 100% {
+    opacity: 0.4;
+    transform: translateY(0);
+  }
+  40% {
+    opacity: 1;
+    transform: translateY(-4px);
+  }
+}
+
+/* ================================
+   Loader Animation
+================================== */
 .loader {
   width: 4px;
   height: 24px;
@@ -141,8 +177,7 @@ body {
   margin: 12px auto;
   position: relative;
   background: currentColor;
-  color: #6c757d; /* Màu xám nhạt của Bootstrap */
-  box-sizing: border-box;
+  color: #6c757d;
   animation: animloader 0.4s linear infinite alternate;
 }
 
@@ -156,7 +191,6 @@ body {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  box-sizing: border-box;
   animation: animloader 0.4s linear infinite alternate;
 }
 
@@ -177,4 +211,44 @@ body {
   100% {
     height: 6px;
   }
+}
+
+/* ================================
+   Custom Utility Classes
+================================== */
+@layer utilities {
+  .text-light {
+    @apply text-gray-500 dark:text-gray-400;
+  }
+
+  .bg-input {
+    @apply bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 px-3 py-2;
+  }
+
+  .bg-message-own {
+    @apply bg-blue-500 text-white dark:bg-blue-600;
+  }
+
+  .bg-message-other {
+    @apply bg-gray-100 text-black dark:bg-gray-800 dark:text-white;
+  }
+
+  .hover-card {
+    @apply hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors;
+  }
+
+  .btn-primary {
+    @apply px-4 py-2 rounded-full bg-black text-white hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200 transition font-medium;
+  }
+
+  .btn-outline {
+    @apply px-4 py-2 rounded-full border border-gray-400 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition;
+  }
+}
+
+/* ================================
+   Global HTML Behavior
+================================== */
+html {
+  scroll-behavior: smooth;
 }

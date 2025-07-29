@@ -195,15 +195,7 @@ export const adminService = {
     return await handleResponse(response);
   },
 
-  // Xóa báo cáo (dismiss)
-  async deleteReport(reportId) {
-    const response = await fetch(`${API_BASE_URL}/admin/${reportId}`, {
-      method: 'DELETE',
-      headers: getHeaders(),
-    });
 
-    return await handleResponse(response);
-  },
 
   // === CÁC TÍNH NĂNG ADMIN KHÁC CÓ THỂ ĐƯỢC THÊM VÀO ĐÂY ===
   
