@@ -411,9 +411,6 @@ export default function GroupCommunityPage() {
                             )}
                             {groupInfo && (groupInfo.admin || groupInfo.owner) && (
                                 <>
-                                    <Button variant="primary" size="sm" onClick={() => setShowInviteModal(true)}>
-                                        Mời thành viên
-                                    </Button>
                                     <Button variant="primary" size="sm" onClick={() => setShowJoinRequestsModal(true)}>
                                         Quản lý yêu cầu tham gia
                                     </Button>
@@ -528,9 +525,6 @@ export default function GroupCommunityPage() {
             <Col xs={0} lg={4} className="d-none d-lg-block p-0 border-start">
                 <SidebarRight />
             </Col>
-
-            {/* Modal mời thành viên */}
-            <InviteMemberModal show={showInviteModal} onHide={() => setShowInviteModal(false)} groupId={groupId} token={token} />
 
             {/* Modal quản lý yêu cầu tham gia */}
             <JoinRequestsModal show={showJoinRequestsModal} onHide={() => setShowJoinRequestsModal(false)} joinRequests={joinRequests} />

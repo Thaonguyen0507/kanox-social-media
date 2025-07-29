@@ -9,6 +9,7 @@ import {
     FaHome,
     FaMoon,
     FaSun,
+    FaGlobe, FaLock, FaEyeSlash,
 } from "react-icons/fa";
 import CreateGroupModal from "./CreateGroupModal";
 import useGroupSearch from "../../hooks/useGroupSearch";
@@ -80,6 +81,19 @@ function CommunitySidebarLeft({
 
         if (token) fetchJoinedGroups();
     }, [token]);
+
+    const getPrivacyIcon = (privacy) => {
+        switch (privacy) {
+            case "public":
+                return <FaGlobe title="Nhóm công khai" className="text-green-500" />;
+            case "private":
+                return <FaLock title="Nhóm riêng tư" className="text-yellow-500" />;
+            case "hidden":
+                return <FaEyeSlash title="Nhóm ẩn" className="text-red-500" />;
+            default:
+                return null;
+        }
+    };
 
     return (
         <>
@@ -195,9 +209,14 @@ function CommunitySidebarLeft({
                                 <img
                                     src={group.avatarUrl || "https://via.placeholder.com/40"}
                                     alt={group.name}
-                                    className="w-10 h-10 rounded-full object-cover"
+                                    className="w-10 h-10 object-cover rounded-lg" // ✅ avatar hình vuông
                                 />
-                                <span className="font-semibold truncate text-sm">{group.name}</span>
+                                <div className="flex flex-col flex-1">
+                                    <span className="font-semibold truncate text-sm">{group.name}</span>
+                                </div>
+                                <div className="ml-auto">
+                                    {getPrivacyIcon(group.privacy)}
+                                </div>
                             </div>
                         ))
                     ) : (
