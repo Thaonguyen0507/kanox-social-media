@@ -61,23 +61,45 @@ const handleResponse = async (response) => {
       const text = await response.text();
       errorText = text;
       
+      console.log('=== ERROR RESPONSE DETAILS ===');
+      console.log('Raw error text:', text);
+      console.log('Text length:', text.length);
+      
       if (text) {
         try {
           errorData = JSON.parse(text);
+          console.log('Parsed error data:', errorData);
         } catch (jsonError) {
+          console.log('JSON parse failed:', jsonError.message);
           // Nếu không parse được JSON, sử dụng text
           errorData = { message: text };
         }
       }
       
-      console.log('Error response data:', errorData);
-      console.log('Error response text:', errorText);
+      console.log('Final error data:', errorData);
+      console.log('Final error text:', errorText);
     } catch (parseError) {
       console.log('Failed to parse error response:', parseError);
       errorData = { message: `HTTP ${response.status} Error` };
     }
     
-    const error = new Error(errorData.message || errorText || `HTTP error! status: ${response.status}`);
+    // Tạo error message chi tiết hơn
+    let errorMessage;
+    if (response.status === 403) {
+      errorMessage = 'Phiên đăng nhập đã hết hạn hoặc bạn không có quyền thực hiện hành động này.';
+    } else if (response.status === 401) {
+      errorMessage = 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.';
+    } else if (response.status === 404) {
+      errorMessage = 'Không tìm thấy tài nguyên yêu cầu.';
+    } else if (response.status === 500) {
+      errorMessage = 'Lỗi server nội bộ. Vui lòng thử lại sau.';
+    } else {
+      errorMessage = errorData.message || errorText || `HTTP error! status: ${response.status}`;
+    }
+    
+    console.log('Final error message:', errorMessage);
+    
+    const error = new Error(errorMessage);
     error.status = response.status;
     error.response = {
       status: response.status,
@@ -108,9 +130,51 @@ const testUpdateUserLockStatus = async () => {
   }
 };
 
-// Expose test function to window for manual testing
+// Test function để kiểm tra token và connectivity
+const testTokenAndConnectivity = async () => {
+  console.log('=== TESTING TOKEN AND CONNECTIVITY ===');
+  
+  // Kiểm tra token
+  const token = getAuthToken();
+  console.log('Token check result:', {
+    hasToken: !!token,
+    tokenLength: token ? token.length : 0,
+    tokenPreview: token ? token.substring(0, 20) + '...' : 'null'
+  });
+  
+  if (!token) {
+    console.error('No valid token found!');
+    return;
+  }
+  
+  // Test simple API call
+  try {
+    console.log('Testing API connectivity...');
+    const response = await fetch(`${API_BASE_URL}/admin/users?page=0&size=1`, {
+      method: 'GET',
+      headers: getHeaders(),
+    });
+    
+    console.log('API test response:', {
+      status: response.status,
+      ok: response.ok,
+      statusText: response.statusText
+    });
+    
+    if (response.ok) {
+      console.log('✅ API connectivity test passed!');
+    } else {
+      console.log('❌ API connectivity test failed!');
+    }
+  } catch (error) {
+    console.error('❌ API connectivity test error:', error);
+  }
+};
+
+// Expose test functions to window for manual testing
 if (typeof window !== 'undefined') {
   window.testUpdateUserLockStatus = testUpdateUserLockStatus;
+  window.testTokenAndConnectivity = testTokenAndConnectivity;
 }
 
 export const adminService = {
