@@ -130,6 +130,51 @@ const testUpdateUserLockStatus = async () => {
   }
 };
 
+// Direct test function để bypass adminService wrapper
+const directTestUpdateUserLockStatus = async (userId = 1, isLocked = true) => {
+  console.log('=== DIRECT TEST UPDATE USER LOCK STATUS ===');
+  
+  const token = getAuthToken();
+  if (!token) {
+    console.error('No token found!');
+    return;
+  }
+  
+  const url = `${API_BASE_URL}/admin/users/${userId}/lock?isLocked=${isLocked}`;
+  const headers = getHeaders();
+  
+  console.log('Direct test - URL:', url);
+  console.log('Direct test - Headers:', headers);
+  
+  try {
+    const response = await fetch(url, {
+      method: 'PATCH',
+      headers: headers,
+    });
+    
+    console.log('Direct test - Response status:', response.status);
+    console.log('Direct test - Response ok:', response.ok);
+    console.log('Direct test - Response statusText:', response.statusText);
+    
+    // Try to read response text
+    const responseText = await response.text();
+    console.log('Direct test - Response text:', responseText);
+    console.log('Direct test - Response text length:', responseText.length);
+    
+    if (responseText) {
+      try {
+        const responseJson = JSON.parse(responseText);
+        console.log('Direct test - Response JSON:', responseJson);
+      } catch (jsonError) {
+        console.log('Direct test - Failed to parse JSON:', jsonError.message);
+      }
+    }
+    
+  } catch (error) {
+    console.error('Direct test - Fetch error:', error);
+  }
+};
+
 // Test function để kiểm tra token và connectivity
 const testTokenAndConnectivity = async () => {
   console.log('=== TESTING TOKEN AND CONNECTIVITY ===');
@@ -174,6 +219,7 @@ const testTokenAndConnectivity = async () => {
 // Expose test functions to window for manual testing
 if (typeof window !== 'undefined') {
   window.testUpdateUserLockStatus = testUpdateUserLockStatus;
+  window.directTestUpdateUserLockStatus = directTestUpdateUserLockStatus;
   window.testTokenAndConnectivity = testTokenAndConnectivity;
 }
 
@@ -249,6 +295,7 @@ export const adminService = {
       console.log('=== RESPONSE RECEIVED ===');
       console.log('Response status:', response.status);
       console.log('Response statusText:', response.statusText);
+      console.log('Response ok:', response.ok);
       console.log('Response headers:', Object.fromEntries(response.headers.entries()));
       
       // Xử lý đặc biệt cho lỗi 403 (token hết hạn)
@@ -257,6 +304,13 @@ export const adminService = {
         sessionStorage.removeItem('token');
         throw new Error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
       }
+      
+      console.log('=== CALLING HANDLE RESPONSE ===');
+      console.log('About to call handleResponse with response:', {
+        status: response.status,
+        ok: response.ok,
+        url: response.url
+      });
       
       return await handleResponse(response);
     } catch (error) {
