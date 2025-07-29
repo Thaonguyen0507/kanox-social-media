@@ -194,6 +194,12 @@
                     }, 3000);
                 });
 
+                stringeeClientRef.current.on("otherdeviceauthen", (res) => {
+                    console.warn("⚠️ Đăng nhập từ thiết bị khác:", res);
+                    toast.warn("Tài khoản đã đăng nhập từ thiết bị khác.");
+                    endCall(); // ✅ Tự động kết thúc nếu đang trong cuộc gọi
+                });
+
 
                 stringeeClientRef.current.on("incomingcall", (incomingCall) => {
                     console.log("📞 incomingCall.toNumber:", incomingCall.toNumber);
@@ -268,6 +274,7 @@
                     // Chỉ trả lời cuộc gọi nếu không bị từ chối trước đó
                     incomingCall.answer((res) => {
                         if (res.r === 0) {
+                            console.log("✅ [CALLEE] Đã trả lời cuộc gọi - Mình là người nhận");
                             setCallStarted(true);
                             console.log("📞 Cuộc gọi đã được trả lời");
                             stringeeCallRef.current = incomingCall;
@@ -428,6 +435,7 @@
 
                 stringeeCallRef.current.makeCall((res) => {
                     if (res.r === 0) {
+                        console.log("✅ [CALLER] Cuộc gọi bắt đầu - Mình là người gọi");
                         console.log("Call started:", res);
                         setCallStarted(true);
                         if (onStartCall) onStartCall(true); // <--- ✅ Gọi về AppContent
@@ -449,26 +457,36 @@
         };
 
         const endCall = async () => {
+            console.log(`📴 [${callStarted ? "ĐANG GỌI" : "CHƯA GỌI"}] Gọi endCall()`);
             // Dừng Stringee call
             if (stringeeCallRef.current) {
+                console.log("📞 [END] Caller đang dừng cuộc gọi");
                 try {
                     stringeeCallRef.current.hangup();
                     console.log("📞 Hung up call");
                 } catch (error) {
                     console.error("Error hanging up Stringee call:", error);
                 }
-                stringeeCallRef.current = null;
+                stringeeCallRef.current = null; // ✅ Giữ nguyên
             }
 
-            // Dừng incoming call nếu có
             if (incomingCallRef.current) {
+                console.log("📞 [END] Callee đang dừng cuộc gọi");
                 try {
                     incomingCallRef.current.hangup();
                     console.log("📞 Hung up incoming call");
                 } catch (error) {
                     console.error("Error hanging up incoming call:", error);
                 }
-                incomingCallRef.current = null;
+
+                // ❗️Bổ sung thêm bước dọn media nếu còn
+                if (incomingCallRef.current?.localStream) {
+                    incomingCallRef.current.localStream.getTracks().forEach((track) => {
+                        track.stop();
+                    });
+                }
+
+                incomingCallRef.current = null; // ✅ Bắt buộc
             }
 
             // Dừng local stream nếu có
@@ -559,16 +577,23 @@
 
             // Kiểm tra thiết bị sau khi kết thúc
             navigator.mediaDevices.enumerateDevices().then((devices) => {
-                console.log("🎧 Thiết bị sau khi endCall:", devices);
+                console.log("📦 Thiết bị sau khi endCall:");
+                devices.forEach(device => {
+                    console.log(`🔍 ${device.kind} - ${device.label}`);
+                });
             });
 
             // Dọn dẹp triệt để sau 500ms để tránh bị giữ camera/mic
             setTimeout(() => {
-                [localVideoRef, remoteVideoRef].forEach((ref) => {
+                console.log("🧹 Bắt đầu cleanup 500ms sau khi kết thúc call");
+
+                [localVideoRef, remoteVideoRef].forEach((ref, idx) => {
                     if (ref.current && ref.current.srcObject) {
-                        ref.current.srcObject.getTracks().forEach((track) => {
+                        const stream = ref.current.srcObject;
+                        console.log(`🔍 Cleaning up ${idx === 0 ? "local" : "remote"} video`);
+                        stream.getTracks().forEach((track) => {
                             if (track.readyState !== "ended") {
-                                console.log(`🧹 Cleanup: forcibly stopping lingering track (${track.kind})`);
+                                console.log(`🧹 Forcibly stopping ${track.kind} track`);
                                 track.stop();
                             }
                         });
@@ -585,7 +610,10 @@
                     });
                     localStreamRef.current = null;
                 }
+
+                console.log("✅ Cleanup hoàn tất");
             }, 500);
+
 
 
             // Điều hướng về trang chat
