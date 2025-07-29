@@ -15,7 +15,6 @@ import moment from "moment";
 import PrivateRoute from "./components/common/PrivateRoute/PrivateRoute";
 import { EmojiProvider } from "./context/EmojiContext";
 
-
 import SidebarLeft from "./components/layout/SidebarLeft/SidebarLeft";
 import { ThemeContext, ThemeProvider } from "./context/ThemeContext";
 import { AuthContext, AuthProvider } from "./context/AuthContext";
@@ -125,7 +124,6 @@ function AppContent() {
 
     fetchChatIdsAndMembers();
   }, [user, token]);
-
 
   useEffect(() => {
     if (!subscribe || !unsubscribe || !publish || !user || !token) {
@@ -452,13 +450,7 @@ function AppContent() {
               path="/admin"
               element={
                 <PrivateRoute>
-                  <MainLayout
-                    onShowCreatePost={() => setShowCreatePost(true)}
-                    onToggleDarkMode={toggleDarkMode}
-                    isDarkMode={isDarkMode}
-                  >
-                    <AdminPage />
-                  </MainLayout>
+                  <AdminPage />
                 </PrivateRoute>
               }
             />

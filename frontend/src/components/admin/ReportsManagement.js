@@ -110,29 +110,7 @@ const ReportsManagement = () => {
         }
     };
 
-    const handleDismissReport = async (id) => {
-        if (!token) {
-            toast.error("Vui lòng đăng nhập để xóa báo cáo!");
-            return;
-        }
-        try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/${id}`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            if (!response.ok) {
-                const data = await response.json();
-                throw new Error(data.message || "Lỗi khi xóa báo cáo");
-            }
-            toast.success("Đã xóa báo cáo!");
-            loadReports();
-        } catch (error) {
-            toast.error("Lỗi khi xóa báo cáo: " + error.message);
-        }
-    };
+
 
     const handleUpdateStatus = async (reportId, statusId) => {
         if (!token) {
@@ -181,7 +159,7 @@ const ReportsManagement = () => {
             
             // Thêm delay nhỏ để đảm bảo database đã được cập nhật
             setTimeout(() => {
-                loadReports();
+                loadReports(activeMainTab, activeSubTab);
             }, 500);
         } catch (error) {
             console.error("Lỗi khi cập nhật trạng thái:", error, { reportId, statusId });
@@ -395,12 +373,6 @@ const ReportsManagement = () => {
                                             className="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors duration-150"
                                         >
                                             Chi tiết
-                                        </button>
-                                        <button
-                                            onClick={() => handleDismissReport(report.id)}
-                                            className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors duration-150"
-                                        >
-                                            Xóa
                                         </button>
                                     </td>
                                 </tr>
