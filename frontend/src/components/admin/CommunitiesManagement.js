@@ -13,7 +13,6 @@ import {
 } from "react-bootstrap";
 import {
   fetchAllGroups,
-  deleteGroupAsAdmin,
 } from "../../api/groupApi";
 import { useNavigate } from "react-router-dom";
 
@@ -44,15 +43,6 @@ const CommunitiesManagement = () => {
 
   const handleManageMembers = (id) => {
     navigate(`/admin/groups/${id}/members`);
-  };
-
-  const handleDelete = async (id) => {
-    try {
-      await deleteGroupAsAdmin(id);
-      setCommunities((prev) => prev.filter((c) => c.id !== id));
-    } catch (err) {
-      alert("Lỗi khi xóa nhóm: " + err.message);
-    }
   };
 
   if (loading) return <Spinner animation="border" />;
@@ -97,7 +87,6 @@ const CommunitiesManagement = () => {
                         <td>
                           <Button variant="primary" size="sm" onClick={() => handleView(community.id)}>Xem</Button>
                           <Button variant="info" size="sm" className="ms-2" onClick={() => handleManageMembers(community.id)}>Thành viên</Button>
-                          <Button variant="danger" size="sm" className="ms-2" onClick={() => handleDelete(community.id)}>Xóa</Button>
                         </td>
                       </tr>
                   ))}
