@@ -121,6 +121,11 @@ function EditProfileModal({ show, handleClose, userProfile, onSave, username }) 
         longitude: formData.longitude || null,
       };
 
+      // ✅ Log dữ liệu trước khi gửi
+      console.log("DEBUG - Username:", username);
+      console.log("DEBUG - Payload:", payload);
+      console.log("DEBUG - Avatar file:", avatarFile || "No avatar selected");
+
       const form = new FormData();
       form.append(
           "data",
@@ -130,6 +135,13 @@ function EditProfileModal({ show, handleClose, userProfile, onSave, username }) 
       if (avatarFile) {
         form.append("avatar", avatarFile);
       }
+
+      // ✅ Log FormData trước khi gửi (chỉ log key vì FormData không in trực tiếp được)
+      for (const pair of form.entries()) {
+        console.log(`DEBUG - FormData field: ${pair[0]}`, pair[1]);
+      }
+
+      console.log("DEBUG - API URL:", `${process.env.REACT_APP_API_URL}/user/profile/${username}`);
 
       const response = await fetch(
           `${process.env.REACT_APP_API_URL}/user/profile/${username}`,
@@ -142,12 +154,17 @@ function EditProfileModal({ show, handleClose, userProfile, onSave, username }) 
           }
       );
 
+      console.log("DEBUG - Response status:", response.status);
+
       if (!response.ok) {
         const errorData = await response.json();
+        console.error("DEBUG - API Error response:", errorData);
         throw new Error(errorData.message || "Lỗi khi cập nhật hồ sơ.");
       }
 
       const updatedProfile = await response.json();
+      console.log("DEBUG - Updated profile:", updatedProfile);
+
       onSave(updatedProfile);
       handleClose();
       toast.success("Hồ sơ đã được cập nhật thành công!");
@@ -158,6 +175,7 @@ function EditProfileModal({ show, handleClose, userProfile, onSave, username }) 
       setLoading(false);
     }
   };
+
 
   const handleDeleteAccount = () => {
     if (
