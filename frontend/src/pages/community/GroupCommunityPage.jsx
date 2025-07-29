@@ -161,7 +161,7 @@ export default function GroupCommunityPage() {
     const handleLeaveGroup = async () => {
         try {
             const res = await fetch(`${process.env.REACT_APP_API_URL}/groups/${groupId}/leave`, {
-                method: "POST",
+                method: "DELETE",
                 headers: { Authorization: `Bearer ${token}` },
             });
             if (!res.ok) {
