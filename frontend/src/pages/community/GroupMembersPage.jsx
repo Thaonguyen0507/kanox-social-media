@@ -120,7 +120,7 @@
                                             size="sm"
                                             onClick={() => handleDelete(member.id)}
                                         >
-                                            Xóa
+                                            Kick khỏi nhóm
                                         </Button>
                                     )}
                                 </li>
