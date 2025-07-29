@@ -424,12 +424,14 @@ export default function GroupCommunityPage() {
                                 ⋯
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
-                                <Dropdown.Item onClick={() => alert("Báo cáo nhóm")}>Báo cáo nhóm</Dropdown.Item>
                                 <Dropdown.Item onClick={() => navigate(`/groups/${groupId}/members`)}>
                                     Xem danh sách thành viên
                                 </Dropdown.Item>
                                 {(groupInfo.admin || groupInfo.owner) && (
                                     <>
+                                        <Dropdown.Item onClick={() => navigate(`/groups/${groupId}/reports`)}>
+                                            Báo cáo nhóm
+                                        </Dropdown.Item>
                                         <Dropdown.Divider />
                                         <Dropdown.Item className="text-danger" onClick={() => alert("Xóa nhóm")}>
                                             Xóa nhóm

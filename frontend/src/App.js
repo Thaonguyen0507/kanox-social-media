@@ -56,6 +56,7 @@ import GroupMembersManagementPage from "./pages/admin/GroupMembersManagementPage
 import GroupAdminPage from "./pages/admin/GroupAdminPage";
 import PremiumPage from "./pages/premium/premiumPage";
 import CreateStoryPage from "./pages/story/CreateStoryPage";
+import GroupReportsPage from "./pages/community/GroupReportsPage";
 
 function AppContent() {
   const [isLoading, setIsLoading] = useState(true);
@@ -463,6 +464,16 @@ function AppContent() {
                   </GroupMembersWrapper>
                 </PrivateRoute>
               }
+            />
+            <Route
+                path="/groups/:groupId/reports"
+                element={
+                  <PrivateRoute>
+                    <GroupCommunityWrapper>
+                      <GroupReportsPage />
+                    </GroupCommunityWrapper>
+                  </PrivateRoute>
+                }
             />
             <Route
               path="/call/:chatId"

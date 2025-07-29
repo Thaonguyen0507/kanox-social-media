@@ -7,8 +7,8 @@
     import { toast } from "react-toastify";
 
     export default function GroupMembersPage() {
-        const { groupId } = useParams();
-        const { token, user } = useContext(AuthContext);
+        const {groupId} = useParams();
+        const {token, user} = useContext(AuthContext);
         const [members, setMembers] = useState([]);
         const [loading, setLoading] = useState(true);
         const navigate = useNavigate();
@@ -21,7 +21,7 @@
         const fetchMembers = async () => {
             try {
                 const res = await fetch(`${process.env.REACT_APP_API_URL}/groups/${groupId}/members?page=0&size=100`, {
-                    headers: { Authorization: `Bearer ${token}` },
+                    headers: {Authorization: `Bearer ${token}`},
                 });
                 if (!res.ok) {
                     const errorData = await res.json();
@@ -43,26 +43,35 @@
 
             try {
                 const res = await fetch(
-                    `${process.env.REACT_APP_API_URL}/groups/${groupId}/remove?targetUserId=${targetUserId}&requesterUsername=${user.username}`,
+                    `${process.env.REACT_APP_API_URL}/groups/${groupId}/remove?targetUserId=${targetUserId}`,
                     {
                         method: "DELETE",
-                        headers: { Authorization: `Bearer ${token}` },
+                        headers: {Authorization: `Bearer ${token}`},
                     }
                 );
-                if (!res.ok) throw new Error("Không thể xóa thành viên");
+
+                if (!res.ok) {
+                    const errorData = await res.json();
+                    throw new Error(errorData.message || "Không thể xóa thành viên");
+                }
 
                 setMembers((prev) => prev.filter((m) => m.id !== targetUserId));
+                toast.success("Xóa thành viên thành công!");
             } catch (err) {
                 console.error("Lỗi khi xóa thành viên:", err.message);
+                toast.error(err.message);
             }
         };
 
         if (loading)
             return (
                 <div className="text-center py-5">
-                    <Spinner animation="border" />
+                    <Spinner animation="border"/>
                 </div>
             );
+
+        const currentMember = members.find(m => m.username === user.username);
+        const isCurrentUserAdminOrOwner = currentMember?.owner || currentMember?.admin;
 
         return (
             <Row className="m-0 h-100 w-100">
@@ -104,7 +113,8 @@
                                         </div>
                                     </div>
 
-                                    {member.username !== user.username && (user.owner || user.admin) && !member.owner && (
+                                    {/* ✅ Sửa điều kiện ở đây */}
+                                    {member.username !== user.username && isCurrentUserAdminOrOwner && !member.owner && (
                                         <Button
                                             variant="outline-danger"
                                             size="sm"
@@ -121,7 +131,7 @@
 
                 {/* SidebarRight */}
                 <Col xs={0} lg={4} className="d-none d-lg-block p-0 border-start">
-                    <SidebarRight />
+                    <SidebarRight/>
                 </Col>
             </Row>
         );
