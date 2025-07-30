@@ -181,15 +181,6 @@ const ReportsManagement = () => {
             return;
         }
 
-        // Cảnh báo khi duyệt báo cáo về người dùng
-        if (parseInt(statusId) === 3 && selectedReport?.targetTypeId === 4) {
-            const confirmApprove = window.confirm(
-                "⚠️ LƯU Ý: Khi duyệt báo cáo về người dùng, nếu đây là báo cáo thứ 3 được duyệt cho người dùng này, tài khoản sẽ tự động bị khóa.\n\nBạn có thể tiếp tục duyệt báo cáo mà không bị giới hạn số lần.\n\nBạn có chắc chắn muốn duyệt báo cáo này?"
-            );
-            if (!confirmApprove) {
-                return;
-            }
-        }
 
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/${parseInt(reportId)}/status`, {
