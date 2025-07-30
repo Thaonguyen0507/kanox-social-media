@@ -234,7 +234,7 @@ function SettingsPage() {
     }
 
     return (
-        <div className="sticky-top bg-white dark:bg-[var(--background-color)] py-2 border-bottom dark:border-[var(--border-color)]" style={{ zIndex: 1020 }}>
+        <div className="sticky-top bg-[var(--background-color)] py-2 border-bottom dark:border-[var(--border-color)]" style={{ zIndex: 1020 }}>
             <Container>
                 <Row className="justify-content-center">
                     <Col md={8}>
@@ -313,6 +313,7 @@ function SettingsPage() {
                                 Đổi mật khẩu
                             </h4>
 
+
                             <Form onSubmit={handlePasswordChange}>
                                 <Form.Group controlId="currentPassword" className="mb-3">
                                     <Form.Label className="text-[var(--text-color)]">Mật khẩu hiện tại</Form.Label>
@@ -349,11 +350,11 @@ function SettingsPage() {
                                         className="bg-input"
                                     />
                                 </Form.Group>
-
+                                
                                 <div className="d-flex justify-content-end">
                                     <button
                                         type="submit"
-                                        className="btn-warning"
+                                        className="btn-primary"
                                         disabled={changingPassword}
                                     >
                                         {changingPassword ? 'Đang đổi...' : 'Đổi mật khẩu'}

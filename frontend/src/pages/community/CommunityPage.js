@@ -131,7 +131,7 @@
                             <Col xs={12} lg={8} className="p-0 border-end">
                                 <div className="sticky top-0 z-[1020] bg-[var(--background-color)] text-[var(--text-color)] font-bold text-lg px-3 py-2 border-b shadow-sm d-flex justify-content-between align-items-center">
                                     <h2 className="me-auto">Cộng đồng</h2>
-                                    <FaSearch frameBorder={0} size={20} />
+                                    {/*<FaSearch frameBorder={0} size={20} />*/}
                                 </div>
                                 {loading ? (
                                     <div className="text-center p-4">Đang tải...</div>

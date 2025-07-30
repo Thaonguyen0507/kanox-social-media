@@ -183,7 +183,7 @@ function ExplorePage() {
       <div className="flex min-h-screen bg-[var(--background-color)] text-[var(--text-color)]">
         <div className="flex flex-col flex-grow">
           <div className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-md">
-            <div className="max-w-2xl mx-auto w-full p-4">
+            <div className="max-w-2xl mx-auto w-full p-4 bg-[var(--background-color)]">
               {/* Search input + dropdown */}
               <div className="relative z-[60]">
                 <div className="relative flex items-center">
@@ -202,35 +202,35 @@ function ExplorePage() {
               </div>
 
               {/* Tabs */}
-              <div className="flex justify-around mt-4 text-sm font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700 bg-[var(--content-bg)]">
-                {["for-you", "trending", "news", "sports", "entertainment"].map(
-                    (tab) => (
-                        <button
-                            key={tab}
-                            onClick={() => setActiveTab(tab)}
-                            className={`py-2 px-4 flex-1 text-center ${
-                                activeTab === tab
-                                    ? "border-b-2 border-blue-500 text-blue-600 dark:text-blue-400 font-bold"
-                                    : "hover:bg-gray-100 dark:hover:bg-gray-700"
-                            } transition-colors duration-200`}
-                        >
-                          {
-                            {
-                              "for-you": "Cho Bạn",
-                              trending: "Đang thịnh hành",
-                              news: "Tin tức",
-                              sports: "Thể thao",
-                              entertainment: "Giải trí",
-                            }[tab]
-                          }
-                        </button>
-                    )
-                )}
-              </div>
+              {/*<div className="flex justify-around mt-4 text-sm font-semibold text-gray-700 dark:text-gray-300 border-b border-gray-200 dark:border-gray-700 bg-[var(--content-bg)]">*/}
+              {/*  {["for-you", "trending", "news", "sports", "entertainment"].map(*/}
+              {/*      (tab) => (*/}
+              {/*          <button*/}
+              {/*              key={tab}*/}
+              {/*              onClick={() => setActiveTab(tab)}*/}
+              {/*              className={`py-2 px-4 flex-1 text-center ${*/}
+              {/*                  activeTab === tab*/}
+              {/*                      ? "border-b-2 border-blue-500 text-blue-600 dark:text-blue-400 font-bold"*/}
+              {/*                      : "hover:bg-gray-100 dark:hover:bg-gray-700"*/}
+              {/*              } transition-colors duration-200`}*/}
+              {/*          >*/}
+              {/*            {*/}
+              {/*              {*/}
+              {/*                "for-you": "Cho Bạn",*/}
+              {/*                trending: "Đang thịnh hành",*/}
+              {/*                news: "Tin tức",*/}
+              {/*                sports: "Thể thao",*/}
+              {/*                entertainment: "Giải trí",*/}
+              {/*              }[tab]*/}
+              {/*            }*/}
+              {/*          </button>*/}
+              {/*      )*/}
+              {/*  )}*/}
+              {/*</div>*/}
             </div>
           </div>
 
-          {/* Main content: Trending topics */}
+           Main content: Trending topics 
           <div className="w-full px-4 flex-grow">
             {renderTabContent()}
           </div>

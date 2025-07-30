@@ -367,12 +367,12 @@ const UsersManagement = () => {
                   <span
                     className={`px-2 py-1 rounded-full text-xs font-semibold
                     ${
-                      user.status
+                      !user.isLocked
                         ? "bg-green-100 text-green-800"
                         : "bg-red-100 text-red-800"
                     }`}
                   >
-                    {user.status ? "Hoạt động" : "Đã khóa"}
+                    {!user.isLocked ? "Hoạt động" : "Đã khóa"}
                   </span>
                 </td>
                 <td className="py-3 px-4">
@@ -406,7 +406,7 @@ const UsersManagement = () => {
                     >
                       ✏️ {/* Biểu tượng Chỉnh sửa */}
                     </button>
-                    {user.status ? (
+                    {!user.isLocked ? (
                       <button
                         onClick={() => handleBan(user.id)}
                         className="p-2 rounded-full hover:bg-red-100 text-red-600 transition-colors duration-200"

@@ -359,25 +359,25 @@ function EditProfileModal({ show, handleClose, userProfile, onSave, username }) 
               </Form>
 
               {/* Account Settings */}
-              <h6 className="fw-bold text-lg mb-4">Cài đặt tài khoản</h6>
-              <div className="space-y-2">
-                <button
-                    onClick={handleSecuritySettings}
-                    className="w-full text-left p-3 rounded-lg hover:bg-gray-100 transition-colors duration-200 text-[var(--text-color-muted)] flex items-center justify-between"
-                >
-                <span className="flex items-center">
-                  <FaLock className="mr-2" /> Cài đặt bảo mật
-                </span>
-                </button>
-                <button
-                    onClick={handleDeleteAccount}
-                    className="w-full text-left p-3 rounded-lg hover:bg-red-50 transition-colors duration-200 text-danger flex items-center justify-between"
-                >
-                <span className="flex items-center">
-                  <FaTrash className="mr-2" /> Xóa tài khoản
-                </span>
-                </button>
-              </div>
+              {/*<h6 className="fw-bold text-lg mb-4">Cài đặt tài khoản</h6>*/}
+              {/*<div className="space-y-2">*/}
+              {/*  /!*<button*!/*/}
+              {/*  /!*    onClick={handleSecuritySettings}*!/*/}
+              {/*  /!*    className="w-full text-left p-3 rounded-lg hover:bg-gray-100 transition-colors duration-200 text-[var(--text-color-muted)] flex items-center justify-between"*!/*/}
+              {/*  /!*>*!/*/}
+              {/*  /!*<span className="flex items-center">*!/*/}
+              {/*  /!*  <FaLock className="mr-2" /> Cài đặt bảo mật*!/*/}
+              {/*  /!*</span>*!/*/}
+              {/*  /!*</button>*!/*/}
+              {/*  /!*<button*!/*/}
+              {/*  /!*    onClick={handleDeleteAccount}*!/*/}
+              {/*  /!*    className="w-full text-left p-3 rounded-lg hover:bg-red-50 transition-colors duration-200 text-danger flex items-center justify-between"*!/*/}
+              {/*  /!*>*!/*/}
+              {/*  /!*<span className="flex items-center">*!/*/}
+              {/*  /!*  <FaTrash className="mr-2" /> Xóa tài khoản*!/*/}
+              {/*  /!*</span>*!/*/}
+              {/*  /!*</button>*!/*/}
+              {/*</div>*/}
 
               {/* Save Button */}
               <div className="mt-6 flex justify-end">
