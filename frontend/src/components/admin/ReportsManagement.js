@@ -21,47 +21,6 @@ const ReportsManagement = () => {
     const navigate = useNavigate();
 
     const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-    const [debugInfo, setDebugInfo] = useState(null);
-
-    // Debug function to check user report count
-    const checkUserReportCount = async (targetId) => {
-        if (!token || !targetId) {
-            toast.error("Không thể kiểm tra: thiếu token hoặc target ID!");
-            return;
-        }
-        
-        try {
-            // Call backend API to get user report statistics
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/debug/user-reports/${targetId}`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-            
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || "Lỗi khi lấy thông tin debug");
-            }
-            
-            const data = await response.json();
-            setDebugInfo(data);
-            
-            // Show debug info in toast
-            toast.info(
-                `Debug Info:\n` +
-                `- User Reports: ${data.userReportsCount || 0}\n` +
-                `- Post Reports: ${data.postReportsCount || 0}\n` +
-                `- Total: ${data.totalReportsCount || 0}\n` +
-                `- User Status: ${data.userStatus || 'Unknown'}`,
-                { autoClose: 10000 }
-            );
-            
-        } catch (error) {
-            console.error("Debug check error:", error);
-            toast.error("Lỗi khi kiểm tra debug info: " + error.message);
-        }
-    };
 
     const loadReports = async (mainTab = activeMainTab, subTab = activeSubTab) => {
         if (!token) {
@@ -490,29 +449,7 @@ const ReportsManagement = () => {
                                             <strong>Trạng thái:</strong> {selectedReport.processingStatusName || "Không xác định"}
                                         </p>
                                         
-                                        {/* Debug Tools Section */}
-                                        <div className="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-lg">
-                                            <h4 className="text-lg font-semibold text-yellow-800 dark:text-yellow-200 mb-2">
-                                                🔧 Debug Tools
-                                            </h4>
-                                            <div className="space-y-2 text-sm">
-                                                <p className="text-yellow-700 dark:text-yellow-300">
-                                                    <strong>Target Type ID:</strong> {selectedReport.targetTypeId}
-                                                </p>
-                                                <p className="text-yellow-700 dark:text-yellow-300">
-                                                    <strong>Target ID:</strong> {selectedReport.targetId}
-                                                </p>
-                                                <p className="text-yellow-700 dark:text-yellow-300">
-                                                    <strong>Processing Status ID:</strong> {selectedReport.processingStatusId}
-                                                </p>
-                                                <button
-                                                    onClick={() => checkUserReportCount(selectedReport.targetId)}
-                                                    className="mt-2 px-3 py-1 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 text-sm"
-                                                >
-                                                    Kiểm tra số báo cáo của User
-                                                </button>
-                                            </div>
-                                        </div>
+
                                         {/* Hiển thị nội dung bài viết nếu là báo cáo bài viết */}
                                         {selectedReport.targetTypeId === 1 && (
                                             <div className="mt-4">
