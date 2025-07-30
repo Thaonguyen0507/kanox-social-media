@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Card, Button, Spinner, Row, Col, Badge } from "react-bootstrap";
 
 const GroupMembersManagementPage = () => {
     const { groupId } = useParams();
+    const navigate = useNavigate();
     const [members, setMembers] = useState([]);
     const [loading, setLoading] = useState(true);
     const API_URL = process.env.REACT_APP_API_URL;
@@ -88,6 +89,15 @@ const GroupMembersManagementPage = () => {
 
     return (
         <div className="container mt-4">
+            {/* Nút quay lại */}
+            <Button
+                variant="secondary"
+                className="mb-3"
+                onClick={() => navigate("/admin", { state: { tab: "communities" } })}
+            >
+                ← Quay lại quản lý cộng đồng
+            </Button>
+
             <h3 className="fw-bold mb-4 text-primary">Quản lý thành viên nhóm</h3>
             {loading ? (
                 <Spinner animation="border" />
@@ -113,7 +123,8 @@ const GroupMembersManagementPage = () => {
                                                 className="rounded-circle bg-secondary text-white d-flex justify-content-center align-items-center me-3"
                                                 style={{ width: "50px", height: "50px" }}
                                             >
-                                                {member.displayName?.charAt(0)?.toUpperCase() || member.username.charAt(0).toUpperCase()}
+                                                {member.displayName?.charAt(0)?.toUpperCase() ||
+                                                    member.username.charAt(0).toUpperCase()}
                                             </div>
                                         )}
 
@@ -134,6 +145,7 @@ const GroupMembersManagementPage = () => {
                                             ) : (
                                                 <Badge bg="secondary">👤 Thành viên</Badge>
                                             )}
+
                                         </div>
                                     </div>
                                 </Card.Body>
@@ -144,7 +156,6 @@ const GroupMembersManagementPage = () => {
             )}
         </div>
     );
-
 };
 
 export default GroupMembersManagementPage;
