@@ -61,8 +61,30 @@ const ReportsManagement = () => {
             }
             setTotalPages(data.data?.totalPages || 0);
         } catch (error) {
-            console.error("Lỗi khi tải báo cáo:", error);
-            toast.error("Không thể tải danh sách báo cáo: " + error.message);
+            console.error("Chi tiết lỗi khi tải báo cáo:", {
+                error: error.message,
+                mainTab,
+                subTab,
+                currentPage,
+                timestamp: new Date().toISOString()
+            });
+            
+            let errorMessage = "Không thể tải danh sách báo cáo";
+            if (error.message.includes('401')) {
+                errorMessage = "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.";
+            } else if (error.message.includes('403')) {
+                errorMessage = "Bạn không có quyền truy cập chức năng này.";
+            } else if (error.message.includes('500')) {
+                errorMessage = "Lỗi máy chủ nội bộ. Vui lòng thử lại sau.";
+            } else if (error.message.includes('Network')) {
+                errorMessage = "Lỗi kết nối mạng. Vui lòng kiểm tra kết nối internet.";
+            } else {
+                errorMessage += ": " + error.message;
+            }
+            
+            toast.error(errorMessage, {
+                autoClose: 6000
+            });
         } finally {
             setLoading(false);
         }
@@ -84,7 +106,24 @@ const ReportsManagement = () => {
             if (!response.ok) throw new Error(data.message || "Lỗi khi lấy lịch sử báo cáo");
             setReportHistory(data);
         } catch (error) {
-            toast.error("Lỗi khi lấy lịch sử báo cáo: " + error.message);
+            console.error("Chi tiết lỗi khi tải lịch sử báo cáo:", {
+                error: error.message,
+                reportId,
+                timestamp: new Date().toISOString()
+            });
+            
+            let errorMessage = "Lỗi khi lấy lịch sử báo cáo";
+            if (error.message.includes('404')) {
+                errorMessage = "Không tìm thấy lịch sử báo cáo này.";
+            } else if (error.message.includes('401')) {
+                errorMessage = "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.";
+            } else {
+                errorMessage += ": " + error.message;
+            }
+            
+            toast.error(errorMessage, {
+                autoClose: 5000
+            });
         }
     };
 
@@ -106,7 +145,26 @@ const ReportsManagement = () => {
             await loadReportHistory(reportId);
             setShowDetailModal(true);
         } catch (error) {
-            toast.error("Lỗi khi lấy chi tiết báo cáo: " + error.message);
+            console.error("Chi tiết lỗi khi tải chi tiết báo cáo:", {
+                error: error.message,
+                reportId,
+                timestamp: new Date().toISOString()
+            });
+            
+            let errorMessage = "Lỗi khi lấy chi tiết báo cáo";
+            if (error.message.includes('404')) {
+                errorMessage = "Không tìm thấy báo cáo này. Có thể báo cáo đã bị xóa.";
+            } else if (error.message.includes('401')) {
+                errorMessage = "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.";
+            } else if (error.message.includes('403')) {
+                errorMessage = "Bạn không có quyền xem chi tiết báo cáo này.";
+            } else {
+                errorMessage += ": " + error.message;
+            }
+            
+            toast.error(errorMessage, {
+                autoClose: 5000
+            });
         }
     };
 
@@ -144,9 +202,37 @@ const ReportsManagement = () => {
                     processingStatusId: parseInt(statusId),
                 }),
             });
+            
             if (!response.ok) {
-                const data = await response.json();
-                throw new Error(data.message || "Lỗi khi cập nhật trạng thái");
+                let errorMessage = "Lỗi khi cập nhật trạng thái báo cáo";
+                let errorDetails = "";
+                
+                try {
+                    const data = await response.json();
+                    errorMessage = data.message || errorMessage;
+                    
+                    // Thêm thông tin chi tiết về lỗi
+                    if (data.error) {
+                        errorDetails = ` (${data.error})`;
+                    }
+                    if (data.details) {
+                        errorDetails += ` - Chi tiết: ${data.details}`;
+                    }
+                } catch (parseError) {
+                    // Nếu không parse được JSON, sử dụng status text
+                    errorMessage = `Lỗi HTTP ${response.status}: ${response.statusText}`;
+                }
+                
+                // Thêm thông tin về báo cáo và trạng thái
+                const statusName = parseInt(statusId) === 1 ? "Đang chờ" : 
+                                 parseInt(statusId) === 2 ? "Đang xem xét" :
+                                 parseInt(statusId) === 3 ? "Duyệt" : "Từ chối";
+                
+                const reportType = selectedReport?.targetTypeId === 4 ? "người dùng" : "bài đăng";
+                
+                errorDetails += ` - Không thể ${statusName.toLowerCase()} báo cáo ${reportType} ID: ${reportId}`;
+                
+                throw new Error(errorMessage + errorDetails);
             }
 
             let successMessage = "Đã cập nhật trạng thái báo cáo!";
@@ -162,8 +248,22 @@ const ReportsManagement = () => {
                 loadReports(activeMainTab, activeSubTab);
             }, 500);
         } catch (error) {
-            console.error("Lỗi khi cập nhật trạng thái:", error, { reportId, statusId });
-            toast.error("Lỗi khi cập nhật trạng thái: " + error.message);
+            console.error("Chi tiết lỗi cập nhật trạng thái:", {
+                error: error.message,
+                reportId,
+                statusId,
+                reportType: selectedReport?.targetTypeId === 4 ? "user" : "post",
+                targetId: selectedReport?.targetId,
+                timestamp: new Date().toISOString()
+            });
+            
+            // Hiển thị thông báo lỗi chi tiết cho admin
+            toast.error(error.message, {
+                autoClose: 8000, // Hiển thị lâu hơn để admin có thể đọc
+                style: {
+                    whiteSpace: 'pre-wrap' // Cho phép xuống dòng
+                }
+            });
         }
     };
 
