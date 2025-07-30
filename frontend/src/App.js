@@ -179,15 +179,18 @@ function AppContent() {
           (message) => {
             console.log("Received call signal:", message);
             if (message.type === "start" && message.userId !== user.id) {
-              if (isInCall) {
-                console.log("🚫 Đang trong cuộc gọi, gửi tín hiệu máy bận");
+              const isBusy =
+                  isInCall ||
+                  window.location.pathname.startsWith("/call");
+
+              if (isBusy) {
+                console.log("🚫 Bận hoặc đã ở trong trang call, từ chối cuộc gọi");
                 publish("/app/sendMessage", {
                   chatId: message.chatId,
                   senderId: user.id,
                   content: "⚠️ Máy bận",
                   typeId: 4,
                 });
-                // Gửi tín hiệu từ chối cuộc gọi
                 publish("/app/call/end", {
                   chatId: message.chatId,
                   callSessionId: message.sessionId,
@@ -195,10 +198,8 @@ function AppContent() {
                 });
                 return;
               }
-              if (window.location.pathname.startsWith("/call")) {
-                console.log("📞 Đã ở trong trang call, từ chối cuộc gọi mới");
-                return;
-              }
+
+              // ✅ OK → hiển thị modal nhận cuộc gọi
               setIncomingCall({
                 chatId: message.chatId,
                 sessionId: message.sessionId,
@@ -207,6 +208,7 @@ function AppContent() {
               });
               setShowCallModal(true);
             }
+
           },
           `call-${chatId}`
         )

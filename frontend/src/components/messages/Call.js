@@ -63,6 +63,24 @@
 
 
         useEffect(() => {
+            console.log("🧹 Reset state khi vào Call page");
+
+            setCallStarted(false);
+            setIsMuted(false);
+            setIsVideoOff(false);
+            setSignalingCode(null);
+            setCallSessionId(null);
+
+            stringeeCallRef.current = null;
+            incomingCallRef.current = null;
+            currentCallRef.current = null;
+            localStreamRef.current = null;
+
+            if (localVideoRef.current) localVideoRef.current.srcObject = null;
+            if (remoteVideoRef.current) remoteVideoRef.current.srcObject = null;
+        }, []);
+
+        useEffect(() => {
             let isMounted = true;
 
             if (!chatId || isNaN(chatId)) {
@@ -204,8 +222,12 @@
                 stringeeClientRef.current.on("incomingcall", (incomingCall) => {
                     console.log("📞 incomingCall.toNumber:", incomingCall.toNumber);
                     console.log("👤 currentUser.username:", user.username);
-                    if (callStarted || (stringeeCallRef.current && !stringeeCallRef.current.ended)) {
-                        console.warn("❌ Đang trong cuộc gọi khác, từ chối cuộc gọi mới.");
+                    const isBusy =
+                        callStarted ||
+                        (stringeeCallRef.current && stringeeCallRef.current._signalingState !== 'ENDED') ||
+                        (incomingCallRef.current && incomingCallRef.current._signalingState !== 'ENDED');
+
+                    if (isBusy) {
 
                         const busyMsg = {
                             chatId: incomingCall.customData?.chatId || -1,
@@ -319,6 +341,10 @@
         }, [chatId, token, user, navigate, publish, subscribe, unsubscribe]);
 
         const startCall = async () => {
+            console.log("🚀 Bắt đầu gọi");
+            console.log("📦 callStarted:", callStarted);
+            console.log("📦 stringeeCallRef:", stringeeCallRef.current);
+            console.log("📦 incomingCallRef:", incomingCallRef.current);
             if (isSpam) {
                 toast.error("Không thể gọi video cho người dùng đã đánh dấu spam.");
                 return;
