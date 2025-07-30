@@ -744,49 +744,49 @@ const TweetCard = forwardRef(({ tweet, onPostUpdate }, ref) => {
                         <>
                           <Dropdown.Item
                               onClick={handleEditTweet}
-                              className="text-[var(--text-color)] hover:bg-[var(--hover-bg-color)] rounded transition-colors duration-200"
+                              className="text-[var(--text-color)] hover:bg-[var(--hover-bg-color)] rounded transition-colors duration-200 flex items-center"
                           >
-                            <FaEdit className="me-2 text-[var(--text-color)]" /> Chỉnh sửa
+                            <FaEdit className="me-2 text-blue-500" /> Chỉnh sửa
                           </Dropdown.Item>
                           <Dropdown.Item
                               onClick={handleDeleteTweet}
-                              className="text-[var(--text-color)] hover:bg-[var(--hover-bg-color)] rounded transition-colors duration-200"
+                              className="text-[var(--text-color)] hover:bg-[var(--hover-bg-color)] rounded transition-colors duration-200 flex items-center"
                           >
-                            <FaTrash className="me-2 text-[var(--text-color)]" /> Xóa
+                            <FaTrash className="me-2 text-red-500" /> Xóa
                           </Dropdown.Item>
                           <Dropdown drop="end">
                             <Dropdown.Toggle
                                 variant="link"
-                                className="text-[var(--text-color)] p-0 w-100 text-start hover:bg-[var(--hover-bg-color)] rounded transition-colors duration-200"
+                                className="text-[var(--text-color)] p-0 w-100 text-start hover:bg-[var(--hover-bg-color)] rounded transition-colors duration-200 flex items-center"
                             >
-                              <FaShareAlt className="me-2 text-[var(--text-color)]" /> Trạng thái: {renderStatusText(privacySetting)}
+                              <FaShareAlt className="me-2 text-green-500" /> Trạng thái: {renderStatusText(privacySetting)}
                             </Dropdown.Toggle>
                             <Dropdown.Menu
                                 className="bg-[var(--background-color)] border-[var(--border-color)] rounded-lg shadow-lg"
                             >
                               <Dropdown.Item
                                   onClick={() => handleStatusChange("public")}
-                                  className="text-[var(--text-color)] hover:bg-[var(--hover-bg-color)] rounded transition-colors duration-200"
+                                  className="text-[var(--text-color)] hover:bg-[var(--hover-bg-color)] rounded transition-colors duration-200 flex items-center"
                               >
-                                <FaGlobeAmericas className="me-2 text-primary" /> Công khai
+                                <FaGlobeAmericas className="me-2 text-blue-400" /> Công khai
                               </Dropdown.Item>
                               <Dropdown.Item
                                   onClick={() => handleStatusChange("friends")}
-                                  className="text-[var(--text-color)] hover:bg-[var(--hover-bg-color)] rounded transition-colors duration-200"
+                                  className="text-[var(--text-color)] hover:bg-[var(--hover-bg-color)] rounded transition-colors duration-200 flex items-center"
                               >
-                                <FaUserFriends className="me-2 text-success" /> Bạn bè
+                                <FaUserFriends className="me-2 text-green-400" /> Bạn bè
                               </Dropdown.Item>
                               <Dropdown.Item
                                   onClick={() => handleStatusChange("only_me")}
-                                  className="text-[var(--text-color)] hover:bg-[var(--hover-bg-color)] rounded transition-colors duration-200"
+                                  className="text-[var(--text-color)] hover:bg-[var(--hover-bg-color)] rounded transition-colors duration-200 flex items-center"
                               >
-                                <FaLock className="me-2 text-danger" /> Chỉ mình tôi
+                                <FaLock className="me-2 text-yellow-500" /> Chỉ mình tôi
                               </Dropdown.Item>
                               <Dropdown.Item
                                   onClick={() => handleStatusChange("custom")}
-                                  className="text-[var(--text-color)] hover:bg-[var(--hover-bg-color)] rounded transition-colors duration-200"
+                                  className="text-[var(--text-color)] hover:bg-[var(--hover-bg-color)] rounded transition-colors duration-200 flex items-center"
                               >
-                                <FaList className="me-2 text-info" /> Tùy chỉnh
+                                <FaList className="me-2 text-purple-500" /> Tùy chỉnh
                               </Dropdown.Item>
                             </Dropdown.Menu>
                           </Dropdown>
@@ -795,23 +795,23 @@ const TweetCard = forwardRef(({ tweet, onPostUpdate }, ref) => {
                     {!isSaved ? (
                         <Dropdown.Item
                             onClick={handleSavePost}
-                            className="text-[var(--text-color)] hover:bg-[var(--hover-bg-color)] rounded transition-colors duration-200"
+                            className="text-[var(--text-color)] hover:bg-[var(--hover-bg-color)] rounded transition-colors duration-200 flex items-center"
                         >
-                          <FaSave className="me-2 text-[var(--text-color)]" /> Lưu bài đăng
+                          <FaSave className="me-2 text-indigo-500" /> Lưu bài đăng
                         </Dropdown.Item>
                     ) : (
                         <Dropdown.Item
                             onClick={handleUnsavePost}
-                            className="text-[var(--text-color)] hover:bg-[var(--hover-bg-color)] rounded transition-colors duration-200"
+                            className="text-[var(--text-color)] hover:bg-[var(--hover-bg-color)] rounded transition-colors duration-200 flex items-center"
                         >
-                          <FaRegBookmark className="me-2 text-[var(--text-color)]" /> Bỏ lưu
+                          <FaRegBookmark className="me-2 text-orange-500" /> Bỏ lưu
                         </Dropdown.Item>
                     )}
                     <Dropdown.Item
                         onClick={() => setShowReportModal(true)}
-                        className="text-[var(--text-color)] hover:bg-[var(--hover-bg-color)] rounded transition-colors duration-200"
+                        className="text-[var(--text-color)] hover:bg-[var(--hover-bg-color)] rounded transition-colors duration-200 flex items-center"
                     >
-                      <FaFlag className="me-2 text-[var(--text-color)]" /> Báo cáo
+                      <FaFlag className="me-2 text-red-600" /> Báo cáo
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
