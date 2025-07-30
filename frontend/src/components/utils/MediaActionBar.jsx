@@ -1,13 +1,14 @@
 import React, { useRef, useState } from "react";
 import { Overlay, OverlayTrigger, Popover, Tooltip } from "react-bootstrap";
 import { FaImage, FaSmile } from "react-icons/fa";
-import useEmojiList from "../../hooks/useEmojiList";
+import { useEmojiContext } from "../../contexts/EmojiContext"; // Đảm bảo đường dẫn đúng
 
 const MediaActionBar = ({ onEmojiClick, onFileSelect, onSelectEmoji }) => {
     const fileInputRef = useRef(null);
     const emojiButtonRef = useRef(null);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-    const { emojiList } = useEmojiList();
+
+    const { emojiMessagingList } = useEmojiContext();
 
     const handleClickFileInput = () => {
         fileInputRef.current?.click();
@@ -57,7 +58,7 @@ const MediaActionBar = ({ onEmojiClick, onFileSelect, onSelectEmoji }) => {
                     >
                         <Popover.Body className="max-w-[300px] max-h-[200px] overflow-y-auto scrollbar-hide p-2">
                             <div className="flex flex-wrap">
-                                {emojiList.map((emoji, idx) => (
+                                {emojiMessagingList.map((emoji, idx) => (
                                     <span
                                         key={idx}
                                         onClick={() => handleSelectEmoji(emoji)}
