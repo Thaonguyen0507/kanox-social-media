@@ -350,7 +350,7 @@ function SettingsPage() {
                                         className="bg-input"
                                     />
                                 </Form.Group>
-                                
+
                                 <div className="d-flex justify-content-end">
                                     <button
                                         type="submit"

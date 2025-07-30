@@ -731,79 +731,87 @@ const TweetCard = forwardRef(({ tweet, onPostUpdate }, ref) => {
               <div className="position-absolute top-0 end-0 d-flex align-items-center gap-2">
                 <Dropdown>
                   <Dropdown.Toggle
-                    variant="link"
-                    className="text-[var(--text-color-muted)] p-0 w-9 h-9 rounded-full d-flex align-items-center justify-content-center hover:bg-gray-700 hover:text-white"
-                    style={{
-                      fontSize: "1.2rem",
-                      textDecoration: "none",
-                      "::after": {
-                        display: "none",
-                      },
-                    }}
+                      variant="link"
+                      className="text-[var(--text-color-muted)] p-0 w-9 h-9 rounded-full d-flex align-items-center justify-content-center hover:bg-[var(--hover-bg-color)] hover:text-[var(--text-color)] transition-colors duration-200"
+                      style={{ fontSize: "1.2rem", textDecoration: "none" }}
                   >
                     <FaEllipsisH />
                   </Dropdown.Toggle>
-                  <Dropdown.Menu>
+                  <Dropdown.Menu
+                      className="bg-[var(--background-color)] border-[var(--border-color)] rounded-lg shadow-lg mt-1"
+                  >
                     {isOwnTweet && (
-                      <>
-                        <Dropdown.Item onClick={handleEditTweet}>
-                          <FaEdit className="me-2 text-[var(--text-color)]" />{" "}
-                          Chỉnh sửa
-                        </Dropdown.Item>
-                        <Dropdown.Item onClick={handleDeleteTweet}>
-                          <FaTrash className="me-2 text-[var(--text-color)]" />{" "}
-                          Xóa
-                        </Dropdown.Item>
-                        <Dropdown drop="end">
-                          <Dropdown.Toggle
-                            variant="link"
-                            className="text-[var(--text-color)] p-0 w-100 text-start"
+                        <>
+                          <Dropdown.Item
+                              onClick={handleEditTweet}
+                              className="text-[var(--text-color)] hover:bg-[var(--hover-bg-color)] rounded transition-colors duration-200"
                           >
-                            <FaShareAlt className="me-2 text-[var(--text-color)]" />{" "}
-                            Trạng thái: {renderStatusText(privacySetting)}
-                          </Dropdown.Toggle>
-                          <Dropdown.Menu>
-                            <Dropdown.Item
-                              onClick={() => handleStatusChange("public")}
+                            <FaEdit className="me-2 text-[var(--text-color)]" /> Chỉnh sửa
+                          </Dropdown.Item>
+                          <Dropdown.Item
+                              onClick={handleDeleteTweet}
+                              className="text-[var(--text-color)] hover:bg-[var(--hover-bg-color)] rounded transition-colors duration-200"
+                          >
+                            <FaTrash className="me-2 text-[var(--text-color)]" /> Xóa
+                          </Dropdown.Item>
+                          <Dropdown drop="end">
+                            <Dropdown.Toggle
+                                variant="link"
+                                className="text-[var(--text-color)] p-0 w-100 text-start hover:bg-[var(--hover-bg-color)] rounded transition-colors duration-200"
                             >
-                              <FaGlobeAmericas className="me-2 text-primary" />{" "}
-                              Công khai
-                            </Dropdown.Item>
-                            <Dropdown.Item
-                              onClick={() => handleStatusChange("friends")}
+                              <FaShareAlt className="me-2 text-[var(--text-color)]" /> Trạng thái: {renderStatusText(privacySetting)}
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu
+                                className="bg-[var(--background-color)] border-[var(--border-color)] rounded-lg shadow-lg"
                             >
-                              <FaUserFriends className="me-2 text-success" />{" "}
-                              Bạn bè
-                            </Dropdown.Item>
-                            <Dropdown.Item
-                              onClick={() => handleStatusChange("only_me")}
-                            >
-                              <FaLock className="me-2 text-danger" /> Chỉ mình
-                              tôi
-                            </Dropdown.Item>
-                            <Dropdown.Item
-                              onClick={() => handleStatusChange("custom")}
-                            >
-                              <FaList className="me-2 text-info" /> Tùy chỉnh
-                            </Dropdown.Item>
-                          </Dropdown.Menu>
-                        </Dropdown>
-                      </>
+                              <Dropdown.Item
+                                  onClick={() => handleStatusChange("public")}
+                                  className="text-[var(--text-color)] hover:bg-[var(--hover-bg-color)] rounded transition-colors duration-200"
+                              >
+                                <FaGlobeAmericas className="me-2 text-primary" /> Công khai
+                              </Dropdown.Item>
+                              <Dropdown.Item
+                                  onClick={() => handleStatusChange("friends")}
+                                  className="text-[var(--text-color)] hover:bg-[var(--hover-bg-color)] rounded transition-colors duration-200"
+                              >
+                                <FaUserFriends className="me-2 text-success" /> Bạn bè
+                              </Dropdown.Item>
+                              <Dropdown.Item
+                                  onClick={() => handleStatusChange("only_me")}
+                                  className="text-[var(--text-color)] hover:bg-[var(--hover-bg-color)] rounded transition-colors duration-200"
+                              >
+                                <FaLock className="me-2 text-danger" /> Chỉ mình tôi
+                              </Dropdown.Item>
+                              <Dropdown.Item
+                                  onClick={() => handleStatusChange("custom")}
+                                  className="text-[var(--text-color)] hover:bg-[var(--hover-bg-color)] rounded transition-colors duration-200"
+                              >
+                                <FaList className="me-2 text-info" /> Tùy chỉnh
+                              </Dropdown.Item>
+                            </Dropdown.Menu>
+                          </Dropdown>
+                        </>
                     )}
                     {!isSaved ? (
-                      <Dropdown.Item onClick={handleSavePost}>
-                        <FaSave className="me-2 text-[var(--text-color)]" /> Lưu
-                        bài đăng
-                      </Dropdown.Item>
+                        <Dropdown.Item
+                            onClick={handleSavePost}
+                            className="text-[var(--text-color)] hover:bg-[var(--hover-bg-color)] rounded transition-colors duration-200"
+                        >
+                          <FaSave className="me-2 text-[var(--text-color)]" /> Lưu bài đăng
+                        </Dropdown.Item>
                     ) : (
-                      <Dropdown.Item onClick={handleUnsavePost}>
-                        <FaRegBookmark className="me-2 text-[var(--text-color)]" />{" "}
-                        Bỏ lưu
-                      </Dropdown.Item>
+                        <Dropdown.Item
+                            onClick={handleUnsavePost}
+                            className="text-[var(--text-color)] hover:bg-[var(--hover-bg-color)] rounded transition-colors duration-200"
+                        >
+                          <FaRegBookmark className="me-2 text-[var(--text-color)]" /> Bỏ lưu
+                        </Dropdown.Item>
                     )}
-                    <Dropdown.Item onClick={() => setShowReportModal(true)}>
-                      <FaFlag className="me-2 text-[var(--text-color)]" /> Báo
-                      cáo
+                    <Dropdown.Item
+                        onClick={() => setShowReportModal(true)}
+                        className="text-[var(--text-color)] hover:bg-[var(--hover-bg-color)] rounded transition-colors duration-200"
+                    >
+                      <FaFlag className="me-2 text-[var(--text-color)]" /> Báo cáo
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
