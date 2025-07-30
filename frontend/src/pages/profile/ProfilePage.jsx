@@ -721,7 +721,7 @@ function ProfilePage() {
                     {/* Tab Navigation */}
                     {hasAccess && (
                         <Nav variant="tabs" className="mb-4 border-b border-gray-300 dark:border-gray-700">
-                            {["posts", ...(isOwnProfile ? ["savedArticles"] : [])].map((tab) => (
+                            {["posts", "followers", "following", ...(isOwnProfile ? ["savedArticles"] : [])].map((tab) => (
                                 <Nav.Item key={tab} className="flex-1 text-center">
                                     <Nav.Link
                                         active={activeTab === tab}
