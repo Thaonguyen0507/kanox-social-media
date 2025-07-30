@@ -6,6 +6,8 @@
     import { ToastContainer, toast } from "react-toastify";
     import "react-toastify/dist/ReactToastify.css";
     import { WebSocketContext } from "../../context/WebSocketContext";
+    import useSingleMedia from "../../hooks/useSingleMedia";
+    import "./Call.css";
 
 
     const Call = ({ onEndCall, onStartCall }) => {
@@ -229,11 +231,10 @@
                     console.log("👤 currentUser.username:", user.username);
                     const isBusy =
                         callStarted ||
-                        (stringeeCallRef.current && stringeeCallRef.current._signalingState !== 'ENDED') ||
-                        (incomingCallRef.current && incomingCallRef.current._signalingState !== 'ENDED');
+                        (stringeeCallRef.current && stringeeCallRef.current._signalingState !== "ENDED") ||
+                        (incomingCallRef.current && incomingCallRef.current._signalingState !== "ENDED");
 
                     if (isBusy) {
-
                         const busyMsg = {
                             chatId: incomingCall.customData?.chatId || -1,
                             senderId: user.id,
@@ -268,7 +269,7 @@
                         return;
                     }
                     if (callStarted || stringeeCallRef.current || incomingCallRef.current) {
-                        incomingCall.reject(); // Máy bận
+                        incomingCall.reject();
                         return;
                     }
                     incomingCallRef.current = incomingCall;
@@ -280,7 +281,7 @@
                             localVideoRef.current.play().catch((err) => {
                                 console.warn("Local video play error:", err);
                                 setTimeout(() => {
-                                    localVideoRef.current?.play().catch(err => console.error("Retry local video error:", err));
+                                    localVideoRef.current?.play().catch((err) => console.error("Retry local video error:", err));
                                 }, 300);
                             });
                         }
@@ -289,10 +290,13 @@
                     incomingCall.on("addremotestream", (stream) => {
                         if (remoteVideoRef.current) {
                             remoteVideoRef.current.srcObject = stream;
+                            // Kiểm tra xem stream có video track hay không
+                            const hasVideo = stream.getVideoTracks().length > 0;
+                            setRemoteVideoOff(!hasVideo); // Cập nhật trạng thái camera của người nhận
                             remoteVideoRef.current.play().catch((err) => {
                                 console.warn("Remote video play error:", err);
                                 setTimeout(() => {
-                                    remoteVideoRef.current?.play().catch(err => console.error("Retry remote video error:", err));
+                                    remoteVideoRef.current?.play().catch((err) => console.error("Retry remote video error:", err));
                                 }, 300);
                             });
                         }
@@ -303,7 +307,13 @@
                         endCall();
                     });
 
-                    // Chỉ trả lời cuộc gọi nếu không bị từ chối trước đó
+                    incomingCall.on("mediastate", (state) => {
+                        console.log("📺 Media state (incoming):", state);
+                        if (state.type === "video" && state.enabled !== undefined) {
+                            setRemoteVideoOff(!state.enabled);
+                        }
+                    });
+
                     incomingCall.answer((res) => {
                         if (res.r === 0) {
                             console.log("✅ [CALLEE] Đã trả lời cuộc gọi - Mình là người nhận");
@@ -445,12 +455,21 @@
                 stringeeCallRef.current.on("addremotestream", (stream) => {
                     if (remoteVideoRef.current) {
                         remoteVideoRef.current.srcObject = stream;
+                        const hasVideo = stream.getVideoTracks().length > 0;
+                        setRemoteVideoOff(!hasVideo);
                         setTimeout(() => {
                             remoteVideoRef.current
                                 .play()
                                 .then(() => console.log("▶️ Remote video playing"))
-                                .catch(err => console.warn("Remote video play error:", err));
-                        }, 300); // ⏱️ delay để tránh AbortError
+                                .catch((err) => console.warn("Remote video play error:", err));
+                        }, 300);
+                    }
+                });
+
+                stringeeCallRef.current.on("mediastate", (state) => {
+                    console.log("📺 Media state:", state);
+                    if (state.type === "video" && state.enabled !== undefined) {
+                        setRemoteVideoOff(!state.enabled); // Cập nhật trạng thái khi người nhận bật/tắt video
                     }
                 });
 
@@ -716,14 +735,27 @@
 
         return (
             <div className="relative h-screen bg-black flex flex-col">
-                <video
-                    ref={remoteVideoRef}
-                    autoPlay
-                    playsInline
-                    className="w-full h-full object-cover bg-gray-900"
-                />
+                <div className={`video-container ${remoteVideoOff ? "video-off" : ""}`}>
+                    <video
+                        ref={remoteVideoRef}
+                        autoPlay
+                        playsInline
+                        className="w-full h-full object-cover bg-gray-900"
+                    />
+                    {(remoteVideoOff || remoteAvatarLoading) && (
+                        <img
+                            src={remoteAvatarUrl || "https://via.placeholder.com/150"}
+                            alt="Remote user avatar"
+                            className="avatar-overlay"
+                        />
+                    )}
+                </div>
                 {callStarted && (
-                    <div className="absolute bottom-6 right-6 w-[25%] max-w-[240px] aspect-video rounded-xl overflow-hidden shadow-2xl border border-gray-700 bg-gray-900">
+                    <div
+                        className={`absolute bottom-6 right-6 w-[25%] max-w-[240px] aspect-video rounded-xl overflow-hidden shadow-2xl border border-gray-700 bg-gray-900 video-container ${
+                            isVideoOff ? "video-off" : ""
+                        }`}
+                    >
                         <video
                             ref={localVideoRef}
                             autoPlay
@@ -731,6 +763,13 @@
                             playsInline
                             className="w-full h-full object-cover"
                         />
+                        {(isVideoOff || localAvatarLoading) && (
+                            <img
+                                src={localAvatarUrl || "https://via.placeholder.com/150"}
+                                alt="Local user avatar"
+                                className="avatar-overlay"
+                            />
+                        )}
                     </div>
                 )}
                 <div className="absolute top-4 left-4 text-white text-lg font-semibold">
@@ -786,28 +825,3 @@
     };
 
     export default Call;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
