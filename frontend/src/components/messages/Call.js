@@ -204,7 +204,7 @@
                 stringeeClientRef.current.on("incomingcall", (incomingCall) => {
                     console.log("📞 incomingCall.toNumber:", incomingCall.toNumber);
                     console.log("👤 currentUser.username:", user.username);
-                    if (callStarted || stringeeCallRef.current) {
+                    if (callStarted || (stringeeCallRef.current && !stringeeCallRef.current.ended)) {
                         console.warn("❌ Đang trong cuộc gọi khác, từ chối cuộc gọi mới.");
 
                         const busyMsg = {
@@ -576,6 +576,8 @@
             // 10. Dọn kỹ lại sau 500ms để phòng rò rỉ stream
             setTimeout(() => {
                 console.log("🧹 Bắt đầu cleanup lần 2 sau 500ms");
+                console.log("✅ Sau cleanup: stringeeCallRef =", stringeeCallRef.current);
+                console.log("✅ Sau cleanup: incomingCallRef =", incomingCallRef.current);
 
                 [localVideoRef, remoteVideoRef].forEach((ref, idx) => {
                     if (ref.current && ref.current.srcObject) {
@@ -606,6 +608,13 @@
 
             // 11. Điều hướng về trang chat
             navigate(`/messages?chatId=${chatId}`);
+
+            stringeeCallRef.current = null;
+            incomingCallRef.current = null;
+            currentCallRef.current = null;
+
+            console.log("✅ Sau cleanup: stringeeCallRef =", stringeeCallRef.current);
+            console.log("✅ Sau cleanup: incomingCallRef =", incomingCallRef.current);
         };
 
         const toggleMute = () => {
