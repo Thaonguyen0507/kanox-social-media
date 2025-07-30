@@ -10,6 +10,7 @@
       <change beforePath="$PROJECT_DIR$/src/components/posts/TweetInput/EditPostModal.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/posts/TweetInput/EditPostModal.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/posts/TweetInput/TweetInput.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/posts/TweetInput/TweetInput.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/search/ExplorePage.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/search/ExplorePage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -183,7 +184,7 @@
       <workItem from="1753785658023" duration="4565000" />
       <workItem from="1753797497733" duration="9260000" />
       <workItem from="1753842222184" duration="293000" />
-      <workItem from="1753880573071" duration="4412000" />
+      <workItem from="1753880573071" duration="2934000" />
     </task>
     <servers />
   </component>

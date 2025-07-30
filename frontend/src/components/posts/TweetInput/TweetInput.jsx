@@ -767,8 +767,7 @@ function TweetInput({ onPostSuccess, groupId }) {
                             disabled={
                                 (!tweetContent.trim() && mediaFiles.length === 0) ||
                                 (status === "custom" && !customListId) ||
-                                loading ||
-                                (mediaFiles.length > 0 && !mediaUploaded)
+                                loading
                             }
                         >
                             {loading ? "Đang đăng..." : "Đăng"}
