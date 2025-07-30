@@ -221,7 +221,7 @@ const TweetCard = forwardRef(({ tweet, onPostUpdate }, ref) => {
   };
 
   const handleCopyLink = () => {
-    const postUrl = `${window.location.origin}/home?highlightedPostId=${id}`;
+    const postUrl = `${window.location.origin}/home?postId=${id}`;
     navigator.clipboard.writeText(postUrl);
     toast.info("Đã sao chép liên kết!");
   };
