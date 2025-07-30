@@ -93,7 +93,7 @@ const GroupMembersManagementPage = () => {
             <Button
                 variant="secondary"
                 className="mb-3"
-                onClick={() => navigate("/admin/communities")}
+                onClick={() => navigate("/admin", { state: { tab: "communities" } })}
             >
                 ← Quay lại quản lý cộng đồng
             </Button>
@@ -138,15 +138,14 @@ const GroupMembersManagementPage = () => {
                                             </Card.Subtitle>
 
                                             {/* Badge vai trò */}
-                                            {member.isOwner ? (
-                                                <Badge bg="warning" text="dark">
-                                                    👑 Chủ nhóm
-                                                </Badge>
-                                            ) : member.isAdmin ? (
+                                            {member.owner ? (
+                                                <Badge bg="warning" text="dark">👑 Chủ nhóm</Badge>
+                                            ) : member.admin ? (
                                                 <Badge bg="primary">🛡️ Admin</Badge>
                                             ) : (
                                                 <Badge bg="secondary">👤 Thành viên</Badge>
                                             )}
+
                                         </div>
                                     </div>
                                 </Card.Body>

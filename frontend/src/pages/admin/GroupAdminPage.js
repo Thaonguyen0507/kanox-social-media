@@ -44,7 +44,7 @@ const GroupAdminPage = () => {
             <Button
                 variant="secondary"
                 className="mb-3"
-                onClick={() => navigate("/admin/communities")}
+                onClick={() => navigate("/admin", { state: { tab: "communities" } })}
             >
                 ← Quay lại quản lý cộng đồng
             </Button>
