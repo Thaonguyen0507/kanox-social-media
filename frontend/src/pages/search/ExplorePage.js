@@ -27,65 +27,65 @@ function ExplorePage() {
     }
   }, [searchKeyword, debouncedSearch]);
 
-  const trendingTopics = [
-    {
-      id: 1,
-      category: "Chủ đề nổi trội ở Việt Nam",
-      title: "cuội",
-      posts: 587,
-    },
-    {
-      id: 2,
-      category: "Chủ đề nổi trội ở Việt Nam",
-      title: "#khảo_oam",
-      posts: 390,
-    },
-    {
-      id: 3,
-      category: "Chủ đề nổi trội ở Việt Nam",
-      title: "Trung Quốc",
-      posts: 197,
-    },
-    {
-      id: 4,
-      category: "Chủ đề nổi trội ở Việt Nam",
-      title: "Incredible",
-      posts: 197,
-    },
-    {
-      id: 5,
-      category: "Chủ đề nổi trội ở Việt Nam",
-      title: "#QuangHungMasterDxForestival",
-      posts: 2119,
-    },
-    {
-      id: 6,
-      category: "Chủ đề nổi trội ở Việt Nam",
-      title: "#linglingkwong",
-      posts: 84,
-    },
-    {
-      id: 7,
-      category: "Chủ đề nổi trội ở Việt Nam",
-      title: "Movies",
-      posts: 150,
-    },
-  ];
+  // const trendingTopics = [
+  //   {
+  //     id: 1,
+  //     category: "Chủ đề nổi trội ở Việt Nam",
+  //     title: "cuội",
+  //     posts: 587,
+  //   },
+  //   {
+  //     id: 2,
+  //     category: "Chủ đề nổi trội ở Việt Nam",
+  //     title: "#khảo_oam",
+  //     posts: 390,
+  //   },
+  //   {
+  //     id: 3,
+  //     category: "Chủ đề nổi trội ở Việt Nam",
+  //     title: "Trung Quốc",
+  //     posts: 197,
+  //   },
+  //   {
+  //     id: 4,
+  //     category: "Chủ đề nổi trội ở Việt Nam",
+  //     title: "Incredible",
+  //     posts: 197,
+  //   },
+  //   {
+  //     id: 5,
+  //     category: "Chủ đề nổi trội ở Việt Nam",
+  //     title: "#QuangHungMasterDxForestival",
+  //     posts: 2119,
+  //   },
+  //   {
+  //     id: 6,
+  //     category: "Chủ đề nổi trội ở Việt Nam",
+  //     title: "#linglingkwong",
+  //     posts: 84,
+  //   },
+  //   {
+  //     id: 7,
+  //     category: "Chủ đề nổi trội ở Việt Nam",
+  //     title: "Movies",
+  //     posts: 150,
+  //   },
+  // ];
 
-  const suggestedFollows = [
-    {
-      id: 1,
-      name: "Người dùng 1",
-      username: "@user1",
-      avatar: "https://via.placeholder.com/40",
-    },
-    {
-      id: 2,
-      name: "Người dùng 2",
-      username: "@user2",
-      avatar: "https://via.placeholder.com/40",
-    },
-  ];
+  // const suggestedFollows = [
+  //   {
+  //     id: 1,
+  //     name: "Người dùng 1",
+  //     username: "@user1",
+  //     avatar: "https://via.placeholder.com/40",
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Người dùng 2",
+  //     username: "@user2",
+  //     avatar: "https://via.placeholder.com/40",
+  //   },
+  // ];
 
   const UserSearchItem = ({ item }) => {
     const { mediaUrl } = useSingleMedia(item.id, "PROFILE", "image");
@@ -142,33 +142,33 @@ function ExplorePage() {
           </div>
       );
 
-  const renderTabContent = () => (
-      <div className="mt-0">
-        {trendingTopics.length === 0 ? (
-            <p className="text-center text-gray-500 p-4">
-              Không có chủ đề nào đang phổ biến.
-            </p>
-        ) : (
-            trendingTopics.map((topic) => (
-                <div
-                    key={topic.id}
-                    className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
-                >
-                  <div>
-                    <p className="text-xs text-gray-500">{topic.category}</p>
-                    <p className="font-bold text-[var(--text-color)]">
-                      {topic.title}
-                    </p>
-                    <p className="text-xs text-gray-500">{topic.posts} bài đăng</p>
-                  </div>
-                  <button className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white">
-                    <FaEllipsisH />
-                  </button>
-                </div>
-            ))
-        )}
-      </div>
-  );
+  // const renderTabContent = () => (
+  //     <div className="mt-0">
+  //       {trendingTopics.length === 0 ? (
+  //           <p className="text-center text-gray-500 p-4">
+  //             Không có chủ đề nào đang phổ biến.
+  //           </p>
+  //       ) : (
+  //           trendingTopics.map((topic) => (
+  //               <div
+  //                   key={topic.id}
+  //                   className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
+  //               >
+  //                 <div>
+  //                   <p className="text-xs text-gray-500">{topic.category}</p>
+  //                   <p className="font-bold text-[var(--text-color)]">
+  //                     {topic.title}
+  //                   </p>
+  //                   <p className="text-xs text-gray-500">{topic.posts} bài đăng</p>
+  //                 </div>
+  //                 <button className="text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white">
+  //                   <FaEllipsisH />
+  //                 </button>
+  //               </div>
+  //           ))
+  //       )}
+  //     </div>
+  // );
 
   if (loading || !hasSynced) {
     return (
@@ -181,8 +181,8 @@ function ExplorePage() {
 
   return (
       <div className="flex min-h-screen bg-[var(--background-color)] text-[var(--text-color)]">
-        <div className="flex flex-col flex-grow">
-          <div className="sticky top-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-md">
+        <div className="flex flex-col flex-grow bg-[var(--background-color)]">
+          <div className="sticky top-0 z-50 bg-[var(--background-color)] border-b border-gray-200 dark:border-gray-700 shadow-md">
             <div className="max-w-2xl mx-auto w-full p-4 bg-[var(--background-color)]">
               {/* Search input + dropdown */}
               <div className="relative z-[60]">
@@ -231,15 +231,15 @@ function ExplorePage() {
           </div>
 
            Main content: Trending topics 
-          <div className="w-full px-4 flex-grow">
-            {renderTabContent()}
-          </div>
+          {/*<div className="w-full px-4 flex-grow">*/}
+          {/*  {renderTabContent()}*/}
+          {/*</div>*/}
         </div>
 
         {/* Sidebar */}
-        <div className="hidden lg:block w-[350px] border-l border-gray-200 dark:border-gray-700">
-          <SidebarRight trendingTopics={trendingTopics} />
-        </div>
+        {/*<div className="hidden lg:block w-[350px] border-l border-gray-200 dark:border-gray-700">*/}
+        {/*  <SidebarRight trendingTopics={trendingTopics} />*/}
+        {/*</div>*/}
       </div>
   );
 }

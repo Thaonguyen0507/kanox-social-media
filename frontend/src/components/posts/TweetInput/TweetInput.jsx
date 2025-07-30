@@ -639,39 +639,39 @@ function TweetInput({ onPostSuccess, groupId }) {
                                     </div>
                                 )}
                             </div>
-                            <Button
-                                variant="link"
-                                className="text-[var(--primary-color)] p-2 rounded-full hover-bg-light mr-2"
-                            >
-                                <FaCalendarAlt size={20} />
-                            </Button>
+                            {/*<Button*/}
+                            {/*    variant="link"*/}
+                            {/*    className="text-[var(--primary-color)] p-2 rounded-full hover-bg-light mr-2"*/}
+                            {/*>*/}
+                            {/*    <FaCalendarAlt size={20} />*/}
+                            {/*</Button>*/}
 
                             <div className="relative mr-2">
-                                <button
-                                    onClick={() => setShowTagInput(!showTagInput)}
-                                    className="p-2 rounded-full text-[var(--primary-color)] hover:bg-[var(--hover-bg-color)] transition-colors"
-                                >
-                                    <FaUserFriends size={20} />
-                                </button>
+                                {/*<button*/}
+                                {/*    onClick={() => setShowTagInput(!showTagInput)}*/}
+                                {/*    className="p-2 rounded-full text-[var(--primary-color)] hover:bg-[var(--hover-bg-color)] transition-colors"*/}
+                                {/*>*/}
+                                {/*    <FaUserFriends size={20} />*/}
+                                {/*</button>*/}
 
-                                {showTagInput && (
-                                    <div className="absolute z-50 mt-2 w-64 bg-[var(--background-color)] border border-[var(--border-color)] rounded shadow p-3">
-                                        <input
-                                            type="text"
-                                            placeholder="Nhập username"
-                                            value={tagInput}
-                                            onChange={handleTagInputChange}
-                                            className="border border-[var(--border-color)] bg-[var(--background-color)] text-[var(--text-color)] px-3 py-2 rounded w-full mb-2"
-                                        />
-                                        <button
-                                            className="bg-[var(--primary-color)] text-white text-sm px-4 py-2 rounded w-full disabled:opacity-50"
-                                            onClick={handleAddTag}
-                                            disabled={!tagInput.trim()}
-                                        >
-                                            Thêm
-                                        </button>
-                                    </div>
-                                )}
+                                {/*{showTagInput && (*/}
+                                {/*    <div className="absolute z-50 mt-2 w-64 bg-[var(--background-color)] border border-[var(--border-color)] rounded shadow p-3">*/}
+                                {/*        <input*/}
+                                {/*            type="text"*/}
+                                {/*            placeholder="Nhập username"*/}
+                                {/*            value={tagInput}*/}
+                                {/*            onChange={handleTagInputChange}*/}
+                                {/*            className="border border-[var(--border-color)] bg-[var(--background-color)] text-[var(--text-color)] px-3 py-2 rounded w-full mb-2"*/}
+                                {/*        />*/}
+                                {/*        <button*/}
+                                {/*            className="bg-[var(--primary-color)] text-white text-sm px-4 py-2 rounded w-full disabled:opacity-50"*/}
+                                {/*            onClick={handleAddTag}*/}
+                                {/*            disabled={!tagInput.trim()}*/}
+                                {/*        >*/}
+                                {/*            Thêm*/}
+                                {/*        </button>*/}
+                                {/*    </div>*/}
+                                {/*)}*/}
                             </div>
 
                             <OverlayTrigger
@@ -734,29 +734,29 @@ function TweetInput({ onPostSuccess, groupId }) {
                                 </div>
                             </OverlayTrigger>
                         </div>
-                        <Button
-                            variant="link"
-                            className="text-[var(--primary-color)] p-2 rounded-full hover-bg-light"
-                            onClick={() => setShowPlacePicker(!showPlacePicker)}
-                        >
-                            <FaMapMarkerAlt size={20} />
-                        </Button>
-                        {showPlacePicker && (
-                            <div className="absolute z-50 mt-2 w-64 bg-[var(--background-color)] border border-[var(--border-color)] rounded shadow p-3">
-                                {ready ? (
-                                    <AutocompleteInput
-                                        onPlaceSelected={(place) => {
-                                            if (!place) return;
-                                            setSelectedPlace(place);
-                                            setPlaceInput(place.address);
-                                            setShowPlacePicker(false);
-                                        }}
-                                    />
-                                ) : (
-                                    <p className="text-sm text-gray-400">Đang tải địa điểm...</p>
-                                )}
-                            </div>
-                        )}
+                        {/*<Button*/}
+                        {/*    variant="link"*/}
+                        {/*    className="text-[var(--primary-color)] p-2 rounded-full hover-bg-light"*/}
+                        {/*    onClick={() => setShowPlacePicker(!showPlacePicker)}*/}
+                        {/*>*/}
+                        {/*    <FaMapMarkerAlt size={20} />*/}
+                        {/*</Button>*/}
+                        {/*{showPlacePicker && (*/}
+                        {/*    <div className="absolute z-50 mt-2 w-64 bg-[var(--background-color)] border border-[var(--border-color)] rounded shadow p-3">*/}
+                        {/*        {ready ? (*/}
+                        {/*            <AutocompleteInput*/}
+                        {/*                onPlaceSelected={(place) => {*/}
+                        {/*                    if (!place) return;*/}
+                        {/*                    setSelectedPlace(place);*/}
+                        {/*                    setPlaceInput(place.address);*/}
+                        {/*                    setShowPlacePicker(false);*/}
+                        {/*                }}*/}
+                        {/*            />*/}
+                        {/*        ) : (*/}
+                        {/*            <p className="text-sm text-gray-400">Đang tải địa điểm...</p>*/}
+                        {/*        )}*/}
+                        {/*    </div>*/}
+                        {/*)}*/}
 
 
 
