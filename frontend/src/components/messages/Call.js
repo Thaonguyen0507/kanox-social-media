@@ -414,9 +414,9 @@
                     setSignalingCode(state.code);
                     console.log("📶 Signaling state:", state);
 
-                    if (state.code === 3) {
-                        toast.error("Người nhận đang bận cuộc gọi khác.");
-                    }
+                    // if (state.code === 3) {
+                    //     toast.error("Người nhận đang bận cuộc gọi khác.");
+                    // }
                 });
                 stringeeCallRef.current.on("mediastate", (state) => {
                     console.log("📺 Media state:", state);

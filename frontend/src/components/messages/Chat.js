@@ -459,35 +459,35 @@ const Chat = ({ chatId, messages, onMessageUpdate, onSendMessage }) => {
             </div>
             <div className="p-3 border-t border-[var(--border-color)] bg-[var(--background-color)] relative">
                 {/* Media preview */}
-                {selectedMediaPreviews.length > 0 && (
-                    <div className="flex gap-2 overflow-x-auto mb-2">
-                        {selectedMediaPreviews.map((media, idx) => (
-                            <div key={idx} className="relative w-20 h-20 border rounded overflow-hidden">
-                                {media.type.startsWith("image/") ? (
-                                    <img src={media.url} className="w-full h-full object-cover" alt="preview" />
-                                ) : (
-                                    <video src={media.url} className="w-full h-full object-cover" controls />
-                                )}
-                                <button
-                                    onClick={() => {
-                                        setSelectedMediaPreviews((prev) => prev.filter((_, i) => i !== idx));
-                                        setSelectedMediaFiles((prev) => prev.filter((_, i) => i !== idx));
-                                    }}
-                                    className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"
-                                >
-                                    ×
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                )}
+                {/*{selectedMediaPreviews.length > 0 && (*/}
+                {/*    <div className="flex gap-2 overflow-x-auto mb-2">*/}
+                {/*        {selectedMediaPreviews.map((media, idx) => (*/}
+                {/*            <div key={idx} className="relative w-20 h-20 border rounded overflow-hidden">*/}
+                {/*                {media.type.startsWith("image/") ? (*/}
+                {/*                    <img src={media.url} className="w-full h-full object-cover" alt="preview" />*/}
+                {/*                ) : (*/}
+                {/*                    <video src={media.url} className="w-full h-full object-cover" controls />*/}
+                {/*                )}*/}
+                {/*                <button*/}
+                {/*                    onClick={() => {*/}
+                {/*                        setSelectedMediaPreviews((prev) => prev.filter((_, i) => i !== idx));*/}
+                {/*                        setSelectedMediaFiles((prev) => prev.filter((_, i) => i !== idx));*/}
+                {/*                    }}*/}
+                {/*                    className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs"*/}
+                {/*                >*/}
+                {/*                    ×*/}
+                {/*                </button>*/}
+                {/*            </div>*/}
+                {/*        ))}*/}
+                {/*    </div>*/}
+                {/*)}*/}
 
                 {/* Input + Action Bar */}
-                <div className="flex items-center bg-[var(--input-bg-color)] rounded-xl shadow-sm overflow-hidden px-2">
+                <div className="flex items-center bg-[var(--background-color)] rounded-xl shadow-sm overflow-hidden px-2">
                     <MediaActionBar
-                        onFileSelect={(files) => {
-                            handleFileSelect(files); // Upload
-                        }}
+                        // onFileSelect={(files) => {
+                        //     handleFileSelect(files); // Upload
+                        // }}
                         onSelectEmoji={(emoji) => {
                             const input = inputRef.current;
                             if (!input) return;

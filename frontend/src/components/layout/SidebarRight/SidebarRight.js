@@ -163,9 +163,9 @@ function SidebarRight() {
                     ))}
                   </div>
               )}
-              <div className="px-4 py-2 font-bold text-sm hover:bg-[var(--hover-bg-color)] cursor-pointer">
-                Hiển thị thêm
-              </div>
+              {/*<div className="px-4 py-2 font-bold text-sm hover:bg-[var(--hover-bg-color)] cursor-pointer">*/}
+              {/*  Hiển thị thêm*/}
+              {/*</div>*/}
             </div>
         )}
 

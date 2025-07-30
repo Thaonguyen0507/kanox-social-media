@@ -564,8 +564,8 @@ function MessengerPage() {
             </Nav>
           </div>
           <div className="flex flex-grow h-full overflow-hidden min-h-0">
-            <div className="w-1/3 border-r border-[var(--border-color)] bg-[var(--card-bg)] overflow-y-auto">
-              {filteredChats.map((chat) => {
+            <div className="w-1/3 border-r border-[var(--border-color)] bg-[var(--card-bg)] overflow-y-auto scrollbar-hide transition-all duration-300 ease-in-out">
+            {filteredChats.map((chat) => {
                 const isUnread = unreadChats.has(chat.id) && selectedChatId !== chat.id;
                 const isFromOthers = chat.lastSenderId && chat.lastSenderId !== user.id;
                 const avatarUrl = getAvatarUrl(chatTargetUserMap[chat.id]);
@@ -574,7 +574,7 @@ function MessengerPage() {
                     <div
                         key={chat.id}
                         onClick={() => handleSelectChat(chat.id)}
-                        className={`flex items-center justify-between p-4 border-b border-[var(--border-color)] hover:bg-[var(--hover-bg-color)] cursor-pointer ${
+                        className={`flex items-center justify-between p-4 border-b border-[var(--border-color)] hover:bg-[var(--hover-bg-color)] cursor-pointer transition-all duration-200 ease-in-out ${
                             selectedChatId === chat.id ? "bg-gray-200 dark:bg-gray-700" : ""
                         }`}
                     >

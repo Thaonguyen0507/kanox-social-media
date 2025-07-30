@@ -230,16 +230,16 @@ function ExplorePage() {
             </div>
           </div>
 
-           Main content: Trending topics 
+           {/*Main content: Trending topics */}
           {/*<div className="w-full px-4 flex-grow">*/}
           {/*  {renderTabContent()}*/}
           {/*</div>*/}
         </div>
 
-        {/* Sidebar */}
-        {/*<div className="hidden lg:block w-[350px] border-l border-gray-200 dark:border-gray-700">*/}
-        {/*  <SidebarRight trendingTopics={trendingTopics} />*/}
-        {/*</div>*/}
+         Sidebar 
+        <div className="hidden lg:block w-[350px] border-l border-gray-200 dark:border-gray-700">
+          <SidebarRight />
+        </div>
       </div>
   );
 }
