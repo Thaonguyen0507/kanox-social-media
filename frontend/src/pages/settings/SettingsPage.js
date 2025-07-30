@@ -116,7 +116,7 @@ function SettingsPage() {
                     Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
-                    privacySetting: settings.profileViewer,
+                    profilePrivacySetting: settings.profileViewer,
                 }),
             });
 
