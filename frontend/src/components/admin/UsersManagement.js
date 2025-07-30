@@ -127,10 +127,7 @@ const UsersManagement = () => {
     }
   };
 
-  // Xóa người dùng (placeholder - thường không cho phép xóa hoàn toàn)
-  const handleDelete = (id) => {
-    toast.warning("Chức năng xóa người dùng không được khuyến khích. Hãy sử dụng chức năng khóa tài khoản thay thế.");
-  };
+
 
   // Khóa tài khoản người dùng
   const handleBan = (id) => {
@@ -424,13 +421,7 @@ const UsersManagement = () => {
                       </button>
                     )}
 
-                    <button
-                      onClick={() => handleDelete(user.id)}
-                      className="p-2 rounded-full hover:bg-gray-100 text-gray-600 transition-colors duration-200"
-                      title="Xóa người dùng"
-                    >
-                      🗑️ {/* Biểu tượng Xóa */}
-                    </button>
+
                   </div>
                 </td>
               </tr>
