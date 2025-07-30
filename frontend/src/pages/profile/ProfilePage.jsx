@@ -231,41 +231,41 @@ function ProfilePage() {
         }
     }, [activeTab, user, username]);
 
-    useEffect(() => {
-    const fetchSharedPosts = async () => {
-        const token = sessionStorage.getItem("token") || localStorage.getItem("token");
-        if (!token || !userProfile?.id) return; 
+//     useEffect(() => {
+//     const fetchSharedPosts = async () => {
+//         const token = sessionStorage.getItem("token") || localStorage.getItem("token");
+//         if (!token || !userProfile?.id) return; 
 
-        try {
-            const response = await fetch(
-                `${process.env.REACT_APP_API_URL}/posts/shared/user/${userProfile.id}`, 
-                {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Accept: "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+//         try {
+//             const response = await fetch(
+//                 `${process.env.REACT_APP_API_URL}/posts/shared/user/${userProfile.id}`, 
+//                 {
+//                     method: "GET",
+//                     headers: {
+//                         "Content-Type": "application/json",
+//                         Accept: "application/json",
+//                         Authorization: `Bearer ${token}`,
+//                     },
+//                 }
+//             );
 
-            const data = await response.json();
-            if (!response.ok) {
-                throw new Error(data.message || "Lỗi khi lấy bài viết đã chia sẻ.");
-            }
+//             const data = await response.json();
+//             if (!response.ok) {
+//                 throw new Error(data.message || "Lỗi khi lấy bài viết đã chia sẻ.");
+//             }
 
-            setSharedPosts(Array.isArray(data.data) ? data.data : []); 
-        } catch (error) {
-            console.error("Lỗi khi lấy bài viết đã chia sẻ:", error);
-            toast.error(error.message || "Không thể tải bài viết đã chia sẻ!");
-            setSharedPosts([]);
-        }
-    };
+//             setSharedPosts(Array.isArray(data.data) ? data.data : []); 
+//         } catch (error) {
+//             console.error("Lỗi khi lấy bài viết đã chia sẻ:", error);
+//             toast.error(error.message || "Không thể tải bài viết đã chia sẻ!");
+//             setSharedPosts([]);
+//         }
+//     };
 
-    if (activeTab === "shares" && hasAccess) { 
-        fetchSharedPosts();
-    }
-}, [activeTab, userProfile, hasAccess]);
+//     if (activeTab === "shares" && hasAccess) { 
+//         fetchSharedPosts();
+//     }
+// }, [activeTab, userProfile, hasAccess]);
 
     const handleBlockToggle = async () => {
         const token = sessionStorage.getItem("token") || localStorage.getItem("token");
@@ -612,7 +612,7 @@ function ProfilePage() {
                     {/* Tab Navigation */}
                     {hasAccess && (
                         <Nav variant="tabs" className="mb-4 border-b border-gray-300 dark:border-gray-700">
-                            {["posts", "shares", ...(isOwnProfile ? ["savedArticles"] : [])].map((tab) => (
+                            {["posts", ...(isOwnProfile ? ["savedArticles"] : [])].map((tab) => (
                                 <Nav.Item key={tab} className="flex-1 text-center">
                                     <Nav.Link
                                         active={activeTab === tab}
@@ -624,7 +624,7 @@ function ProfilePage() {
                                         }`}
                                     >
                                         {tab === "posts" && "Bài đăng"}
-                                        {tab === "shares" && "Chia sẻ"}
+                                        {/* {tab === "shares" && "Chia sẻ"} */}
                                         {tab === "savedArticles" && "Đã lưu"}
                                     </Nav.Link>
                                 </Nav.Item>
