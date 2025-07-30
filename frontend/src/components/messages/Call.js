@@ -30,6 +30,7 @@
         const currentCallRef = useRef(null);
         const incomingCallRef = useRef(null);
         let reconnectTimer = null;
+        const callEndedRef = useRef(false);
 
         const sendCallStatusMessage = (statusMessage) => {
             if (!publish || !chatId || !user) return;
@@ -101,11 +102,15 @@
             };
 
             const endCallCallback = (data) => {
-                if (data.content === "❔ Cuộc gọi kết thúc" && data.senderId !== user.id) {
+                if (data.content === "❔ Cuộc gọi kết thúc" &&
+                    data.senderId !== user.id &&
+                    !callEndedRef.current
+                ) {
                     console.log("📴 Nhận tín hiệu kết thúc cuộc gọi từ bên kia");
-                    endCall(); // Gọi endCall để thoát giao diện và dọn dẹp
+                    endCall();
                 }
             };
+
 
             const busySubscription = subscribe(`/topic/chat/${chatId}`, busyCallback, subId);
             const endCallSubscription = subscribe(`/topic/chat/${chatId}`, endCallCallback, endCallSubId);
@@ -257,11 +262,11 @@
                         return;
                     }
 
-                    incomingCallRef.current = incomingCall;
                     if (incomingCall.fromNumber === user.username) {
                         console.log("⚠️ Bỏ qua cuộc gọi vì mình là người gọi");
                         return;
                     }
+                    incomingCallRef.current = incomingCall;
 
                     incomingCall.on("addlocalstream", (stream) => {
                         localStreamRef.current = stream;
@@ -484,6 +489,12 @@
 
         const endCall = async () => {
             console.log(`📴 [${callStarted ? "ĐANG GỌI" : "CHƯA GỌI"}] Gọi endCall()`);
+
+            if (callEndedRef.current) {
+                console.log("⚠️ Đã gọi endCall trước đó, bỏ qua lần này");
+                return;
+            }
+            callEndedRef.current = true;
 
             // 1. Tắt cuộc gọi đang thực hiện nếu có
             if (stringeeCallRef.current) {
