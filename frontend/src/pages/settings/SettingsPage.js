@@ -99,6 +99,7 @@ function SettingsPage() {
                 },
                 body: JSON.stringify({
                     postVisibility: settings.postVisibility,
+                    profileViewer: settings.profileViewer,
                 }),
             });
 
