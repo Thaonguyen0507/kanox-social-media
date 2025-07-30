@@ -41,9 +41,8 @@ function CommentThread({
     const handleReplySubmit = (e) => {
         e.preventDefault();
         if (replyText.trim()) {
+            console.log("Replying to commentId:", comment.commentId); // Debug
             onReply(comment.commentId, replyText, selectedMediaFiles);
-
-            // ✅ Reset sau khi gửi
             setReplyText("");
             setSelectedMediaFiles([]);
             setSelectedMediaPreviews([]);

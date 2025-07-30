@@ -33,6 +33,7 @@ const MediaActionBar = ({ onEmojiClick, onFileSelect, onSelectEmoji }) => {
             {/* Emoji Icon */}
             <OverlayTrigger placement="top" overlay={<Tooltip>Biểu cảm</Tooltip>}>
                 <button
+                    type="button"
                     ref={emojiButtonRef}
                     onClick={handleEmojiToggle}
                     className="text-xl text-[var(--text-color-muted)] hover:text-[var(--text-color)] transition-colors duration-150 focus:outline-none"
@@ -74,6 +75,7 @@ const MediaActionBar = ({ onEmojiClick, onFileSelect, onSelectEmoji }) => {
             {/* Image / Video Upload */}
             <OverlayTrigger placement="top" overlay={<Tooltip>Hình ảnh / Video</Tooltip>}>
                 <button
+                    type="button"
                     onClick={handleClickFileInput}
                     className="text-xl text-[var(--text-color-muted)] hover:text-[var(--text-color)] transition-colors duration-150 focus:outline-none"
                 >

@@ -7,16 +7,19 @@ export const useCommentActions = ({
                                   }) => {
     const handleReplyToComment = async (parentId, replyText, mediaFiles = []) => {
         try {
+            if (!user?.id) throw new Error("Không tìm thấy ID người dùng!");
+            if (!postId) throw new Error("Không tìm thấy ID bài viết!");
+            if (!parentId) throw new Error("Không tìm thấy ID bình luận cha!");
+
             const token = localStorage.getItem("token");
             if (!token) throw new Error("Vui lòng đăng nhập để bình luận!");
 
             const formData = new FormData();
-
             const commentPayload = {
                 userId: user.id,
                 postId,
                 content: replyText,
-                privacySetting: "default", // bạn có thể dùng "PUBLIC" nếu backend cho phép
+                privacySetting: "default",
                 parentCommentId: parentId,
                 customListId: null,
             };
@@ -53,6 +56,7 @@ export const useCommentActions = ({
             toast.error("Không thể phản hồi bình luận: " + error.message);
         }
     };
+    
     const handleUpdateComment = async (commentId, newText) => {
         try {
             const token = localStorage.getItem("token");
