@@ -8,6 +8,20 @@ const PostsManagement = () => {
   const API_URL = process.env.REACT_APP_API_URL; // ví dụ: http://localhost:8080/api
   const token = localStorage.getItem("token");
 
+  const formatDate = (dateStr) => {
+    if (!dateStr) return "--";
+    const d = new Date(dateStr);
+    return isNaN(d.getTime())
+        ? "--"
+        : d.toLocaleDateString("vi-VN", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+  };
+
   useEffect(() => {
     const fetchPosts = async () => {
       console.log("=== DEBUG fetchPosts ===");
@@ -36,7 +50,6 @@ const PostsManagement = () => {
 
         console.log("Fetch status:", response.status);
 
-        // Nếu không phải 200 OK
         if (!response.ok) {
           const text = await response.text();
           throw new Error(`HTTP ${response.status}: ${text}`);
@@ -45,7 +58,6 @@ const PostsManagement = () => {
         const result = await response.json();
         console.log("API result:", result);
 
-        // Backend trả { message, data }, lấy data
         setPosts(result.data || []);
       } catch (err) {
         console.error("Lỗi khi load bài viết:", err);
@@ -71,9 +83,7 @@ const PostsManagement = () => {
 
   return (
       <div className="p-6 bg-white rounded-lg shadow-md">
-        <h2 className="text-3xl font-bold mb-6 text-gray-800">
-          Quản lý Bài viết
-        </h2>
+        <h2 className="text-3xl font-bold mb-6 text-gray-800">Quản lý Bài viết</h2>
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white border border-gray-200 rounded-lg">
             <thead className="bg-gray-100">
@@ -106,7 +116,7 @@ const PostsManagement = () => {
                     {post.content}
                   </td>
                   <td className="py-3 px-4 text-gray-800">
-                    {new Date(post.createdAt).toLocaleDateString()}
+                    {formatDate(post.createdAt)}
                   </td>
                 </tr>
             ))}
