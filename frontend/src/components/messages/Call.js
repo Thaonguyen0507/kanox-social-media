@@ -459,6 +459,7 @@
         const endCall = async () => {
             console.log(`📴 [${callStarted ? "ĐANG GỌI" : "CHƯA GỌI"}] Gọi endCall()`);
 
+            // 1. Tắt cuộc gọi đang thực hiện nếu có
             if (stringeeCallRef.current) {
                 try {
                     stringeeCallRef.current.hangup();
@@ -469,6 +470,7 @@
                 stringeeCallRef.current = null;
             }
 
+            // 2. Tắt cuộc gọi đến nếu có
             if (incomingCallRef.current) {
                 try {
                     incomingCallRef.current.hangup();
@@ -478,20 +480,17 @@
                 }
 
                 if (incomingCallRef.current?.localStream) {
-                    incomingCallRef.current.localStream.getTracks().forEach((track) => {
-                        track.stop();
-                    });
+                    incomingCallRef.current.localStream.getTracks().forEach((track) => track.stop());
                 }
 
                 incomingCallRef.current = null;
             }
 
-            // ✅ Fallback nếu localStreamRef mất → dùng localVideoRef.srcObject để cleanup
+            // 3. Cleanup localStreamRef hoặc fallback từ video element
             console.log("🧪 [endCall] localStreamRef:", localStreamRef.current);
             console.log("🧪 [endCall] localVideoRef.srcObject:", localVideoRef.current?.srcObject);
 
             const streamToClean = localStreamRef.current || localVideoRef.current?.srcObject;
-
             if (streamToClean) {
                 streamToClean.getTracks().forEach((track) => {
                     if (track.readyState !== "ended") {
@@ -502,7 +501,7 @@
                 localStreamRef.current = null;
             }
 
-            // Dọn cả video element
+            // 4. Dọn srcObject khỏi cả video local và remote
             [localVideoRef, remoteVideoRef].forEach((ref) => {
                 if (ref.current && ref.current.srcObject) {
                     const stream = ref.current.srcObject;
@@ -514,7 +513,7 @@
                 }
             });
 
-            // Gửi tín hiệu kết thúc cuộc gọi qua WebSocket
+            // 5. Gửi thông báo kết thúc qua WebSocket
             if (publish && chatId && user) {
                 const endCallMsg = {
                     chatId: Number(chatId),
@@ -524,6 +523,7 @@
                 };
                 publish("/app/sendMessage", endCallMsg);
                 console.log("📨 Gửi tín hiệu kết thúc cuộc gọi đến chatId:", chatId);
+
                 if (callSessionId) {
                     publish("/app/call/end", {
                         chatId: Number(chatId),
@@ -533,33 +533,26 @@
                 }
             }
 
-            // Gửi trạng thái nếu call fail
+            // 6. Gửi status tin nhắn nếu kết thúc bất thường
             if (!callStarted && signalingCode !== null) {
-                switch (signalingCode) {
-                    case 5:
-                        sendCallStatusMessage("📵 Cuộc gọi nhỡ");
-                        break;
-                    case 6:
-                        sendCallStatusMessage("❔ Cuộc gọi kết thúc");
-                        break;
-                    case 3:
-                        sendCallStatusMessage("⚠️ Máy bận");
-                        break;
-                    default:
-                        sendCallStatusMessage("❔ Cuộc gọi kết thúc");
-                        break;
-                }
+                const msg =
+                    signalingCode === 5 ? "📵 Cuộc gọi nhỡ"
+                        : signalingCode === 3 ? "⚠️ Máy bận"
+                            : "❔ Cuộc gọi kết thúc";
+
+                sendCallStatusMessage(msg);
             } else if (callStarted) {
                 sendCallStatusMessage("❔ Cuộc gọi kết thúc");
             }
 
+            // 7. Reset state UI
             setCallStarted(false);
             setIsMuted(false);
             setIsVideoOff(false);
             setSignalingCode(null);
             if (onEndCall) onEndCall();
 
-            // Gọi API kết thúc session
+            // 8. Gọi API để đóng session
             if (callSessionId) {
                 try {
                     const response = await fetch(`${process.env.REACT_APP_API_URL}/chat/call/end/${callSessionId}`, {
@@ -574,14 +567,16 @@
                 setCallSessionId(null);
             }
 
+            // 9. Debug: Kiểm tra thiết bị còn bị chiếm không
             navigator.mediaDevices.enumerateDevices().then((devices) => {
                 console.log("🎧 Thiết bị sau khi endCall:");
                 devices.forEach((d) => console.log(`📷 ${d.kind} - ${d.label}`));
             });
 
-            // 🧹 Cleanup lại sau 500ms
+            // 10. Dọn kỹ lại sau 500ms để phòng rò rỉ stream
             setTimeout(() => {
-                console.log("🧹 Bắt đầu cleanup 500ms sau khi kết thúc call");
+                console.log("🧹 Bắt đầu cleanup lần 2 sau 500ms");
+
                 [localVideoRef, remoteVideoRef].forEach((ref, idx) => {
                     if (ref.current && ref.current.srcObject) {
                         const stream = ref.current.srcObject;
@@ -609,12 +604,9 @@
                 console.log("✅ Cleanup hoàn tất");
             }, 500);
 
-            // 👉 Điều hướng về trang chat
+            // 11. Điều hướng về trang chat
             navigate(`/messages?chatId=${chatId}`);
         };
-
-
-
 
         const toggleMute = () => {
             if (!stringeeCallRef.current || !localVideoRef.current?.srcObject) {
