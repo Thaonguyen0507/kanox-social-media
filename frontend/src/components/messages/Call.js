@@ -264,6 +264,11 @@
 
                     if (incomingCall.fromNumber === user.username) {
                         console.log("⚠️ Bỏ qua cuộc gọi vì mình là người gọi");
+                        incomingCall.reject();
+                        return;
+                    }
+                    if (callStarted || stringeeCallRef.current || incomingCallRef.current) {
+                        incomingCall.reject(); // Máy bận
                         return;
                     }
                     incomingCallRef.current = incomingCall;
