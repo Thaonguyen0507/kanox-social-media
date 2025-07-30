@@ -448,8 +448,6 @@ const ReportsManagement = () => {
                                         <p className="text-text dark:text-white">
                                             <strong>Trạng thái:</strong> {selectedReport.processingStatusName || "Không xác định"}
                                         </p>
-                                        
-
                                         {/* Hiển thị nội dung bài viết nếu là báo cáo bài viết */}
                                         {selectedReport.targetTypeId === 1 && (
                                             <div className="mt-4">
