@@ -99,24 +99,42 @@ const GroupMembersManagementPage = () => {
                         <Col key={member.id}>
                             <Card className="shadow-sm border-0 rounded-4">
                                 <Card.Body className="d-flex flex-column justify-content-between h-100">
-                                    <div>
-                                        <Card.Title className="fw-semibold fs-5">
-                                            {member.displayName || member.username}
-                                        </Card.Title>
-                                        <Card.Subtitle className="mb-2 text-muted">@{member.username}</Card.Subtitle>
-                                        <Card.Text className="mt-2">
-                      <span className="me-2">
-                        {member.isOwner ? (
-                            <Badge bg="dark">👑 Chủ nhóm</Badge>
-                        ) : member.isAdmin ? (
-                            <Badge bg="warning" text="dark">
-                                🛡️ Admin
-                            </Badge>
-                        ) : (
-                            <Badge bg="secondary">👤 Thành viên</Badge>
-                        )}
-                      </span>
-                                        </Card.Text>
+                                    <div className="d-flex align-items-center">
+                                        {/* Avatar */}
+                                        {member.avatarUrl ? (
+                                            <img
+                                                src={member.avatarUrl}
+                                                alt={member.displayName || member.username}
+                                                className="rounded-circle me-3"
+                                                style={{ width: "50px", height: "50px", objectFit: "cover" }}
+                                            />
+                                        ) : (
+                                            <div
+                                                className="rounded-circle bg-secondary text-white d-flex justify-content-center align-items-center me-3"
+                                                style={{ width: "50px", height: "50px" }}
+                                            >
+                                                {member.displayName?.charAt(0)?.toUpperCase() || member.username.charAt(0).toUpperCase()}
+                                            </div>
+                                        )}
+
+                                        {/* Info */}
+                                        <div>
+                                            <Card.Title className="fw-semibold fs-5">
+                                                {member.displayName || member.username}
+                                            </Card.Title>
+                                            <Card.Subtitle className="mb-2 text-muted">
+                                                @{member.username}
+                                            </Card.Subtitle>
+
+                                            {/* Badge vai trò */}
+                                            {member.owner ? (
+                                                <Badge bg="warning" text="dark">👑 Chủ nhóm</Badge>
+                                            ) : member.admin ? (
+                                                <Badge bg="primary">🛡️ Admin</Badge>
+                                            ) : (
+                                                <Badge bg="secondary">👤 Thành viên</Badge>
+                                            )}
+                                        </div>
                                     </div>
                                 </Card.Body>
                             </Card>
@@ -126,6 +144,7 @@ const GroupMembersManagementPage = () => {
             )}
         </div>
     );
+
 };
 
 export default GroupMembersManagementPage;
