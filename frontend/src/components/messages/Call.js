@@ -667,7 +667,7 @@
                 }
             } catch (error) {
                 console.error("Lỗi khi tắt/bật camera:", error);
-                toast.error("Lỗi khi điều chỉnh camera.");
+                toast.error("Lỗi khi điều chỉnh camera");
             }
         };
 
