@@ -3,6 +3,7 @@ import { FaCheckCircle, FaCircle, FaEllipsisH } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import { toast } from "react-toastify";
+import { motion } from "framer-motion";
 
 function NotificationItem({ notification, handleMarkRead, handleMarkUnread }) {
     const navigate = useNavigate();
@@ -39,21 +40,21 @@ function NotificationItem({ notification, handleMarkRead, handleMarkUnread }) {
         if (notification.targetType === "GROUP" && displayName && message.includes(displayName)) {
             const parts = message.split(displayName);
             return (
-                <p className="mb-1 text-[var(--text-color)]">
+                <p className="mb-1 text-gray-700 dark:text-gray-300">
                     {parts[0]}
                     <span
-                        className="font-bold text-[var(--primary-color)] cursor-pointer hover:underline"
+                        className="font-semibold text-blue-600 dark:text-blue-400 cursor-pointer hover:underline"
                         onClick={() => navigate(`/community/${notification.targetId}`)}
                     >
-            {displayName}
-          </span>
+                        {displayName}
+                    </span>
                     {parts[1]}
                 </p>
             );
         }
 
         return (
-            <p className="mb-1 text-[var(--text-color)]">
+            <p className="mb-1 text-gray-700 dark:text-gray-300">
                 {message.replace("{displayName}", displayName)}
             </p>
         );
@@ -63,23 +64,26 @@ function NotificationItem({ notification, handleMarkRead, handleMarkUnread }) {
         <img
             src={notification.image || "https://placehold.co/40x40?text=Avatar"}
             alt={`Avatar của ${notification.displayName || "Người dùng"}`}
-            className={`w-10 h-10 object-cover mr-3 ${notification.targetType === "GROUP" ? "rounded-none" : "rounded-full"}`}
+            className={`w-12 h-12 object-cover mr-4 ${
+                notification.targetType === "GROUP" ? "rounded-md" : "rounded-full"
+            } border border-gray-200 dark:border-gray-700`}
         />
     );
 
     return (
-        <div
-            className={`p-3 border-b ${
-                !isRead ? "bg-[var(--hover-bg-color)]" : "opacity-75"
-            } transition-colors duration-200 hover:bg-[var(--hover-bg-color)] cursor-pointer`}
+        <motion.div
+            whileHover={{ scale: 1.02 }}
+            className={`p-4 border-b border-gray-200 dark:border-gray-700 ${
+                !isRead ? "bg-blue-50 dark:bg-gray-700" : "bg-white dark:bg-gray-800"
+            } transition-colors duration-200 cursor-pointer`}
             onClick={handleNotificationClick}
         >
             <div className="flex items-start">
                 {renderAvatar()}
                 <div className="flex-grow">
-                    <div className="flex justify-between items-center">
+                    <div className="flex justify-between items-center mb-2">
                         <p
-                            className="font-bold text-[var(--primary-color)] cursor-pointer m-0"
+                            className="font-semibold text-blue-600 dark:text-blue-400 cursor-pointer m-0 hover:underline"
                             onClick={(e) => {
                                 e.stopPropagation();
                                 if (notification.targetType === "GROUP") {
@@ -97,52 +101,55 @@ function NotificationItem({ notification, handleMarkRead, handleMarkUnread }) {
                         >
                             {notification.displayName || notification.username || "Người dùng"}
                         </p>
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-3">
                             {!isRead ? (
-                                <button
+                                <motion.button
+                                    whileHover={{ scale: 1.1 }}
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         handleMarkRead(notification.id, notification);
                                     }}
-                                    className="text-[var(--text-color)] hover:text-[var(--primary-color)]"
+                                    className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
                                     title="Đánh dấu đã đọc"
                                 >
-                                    <FaCheckCircle />
-                                </button>
+                                    <FaCheckCircle className="w-4 h-4" />
+                                </motion.button>
                             ) : (
-                                <button
+                                <motion.button
+                                    whileHover={{ scale: 1.1 }}
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         handleMarkUnread(notification.id);
                                     }}
-                                    className="text-[var(--text-color)] hover:text-[var(--primary-color)]"
+                                    className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
                                     title="Đánh dấu chưa đọc"
                                 >
-                                    <FaCircle />
-                                </button>
+                                    <FaCircle className="w-4 h-4" />
+                                </motion.button>
                             )}
-                            <button
-                                className="text-[var(--text-color)] hover:text-[var(--primary-color)]"
+                            <motion.button
+                                whileHover={{ scale: 1.1 }}
+                                className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
                                 title="Tùy chọn"
                                 onClick={(e) => e.stopPropagation()}
                             >
-                                <FaEllipsisH />
-                            </button>
+                                <FaEllipsisH className="w-4 h-4" />
+                            </motion.button>
                         </div>
                     </div>
 
-                    <div className="mt-1 p-2 rounded-md hover:bg-black/5 dark:hover:bg-white/5 transition-colors duration-150">
+                    <div className="p-3 rounded-lg bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-150">
                         {renderMessageWithLink()}
                         {notification.tags?.length > 0 && (
-                            <p className="text-[var(--primary-color)] text-sm mb-1">
+                            <p className="text-blue-500 dark:text-blue-400 text-sm mb-2">
                                 {notification.tags.map((tag, idx) => (
-                                    <span key={idx} className="mr-2">
-                    {tag}
-                  </span>
+                                    <span key={idx} className="mr-2 inline-block bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 text-xs px-2 py-1 rounded">
+                                        {tag}
+                                    </span>
                                 ))}
                             </p>
                         )}
-                        <p className="text-muted text-xs mt-2">
+                        <p className="text-gray-500 dark:text-gray-400 text-xs mt-2">
                             {notification.createdAt
                                 ? moment(
                                     typeof notification.createdAt === "number"
@@ -154,7 +161,7 @@ function NotificationItem({ notification, handleMarkRead, handleMarkUnread }) {
                     </div>
                 </div>
             </div>
-        </div>
+        </motion.div>
     );
 }
 

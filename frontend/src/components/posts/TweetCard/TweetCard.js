@@ -758,6 +758,7 @@ const TweetCard = forwardRef(({ tweet, onPostUpdate }, ref) => {
                             <Dropdown.Toggle
                                 variant="link"
                                 className="text-[var(--text-color)] p-0 w-100 text-start hover:bg-[var(--hover-bg-color)] rounded transition-colors duration-200 flex items-center"
+                                style={{ textDecoration: "none" }}
                             >
                               <FaShareAlt className="me-2 text-green-500" /> Trạng thái: {renderStatusText(privacySetting)}
                             </Dropdown.Toggle>
