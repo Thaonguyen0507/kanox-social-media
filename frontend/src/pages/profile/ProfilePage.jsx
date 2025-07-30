@@ -238,7 +238,7 @@ function ProfilePage() {
 
         try {
             const response = await fetch(
-                `${process.env.REACT_APP_API_URL}/posts/shared-posts/user/${userProfile.id}`, 
+                `${process.env.REACT_APP_API_URL}/posts/shared/user/${userProfile.id}`, 
                 {
                     method: "GET",
                     headers: {
