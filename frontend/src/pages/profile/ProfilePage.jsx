@@ -158,6 +158,8 @@ function ProfilePage() {
                     isPremium: profileData.isPremium || false,
                     profileImageUrl: profileData.profileImageUrl || "https://via.placeholder.com/150?text=Avatar",
                     location: profileData.locationName || "",
+                    followerCount: profileData.followerCount || 0, 
+                    followeeCount: profileData.followeeCount || 0,
                 });
 
                 // Chỉ lấy bài đăng nếu có quyền truy cập (bio không null)
@@ -604,6 +606,14 @@ function ProfilePage() {
                                             <FaPhoneAlt className="mr-2" /> Liên hệ: {userProfile.phoneNumber}
                                         </p>
                                     )}
+                                    <p className="flex items-center">
+                                        <span className="mr-2">Người theo dõi: </span>
+                                        <span className="font-semibold">{userProfile.followerCount || 0}</span>
+                                    </p>
+                                    <p className="flex items-center">
+                                        <span className="mr-2">Đang theo dõi: </span>
+                                        <span className="font-semibold">{userProfile.followeeCount || 0}</span>
+                                    </p>
                                 </div>
                             )}
                         </div>

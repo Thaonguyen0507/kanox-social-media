@@ -7,7 +7,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import NotificationItem from "./NotificationItem";
-import { motion, AnimatePresence } from "framer-motion";
 
 function NotificationPage({ onToggleDarkMode, isDarkMode, onShowCreatePost }) {
     const { user } = useContext(AuthContext);
@@ -43,6 +42,8 @@ function NotificationPage({ onToggleDarkMode, isDarkMode, onShowCreatePost }) {
             }
 
             const data = await response.json();
+            console.log("API /notifications response:", data); // Kiểm tra dữ liệu API
+
             const formattedNotifications = Array.isArray(data.data?.content)
                 ? data.data.content
                     .filter((notif) => {
@@ -66,7 +67,7 @@ function NotificationPage({ onToggleDarkMode, isDarkMode, onShowCreatePost }) {
                         timestamp: notif.createdAt,
                         isRead: notif.status === "read",
                         image: notif.image || null,
-                        targetId: notif.targetId,
+                        targetId: notif.targetId, // Bỏ fallback notif.userId
                         targetType: notif.targetType || "PROFILE",
                     }))
                 : [];
@@ -95,6 +96,7 @@ function NotificationPage({ onToggleDarkMode, isDarkMode, onShowCreatePost }) {
                 },
             });
 
+            // Cập nhật UI
             setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
             setUnreadCount(0);
             window.dispatchEvent(
@@ -110,6 +112,7 @@ function NotificationPage({ onToggleDarkMode, isDarkMode, onShowCreatePost }) {
     useEffect(() => {
         if (!user) return;
         fetchNotifications().then(() => {
+            // Gửi sự kiện để reset badge về 0 khi mở trang
             window.dispatchEvent(
                 new CustomEvent("updateUnreadNotificationCount", {
                     detail: { unreadCount: 0 },
@@ -122,13 +125,14 @@ function NotificationPage({ onToggleDarkMode, isDarkMode, onShowCreatePost }) {
         if (!user) return;
         fetchNotifications();
     }, [user]);
-    
+
     useEffect(() => {
         if (!user || !subscribe || !unsubscribe) return;
 
         const subscription = subscribe(
             `/topic/notifications/${user.id}`,
             (notification) => {
+                console.log("Received notification:", notification);
                 const newNotification = {
                     id: notification.id,
                     type: notification.type,
@@ -143,13 +147,14 @@ function NotificationPage({ onToggleDarkMode, isDarkMode, onShowCreatePost }) {
                     timestamp: notification.createdAt * 1000,
                     isRead: notification.status === "read",
                     image: notification.image || null,
-                    targetId: notification.targetId,
+                    targetId: notification.targetId, // Bỏ fallback user.id
                     targetType: notification.targetType || "PROFILE",
                 };
 
+                // Kiểm tra targetId cho POST
                 if (newNotification.targetType === "POST" && !newNotification.targetId) {
                     console.warn("Thông báo POST qua WebSocket thiếu targetId:", newNotification);
-                    return;
+                    return; // Bỏ qua thông báo không hợp lệ
                 }
 
                 toast.info(notification.message, {
@@ -218,6 +223,7 @@ function NotificationPage({ onToggleDarkMode, isDarkMode, onShowCreatePost }) {
             );
             setUnreadCount((prev) => prev - 1);
 
+            // Điều hướng theo loại thông báo
             if (notification.targetType === "POST") {
                 if (!notification.targetId) {
                     toast.error("Không thể điều hướng: Thiếu ID bài đăng.");
@@ -244,7 +250,7 @@ function NotificationPage({ onToggleDarkMode, isDarkMode, onShowCreatePost }) {
     };
 
     const handleMarkUnread = async (id) => {
-        const token = 
+        const token =
             sessionStorage.getItem("token") || localStorage.getItem("token");
         if (!token) {
             toast.error("Không tìm thấy token!");
@@ -270,15 +276,19 @@ function NotificationPage({ onToggleDarkMode, isDarkMode, onShowCreatePost }) {
             }
 
             setNotifications((prev) =>
-                prev.map((notif) => (notif.id === id ? { ...notif, isRead: false } : notif))
+                prev.map((notif) =>
+                    notif.id === id ? { ...notif, isRead: false } : notif
+                )
             );
 
             toast.success("Đã đánh dấu chưa đọc!");
+
             window.dispatchEvent(
                 new CustomEvent("updateUnreadNotificationCount", {
-                    detail: { unreadCount: unreadCount + 1 },
+                    detail: { unreadCount: unreadCount + 1 }, // cập nhật mới
                 })
             );
+
         } catch (error) {
             console.error("Lỗi khi đánh dấu chưa đọc:", error);
             toast.error(error.message || "Không thể đánh dấu chưa đọc!");
@@ -288,99 +298,49 @@ function NotificationPage({ onToggleDarkMode, isDarkMode, onShowCreatePost }) {
     const renderNotificationContent = () => {
         if (loading) {
             return (
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="flex justify-center items-center py-10"
-                >
-                    <div className="w-8 h-8 border-4 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
-                </motion.div>
+                <div className="flex justify-center items-center py-10">
+                    <div className="w-6 h-6 border-4 border-gray-300 border-t-gray-900 rounded-full animate-spin"></div>
+                </div>
             );
         }
 
         return notifications.length === 0 ? (
-            <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-gray-500 text-center p-6"
-            >
-                Không có thông báo nào.
-            </motion.p>
+            <p className="text-gray-500 text-center p-4">Không có thông báo nào.</p>
         ) : (
-            <AnimatePresence>
-                {notifications.map((notification) => (
-                    <motion.div
-                        key={notification.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        transition={{ duration: 0.3 }}
-                    >
-                        <NotificationItem
-                            notification={notification}
-                            handleMarkRead={handleMarkRead}
-                            handleMarkUnread={handleMarkUnread}
-                        />
-                    </motion.div>
-                ))}
-            </AnimatePresence>
+            notifications.map((notification) => (
+                <NotificationItem
+                    key={notification.id}
+                    notification={notification}
+                    handleMarkRead={handleMarkRead}
+                    handleMarkUnread={handleMarkUnread}
+                />
+            ))
         );
     };
 
     return (
         <>
-            <ToastContainer
-                position="top-right"
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme={isDarkMode ? "dark" : "light"}
-            />
-            <div className="flex min-h-screen bg-gray-100 dark:bg-gray-900">
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="flex flex-col flex-grow max-w-3xl mx-auto bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden"
-                >
-                    <div className="sticky top-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 py-4 z-50">
-                        <div className="px-6 flex justify-between items-center">
-                            <h5 className="font-bold text-xl text-gray-900 dark:text-white">
-                                Thông báo
-                                {unreadCount > 0 && (
-                                    <span className="ml-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-blue-600 rounded-full">
-                                        {unreadCount}
-                                    </span>
-                                )}
-                            </h5>
-                            <div className="flex items-center space-x-4">
-                                <button
-                                    onClick={markAllAsRead}
-                                    className="text-sm text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
-                                    disabled={unreadCount === 0}
-                                >
-                                    Đánh dấu tất cả đã đọc
-                                </button>
-                                <button
-                                    className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
-                                    title="Cài đặt"
-                                >
-                                    <FaCog className="w-5 h-5" />
-                                </button>
-                            </div>
+            <ToastContainer />
+            <div className="flex min-h-screen bg-[var(--background-color)]">
+                <div className="flex flex-col flex-grow border-x border-gray-300 bg-[var(--content-bg)]">
+                    <div className="sticky top-0 bg-[var(--content-bg)] border-b border-gray-300 py-2 z-50">
+                        <div className="px-4 flex justify-between items-center">
+                            <h5 className="font-bold m-0 text-[var(--text-color)]">Thông báo</h5>
+                            {/*<button*/}
+                            {/*    className="text-[var(--text-color)] hover:text-[var(--primary-color)] p-1"*/}
+                            {/*    title="Cài đặt"*/}
+                            {/*>*/}
+                            {/*    <FaCog />*/}
+                            {/*</button>*/}
                         </div>
                     </div>
 
-                    <div className="flex-grow overflow-y-auto">
+                    <div className="flex-grow overflow-auto">
                         {renderNotificationContent()}
                     </div>
-                </motion.div>
+                </div>
 
-                <div className="hidden lg:block w-[350px] ml-4">
+                <div className="hidden lg:block border-l border-gray-300 w-[350px]">
                     <SidebarRight />
                 </div>
             </div>
