@@ -181,7 +181,6 @@ const ReportsManagement = () => {
             return;
         }
 
-
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/${parseInt(reportId)}/status`, {
                 method: "PUT",
