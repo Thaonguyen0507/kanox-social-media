@@ -365,7 +365,7 @@ const TweetCard = forwardRef(({ tweet, onPostUpdate }, ref) => {
     setShowEmojiPicker((prev) => !prev);
   };
 
-  console.log("📌 postId passed to useCommentActions:", postId);
+  console.log("📌 postId passed to useCommentActions:", renderPostId );
 
   const { handleReplyToComment, handleUpdateComment, handleDeleteComment } =
     useCommentActions({
@@ -1215,7 +1215,7 @@ const TweetCard = forwardRef(({ tweet, onPostUpdate }, ref) => {
         <ReactionUserListModal
           show={showReactionUserModal}
           onHide={() => setShowReactionUserModal(false)}
-          targetId={postId}
+          targetId={renderPostId }
           targetTypeCode="POST"
           emojiName={selectedEmojiName}
         />
