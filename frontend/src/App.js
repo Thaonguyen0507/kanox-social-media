@@ -35,6 +35,7 @@ import CommunityWrapper from "./pages/community/CommunityWrapper";
 import GroupCommunityWrapper from "./pages/community/GroupCommunityWrapper";
 import GroupMembersWrapper from "./pages/community/GroupMembersWrapper";
 import GroupReportsWrapper from "./pages/community/GroupReportsWrapper"
+import useSingleMedia from "./hooks/useSingleMedia";
 // Import các page
 import SignupPage from "./pages/auth/signup/signupPage";
 import HomePage from "./pages/home/HomePage";
@@ -74,6 +75,12 @@ function AppContent() {
   const [showCreatePost, setShowCreatePost] = useState(false);
   const location = useLocation();
   const [notifications, setNotifications] = useState([]);
+
+  const { mediaUrl, loading: mediaLoading, error: mediaError } = useSingleMedia(
+      incomingCall?.fromId,
+      "PROFILE",
+      "image"
+  );
 
   const handleCallStatus = (status) => {
     setIsInCall(status);
@@ -566,22 +573,35 @@ function AppContent() {
           </Routes>
 
           <Modal
-            show={showCallModal}
-            centered
-            onHide={rejectCall}
-            className="bg-[var(--background-color)] text-[var(--text-color)]"
+              show={showCallModal}
+              centered
+              onHide={rejectCall}
+              className="bg-[var(--background-color)] text-[var(--text-color)] modal-shake"
+              animation={true}
           >
             <Modal.Header closeButton>
               <Modal.Title>Cuộc gọi đến</Modal.Title>
             </Modal.Header>
             <Modal.Body className="d-flex align-items-center">
-              <Image
-                src="https://via.placeholder.com/50"
-                roundedCircle
-                width={50}
-                height={50}
-                className="me-3"
-              />
+              {mediaLoading ? (
+                  <Spinner animation="border" size="sm" className="me-3" />
+              ) : mediaError ? (
+                  <Image
+                      src="https://via.placeholder.com/50"
+                      roundedCircle
+                      width={50}
+                      height={50}
+                      className="me-3"
+                  />
+              ) : (
+                  <Image
+                      src={mediaUrl || "https://via.placeholder.com/50"}
+                      roundedCircle
+                      width={50}
+                      height={50}
+                      className="me-3"
+                  />
+              )}
               <div>
                 <h5>{incomingCall?.from || "Người gọi không xác định"}</h5>
                 <p>Đang gọi video...</p>
