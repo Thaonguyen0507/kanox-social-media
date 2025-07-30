@@ -52,16 +52,66 @@ function HomePage({ onShowCreatePost, onToggleDarkMode }) {
     }
   };
 
-  useEffect(() => {
-    fetchPosts();
-  }, [user]);
+  // Tải bài viết cụ thể nếu postId không có trong danh sách
+  const fetchHighlightedPost = async () => {
+    if (!postId || !user) return;
+    const targetPost = posts.find((post) => String(post.id) === postId);
+    if (!targetPost) {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(
+            `${process.env.REACT_APP_API_URL}/posts/${postId}`,
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+              },
+            }
+        );
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Không thể tải bài viết!");
+        }
+        const { data } = await response.json();
+        setPosts((prev) => [data, ...prev]); // Thêm bài viết vào đầu danh sách
+      } catch (error) {
+        console.error("Lỗi khi tải bài viết cụ thể:", error);
+        toast.error("Không thể tải bài viết: " + error.message);
+      }
+    }
+  };
 
   useEffect(() => {
-    if (postId && postRefs.current[postId]) {
-      postRefs.current[postId].scrollIntoView({ behavior: "smooth", block: "center" });
+    fetchPosts();
+    if (postId) {
+      fetchHighlightedPost();
+    }
+  }, [user, postId]);
+
+  // Logic cuộn đến bài viết
+  useEffect(() => {
+    if (!postId || !posts.length) return;
+
+    const targetPost = posts.find((post) => String(post.id) === postId);
+    if (targetPost && postRefs.current[postId]) {
+      console.log(`Cuộn đến bài viết với postId: ${postId}`);
+      // Đợi render hoàn tất trước khi cuộn
       setTimeout(() => {
-        setSearchParams({}, { replace: true });
-      }, 1000);
+        if (postRefs.current[postId]) {
+          postRefs.current[postId].scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+          // Xóa postId khỏi URL sau khi cuộn
+          setTimeout(() => {
+            setSearchParams({}, { replace: true });
+          }, 1000);
+        } else {
+          console.warn(`Ref cho postId ${postId} chưa được gán.`);
+        }
+      }, 100); // Đợi 100ms để đảm bảo render hoàn tất
+    } else {
+      console.warn(`Bài viết với postId ${postId} không tìm thấy trong danh sách posts.`);
     }
   }, [postId, posts, setSearchParams]);
 
@@ -121,7 +171,11 @@ function HomePage({ onShowCreatePost, onToggleDarkMode }) {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                     >
-                      <Spinner animation="border" role="status" style={{ color: "var(--text-color)" }} />
+                      <Spinner
+                          animation="border"
+                          role="status"
+                          style={{ color: "var(--text-color)" }}
+                      />
                     </motion.div>
                 ) : error ? (
                     <motion.p

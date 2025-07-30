@@ -86,12 +86,19 @@ const TweetCard = forwardRef(({ tweet, onPostUpdate }, ref) => {
   } = tweet || {};
 
   useEffect(() => {
-    if (highlightedPostId  && highlightedPostId  === String(id)) {
+    if (highlightedPostId && highlightedPostId === String(id)) {
       setIsHighlighted(true);
+      // Cuộn đến bài viết
+      if (ref.current) {
+        ref.current.scrollIntoView({
+          behavior: "smooth", // Cuộn mượt mà
+          block: "start", // Cuộn để bài viết nằm ở đầu khung nhìn
+        });
+      }
       const timer = setTimeout(() => setIsHighlighted(false), 2000);
       return () => clearTimeout(timer);
     }
-  }, [highlightedPostId , id]);
+  }, [highlightedPostId, id, ref]);
 
   const isSaved = tweet?.isSaved ?? false;
   const isOwnTweet = user && user.username === owner?.username;
