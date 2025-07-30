@@ -280,6 +280,19 @@ function CommentThread({
                                                     })),
                                                 ]);
                                             }}
+                                            onSelectEmoji={(emoji) => {
+                                                const input = replyInputRef.current;
+                                                if (!input) return;
+                                                const start = input.selectionStart;
+                                                const end = input.selectionEnd;
+                                                const newText = replyText.substring(0, start) + emoji.emoji + replyText.substring(end);
+                                                setReplyText(newText);
+                                                setTimeout(() => {
+                                                    input.focus();
+                                                    const cursorPosition = start + emoji.emoji.length;
+                                                    input.setSelectionRange(cursorPosition, cursorPosition);
+                                                }, 0);
+                                            }}
                                         />
                                         <Button
                                             type="submit"
@@ -290,51 +303,6 @@ function CommentThread({
                                             Gửi
                                         </Button>
                                     </div>
-
-                                    {showEmojiPicker && (
-                                        <Overlay
-                                            target={replyInputRef.current}
-                                            show={showEmojiPicker}
-                                            placement="top"
-                                            rootClose
-                                            onHide={() => setShowEmojiPicker(false)}
-                                        >
-                                            {(props) => (
-                                                <Popover {...props} className="z-50">
-                                                    <Popover.Body
-                                                        style={{ maxWidth: 300, maxHeight: 200, overflowY: "auto" }}
-                                                        className="scrollbar-hide"
-                                                    >
-                                                        <div className="flex flex-wrap">
-                                                            {emojiList.map((emoji, idx) => (
-                                                                <span
-                                                                    key={idx}
-                                                                    className="text-2xl cursor-pointer m-1"
-                                                                    onClick={() => {
-                                                                        const input = replyInputRef.current;
-                                                                        if (!input) return;
-                                                                        const start = input.selectionStart;
-                                                                        const end = input.selectionEnd;
-                                                                        const newText =
-                                                                            replyText.substring(0, start) + emoji.emoji + replyText.substring(end);
-                                                                        setReplyText(newText);
-                                                                        setTimeout(() => {
-                                                                            input.focus();
-                                                                            const cursorPosition = start + emoji.emoji.length;
-                                                                            input.setSelectionRange(cursorPosition, cursorPosition);
-                                                                        }, 0);
-                                                                        setShowEmojiPicker(false);
-                                                                    }}
-                                                                >
-                                {emoji.emoji}
-                              </span>
-                                                            ))}
-                                                        </div>
-                                                    </Popover.Body>
-                                                </Popover>
-                                            )}
-                                        </Overlay>
-                                    )}
                                 </div>
                             </div>
                         </Form>

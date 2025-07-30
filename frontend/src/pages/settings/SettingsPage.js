@@ -267,33 +267,35 @@ function SettingsPage() {
                                 </Form.Select>
                             </Form.Group>
 
-                            <Form.Group controlId="messagePrivacy" className="mb-3">
-                                <Form.Label className="text-[var(--text-color)]">Ai có thể nhắn tin cho bạn?</Form.Label>
+                            <Form.Group controlId="commentPermission" className="mb-3">
+                                <Form.Label className="text-[var(--text-color)]">Ai có thể bình luận trên bài viết của bạn?</Form.Label>
                                 <Form.Select
-                                    name="messagePrivacy"
-                                    value={settings.messagePrivacy}
+                                    name="commentPermission"
+                                    value={settings.commentPermission}
                                     onChange={handleChange}
                                     className="bg-input"
                                 >
                                     <option value="everyone">Mọi người</option>
                                     <option value="friends">Bạn bè</option>
-                                    <option value="noone">Không ai</option>
+                                    <option value="onlyme">Chỉ mình tôi</option>
                                 </Form.Select>
                             </Form.Group>
 
-                            <Form.Group controlId="tagging" className="mb-4">
-                                <Form.Label className="text-[var(--text-color)]">Ai có thể gắn thẻ bạn trong bài viết?</Form.Label>
+                            <Form.Group controlId="profileViewer" className="mb-3">
+                                <Form.Label className="text-[var(--text-color)]">Ai có thể xem hồ sơ của bạn?</Form.Label>
                                 <Form.Select
-                                    name="tagging"
-                                    value={settings.tagging}
+                                    name="profileViewer"
+                                    value={settings.profileViewer}
                                     onChange={handleChange}
                                     className="bg-input"
                                 >
-                                    <option value="everyone">Mọi người</option>
+                                    <option value="public">Mọi người</option>
                                     <option value="friends">Bạn bè</option>
-                                    <option value="noone">Không ai</option>
+                                    <option value="onlyme">Chỉ mình tôi</option>
                                 </Form.Select>
                             </Form.Group>
+
+
 
                             <div className="d-flex justify-content-end">
                                 <button

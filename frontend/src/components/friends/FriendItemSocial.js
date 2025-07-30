@@ -1,12 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Spinner } from "react-bootstrap";
-import useMedia from "../../hooks/useMedia";
+import useSingleMedia from "../../hooks/useSingleMedia";
 import FriendshipButton from "../friendship/FriendshipButton";
 import FollowActionButton from "../utils/FollowActionButton";
 
 function FriendItemSocial({ user, showActions, handleAccept, handleReject, onAction }) {
-    const { mediaUrl: avatarUrl, loading: mediaLoading } = useMedia(user.id, "PROFILE", "image");
+    const { mediaUrl: avatarUrl, loading: mediaLoading } = useSingleMedia(user.id, "PROFILE", "image");
 
     return (
         <div className="flex justify-between items-center gap-4 px-4 py-3 rounded-xl hover:bg-[var(--hover-bg-color)] transition-all duration-200 shadow-sm">
