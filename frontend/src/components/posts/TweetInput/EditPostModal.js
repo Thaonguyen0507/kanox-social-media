@@ -515,135 +515,135 @@ function EditPostModal({ show, onHide, post, onSave }) {
                                 />
                             </FormGroup>
 
-                            <FormGroup className="mb-4">
-                                <FormLabel className="text-[var(--text-color)]">Trạng thái hiển thị</FormLabel>
-                                <div className="relative" ref={dropdownRef}>
-                                    <button
-                                        onClick={() => setShowCustomList(!showCustomList)}
-                                        className="rounded-full border border-[var(--border-color)] px-3 py-2 flex items-center gap-2 text-[var(--text-color)] bg-transparent hover:bg-[var(--hover-bg-color)] w-full transition-colors duration-200"
-                                    >
-                                        {renderStatusIcon(formData.privacySetting)}
-                                        {renderStatusText(formData.privacySetting)}
-                                    </button>
-                                    {showCustomList && (
-                                        <div className="absolute left-0 mt-1 w-full bg-[var(--background-color)] border border-[var(--border-color)] rounded shadow-lg z-50">
-                                            <button
-                                                onClick={() => {
-                                                    handleStatusChange("public");
-                                                    setShowCustomList(false);
-                                                }}
-                                                className="w-full px-4 py-2 text-left hover:bg-[var(--hover-bg-color)] flex items-center gap-2 text-[var(--text-color)] transition-colors duration-200"
-                                            >
-                                                <FaGlobeAmericas className="text-primary" /> Công khai
-                                            </button>
-                                            <button
-                                                onClick={() => {
-                                                    handleStatusChange("friends");
-                                                    setShowCustomList(false);
-                                                }}
-                                                className="w-full px-4 py-2 text-left hover:bg-[var(--hover-bg-color)] flex items-center gap-2 text-[var(--text-color)] transition-colors duration-200"
-                                            >
-                                                <FaUserFriends className="text-success" /> Bạn bè
-                                            </button>
-                                            <button
-                                                onClick={() => {
-                                                    handleStatusChange("only_me");
-                                                    setShowCustomList(false);
-                                                }}
-                                                className="w-full px-4 py-2 text-left hover:bg-[var(--hover-bg-color)] flex items-center gap-2 text-[var(--text-color)] transition-colors duration-200"
-                                            >
-                                                <FaLock className="text-danger" /> Chỉ mình tôi
-                                            </button>
-                                            <button
-                                                onClick={() => {
-                                                    handleStatusChange("custom");
-                                                    setShowCustomList(false);
-                                                }}
-                                                className="w-full px-4 py-2 text-left hover:bg-[var(--hover-bg-color)] flex items-center gap-2 text-[var(--text-color)] transition-colors duration-200"
-                                            >
-                                                <FaList className="text-info" /> Tùy chỉnh
-                                            </button>
-                                        </div>
-                                    )}
-                                </div>
-                            </FormGroup>
+                            {/*<FormGroup className="mb-4">*/}
+                            {/*    <FormLabel className="text-[var(--text-color)]">Trạng thái hiển thị</FormLabel>*/}
+                            {/*    <div className="relative" ref={dropdownRef}>*/}
+                            {/*        <button*/}
+                            {/*            onClick={() => setShowCustomList(!showCustomList)}*/}
+                            {/*            className="rounded-full border border-[var(--border-color)] px-3 py-2 flex items-center gap-2 text-[var(--text-color)] bg-transparent hover:bg-[var(--hover-bg-color)] w-full transition-colors duration-200"*/}
+                            {/*        >*/}
+                            {/*            {renderStatusIcon(formData.privacySetting)}*/}
+                            {/*            {renderStatusText(formData.privacySetting)}*/}
+                            {/*        </button>*/}
+                            {/*        {showCustomList && (*/}
+                            {/*            <div className="absolute left-0 mt-1 w-full bg-[var(--background-color)] border border-[var(--border-color)] rounded shadow-lg z-50">*/}
+                            {/*                <button*/}
+                            {/*                    onClick={() => {*/}
+                            {/*                        handleStatusChange("public");*/}
+                            {/*                        setShowCustomList(false);*/}
+                            {/*                    }}*/}
+                            {/*                    className="w-full px-4 py-2 text-left hover:bg-[var(--hover-bg-color)] flex items-center gap-2 text-[var(--text-color)] transition-colors duration-200"*/}
+                            {/*                >*/}
+                            {/*                    <FaGlobeAmericas className="text-primary" /> Công khai*/}
+                            {/*                </button>*/}
+                            {/*                <button*/}
+                            {/*                    onClick={() => {*/}
+                            {/*                        handleStatusChange("friends");*/}
+                            {/*                        setShowCustomList(false);*/}
+                            {/*                    }}*/}
+                            {/*                    className="w-full px-4 py-2 text-left hover:bg-[var(--hover-bg-color)] flex items-center gap-2 text-[var(--text-color)] transition-colors duration-200"*/}
+                            {/*                >*/}
+                            {/*                    <FaUserFriends className="text-success" /> Bạn bè*/}
+                            {/*                </button>*/}
+                            {/*                <button*/}
+                            {/*                    onClick={() => {*/}
+                            {/*                        handleStatusChange("only_me");*/}
+                            {/*                        setShowCustomList(false);*/}
+                            {/*                    }}*/}
+                            {/*                    className="w-full px-4 py-2 text-left hover:bg-[var(--hover-bg-color)] flex items-center gap-2 text-[var(--text-color)] transition-colors duration-200"*/}
+                            {/*                >*/}
+                            {/*                    <FaLock className="text-danger" /> Chỉ mình tôi*/}
+                            {/*                </button>*/}
+                            {/*                <button*/}
+                            {/*                    onClick={() => {*/}
+                            {/*                        handleStatusChange("custom");*/}
+                            {/*                        setShowCustomList(false);*/}
+                            {/*                    }}*/}
+                            {/*                    className="w-full px-4 py-2 text-left hover:bg-[var(--hover-bg-color)] flex items-center gap-2 text-[var(--text-color)] transition-colors duration-200"*/}
+                            {/*                >*/}
+                            {/*                    <FaList className="text-info" /> Tùy chỉnh*/}
+                            {/*                </button>*/}
+                            {/*            </div>*/}
+                            {/*        )}*/}
+                            {/*    </div>*/}
+                            {/*</FormGroup>*/}
 
-                            {formData.privacySetting === "custom" && (
-                                <FormGroup className="mb-4">
-                                    <FormLabel className="text-[var(--text-color)]">Danh sách tùy chỉnh</FormLabel>
-                                    <div className="relative">
-                                        <button
-                                            onClick={() => setShowCustomList(!showCustomList)}
-                                            className="w-full text-left rounded-full border border-[var(--border-color)] px-3 py-2 text-[var(--text-color)] bg-[var(--hover-bg-color)] hover:bg-[var(--hover-bg-color-dark)] transition-colors duration-200"
-                                        >
-                                            {formData.customListId
-                                                ? customLists.find((l) => l.id === formData.customListId)?.listName
-                                                : "Chọn danh sách tùy chỉnh"}
-                                        </button>
-                                        {showCustomList && (
-                                            <div className="absolute z-50 mt-1 bg-[var(--background-color)] border border-[var(--border-color)] rounded shadow-lg w-full">
-                                                {customLists.map((list) => (
-                                                    <button
-                                                        key={list.id}
-                                                        onClick={() => {
-                                                            handleCustomListSelect(list.id);
-                                                            setShowCustomList(false);
-                                                        }}
-                                                        className="w-full text-left px-4 py-2 hover:bg-[var(--hover-bg-color)] text-[var(--text-color)] transition-colors duration-200"
-                                                    >
-                                                        {list.listName}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
-                                </FormGroup>
-                            )}
+                            {/*{formData.privacySetting === "custom" && (*/}
+                            {/*    <FormGroup className="mb-4">*/}
+                            {/*        <FormLabel className="text-[var(--text-color)]">Danh sách tùy chỉnh</FormLabel>*/}
+                            {/*        <div className="relative">*/}
+                            {/*            <button*/}
+                            {/*                onClick={() => setShowCustomList(!showCustomList)}*/}
+                            {/*                className="w-full text-left rounded-full border border-[var(--border-color)] px-3 py-2 text-[var(--text-color)] bg-[var(--hover-bg-color)] hover:bg-[var(--hover-bg-color-dark)] transition-colors duration-200"*/}
+                            {/*            >*/}
+                            {/*                {formData.customListId*/}
+                            {/*                    ? customLists.find((l) => l.id === formData.customListId)?.listName*/}
+                            {/*                    : "Chọn danh sách tùy chỉnh"}*/}
+                            {/*            </button>*/}
+                            {/*            {showCustomList && (*/}
+                            {/*                <div className="absolute z-50 mt-1 bg-[var(--background-color)] border border-[var(--border-color)] rounded shadow-lg w-full">*/}
+                            {/*                    {customLists.map((list) => (*/}
+                            {/*                        <button*/}
+                            {/*                            key={list.id}*/}
+                            {/*                            onClick={() => {*/}
+                            {/*                                handleCustomListSelect(list.id);*/}
+                            {/*                                setShowCustomList(false);*/}
+                            {/*                            }}*/}
+                            {/*                            className="w-full text-left px-4 py-2 hover:bg-[var(--hover-bg-color)] text-[var(--text-color)] transition-colors duration-200"*/}
+                            {/*                        >*/}
+                            {/*                            {list.listName}*/}
+                            {/*                        </button>*/}
+                            {/*                    ))}*/}
+                            {/*                </div>*/}
+                            {/*            )}*/}
+                            {/*        </div>*/}
+                            {/*    </FormGroup>*/}
+                            {/*)}*/}
+
+                    {/*        <FormGroup className="mb-4">*/}
+                    {/*            <FormLabel className="text-[var(--text-color)]">Tag người dùng</FormLabel>*/}
+                    {/*            <Row className="g-2">*/}
+                    {/*                <Col xs={9}>*/}
+                    {/*                    <FormControl*/}
+                    {/*                        type="text"*/}
+                    {/*                        placeholder="Nhập username"*/}
+                    {/*                        value={formData.tagInput}*/}
+                    {/*                        onChange={handleTagInputChange}*/}
+                    {/*                        className="bg-[var(--hover-bg-color)] text-[var(--text-color)] border border-[var(--border-color)] rounded-lg focus:ring-2 focus:ring-[var(--primary-color)]"*/}
+                    {/*                    />*/}
+                    {/*                </Col>*/}
+                    {/*                <Col xs={3}>*/}
+                    {/*                    <Button*/}
+                    {/*                        variant="primary"*/}
+                    {/*                        onClick={handleAddTag}*/}
+                    {/*                        disabled={!formData.tagInput.trim()}*/}
+                    {/*                        className="w-full rounded-lg"*/}
+                    {/*                    >*/}
+                    {/*                        Thêm*/}
+                    {/*                    </Button>*/}
+                    {/*                </Col>*/}
+                    {/*            </Row>*/}
+                    {/*            <div className="mt-2 flex flex-wrap gap-2">*/}
+                    {/*                {formData.taggedUserIds.map((tagId) => (*/}
+                    {/*                    <span*/}
+                    {/*                        key={tagId}*/}
+                    {/*                        className="bg-[var(--primary-color)] text-white px-2 py-1 rounded-full flex items-center"*/}
+                    {/*                    >*/}
+                    {/*  @User_{tagId}*/}
+                    {/*                        <Button*/}
+                    {/*                            variant="link"*/}
+                    {/*                            className="text-white p-0 ml-1"*/}
+                    {/*                            onClick={() => handleRemoveTag(tagId)}*/}
+                    {/*                        >*/}
+                    {/*    ×*/}
+                    {/*  </Button>*/}
+                    {/*</span>*/}
+                    {/*                ))}*/}
+                    {/*            </div>*/}
+                    {/*        </FormGroup>*/}
 
                             <FormGroup className="mb-4">
-                                <FormLabel className="text-[var(--text-color)]">Tag người dùng</FormLabel>
-                                <Row className="g-2">
-                                    <Col xs={9}>
-                                        <FormControl
-                                            type="text"
-                                            placeholder="Nhập username"
-                                            value={formData.tagInput}
-                                            onChange={handleTagInputChange}
-                                            className="bg-[var(--hover-bg-color)] text-[var(--text-color)] border border-[var(--border-color)] rounded-lg focus:ring-2 focus:ring-[var(--primary-color)]"
-                                        />
-                                    </Col>
-                                    <Col xs={3}>
-                                        <Button
-                                            variant="primary"
-                                            onClick={handleAddTag}
-                                            disabled={!formData.tagInput.trim()}
-                                            className="w-full rounded-lg"
-                                        >
-                                            Thêm
-                                        </Button>
-                                    </Col>
-                                </Row>
-                                <div className="mt-2 flex flex-wrap gap-2">
-                                    {formData.taggedUserIds.map((tagId) => (
-                                        <span
-                                            key={tagId}
-                                            className="bg-[var(--primary-color)] text-white px-2 py-1 rounded-full flex items-center"
-                                        >
-                      @User_{tagId}
-                                            <Button
-                                                variant="link"
-                                                className="text-white p-0 ml-1"
-                                                onClick={() => handleRemoveTag(tagId)}
-                                            >
-                        ×
-                      </Button>
-                    </span>
-                                    ))}
-                                </div>
-                            </FormGroup>
-
-                            <FormGroup className="mb-4">
-                                <FormLabel className="text-[var(--text-color)]">Ảnh</FormLabel>
+                                <FormLabel className="text-[var(--text-color)]">Thêm ảnh</FormLabel>
                                 <FormControl
                                     type="file"
                                     multiple
@@ -658,7 +658,7 @@ function EditPostModal({ show, onHide, post, onSave }) {
 
                             <div className="flex justify-end gap-2">
                                 <Button
-                                    variant="secondary"
+                                    variant="primary"
                                     onClick={onHide}
                                     className="rounded-lg"
                                     disabled={loading}

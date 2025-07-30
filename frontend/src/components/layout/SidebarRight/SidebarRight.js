@@ -153,13 +153,15 @@ function SidebarRight() {
               ) : suggestedUsers.length === 0 ? (
                   <div className="p-4 text-center">Không có gợi ý bạn bè</div>
               ) : (
-                  suggestedUsers.map((user) => (
-                      <FriendItem
-                          key={user.id}
-                          user={user}
-                          onAction={handleAction}
-                      />
-                  ))
+                  <div className="max-h-[400px] overflow-y-auto scrollbar-hide pr-1 transition-all duration-300 ease-in-out">
+                    {suggestedUsers.map((user) => (
+                        <FriendItem
+                            key={user.id}
+                            user={user}
+                            onAction={handleAction}
+                        />
+                    ))}
+                  </div>
               )}
               <div className="px-4 py-2 font-bold text-sm hover:bg-[var(--hover-bg-color)] cursor-pointer">
                 Hiển thị thêm
