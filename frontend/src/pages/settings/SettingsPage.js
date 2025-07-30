@@ -64,7 +64,7 @@ function SettingsPage() {
 
             setSettings({
                 postVisibility: generalData.data?.postVisibility ?? "public",
-                profileViewer: profileData.data?.privacySetting ?? "public", // Sử dụng privacySetting thay vì profilePrivacySetting
+                profileViewer: profileData.data?.profilePrivacySetting ?? "public", // Sử dụng privacySetting thay vì profilePrivacySetting
             });
         } catch (error) {
             console.error("Lỗi khi lấy cài đặt:", error);
