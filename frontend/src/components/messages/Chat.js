@@ -409,96 +409,49 @@ const Chat = ({ chatId, messages, onMessageUpdate, onSendMessage }) => {
                     const isMissedCall = msg.typeId === 4;
                     return (
                         <div key={msg.id} className={`mb-2 flex ${msg.senderId === user?.id ? "justify-end" : "justify-start"}`}>
-                            {/*<div className={`p-3 rounded-3xl shadow-md max-w-[70%] ${isMissedCall*/}
-                            {/*    ? "bg-yellow-100 text-yellow-800 italic"*/}
-                            {/*    : msg.senderId === user?.id*/}
-                            {/*        ? "bg-[var(--primary-color)] text-white"*/}
-                            {/*        : "bg-[var(--message-other-bg)] text-[var(--text-color)]"*/}
-                            {/*}`}>*/}
-                            {/*    {isMissedCall ? (*/}
-                            {/*        <div className="flex items-center justify-between gap-2">*/}
-                            {/*            <span className="mr-2">{msg.content}</span>*/}
-                            {/*            <button*/}
-                            {/*                onClick={() => navigate(`/call/${chatId}`)}*/}
-                            {/*                className="text-sm text-blue-600 hover:underline"*/}
-                            {/*            >*/}
-                            {/*                Gọi lại*/}
-                            {/*            </button>*/}
-                            {/*        </div>*/}
-                            {/*    ) : (*/}
-                            {/*        <>*/}
-                            {/*            {msg.content}*/}
-                            {/*            /!* ✅ Hiển thị media nếu có *!/*/}
-                            {/*            {msg.mediaList && msg.mediaList.length > 0 && (*/}
-                            {/*                <div className="grid grid-cols-3 gap-1 mt-2">*/}
-                            {/*                    {msg.mediaList.map((media, idx) => (*/}
-                            {/*                        <div key={idx} className="relative w-full aspect-square">*/}
-                            {/*                            {media.type === "image" ? (*/}
-                            {/*                                <img src={media.url} className="w-full h-full object-cover rounded" alt="media" />*/}
-                            {/*                            ) : media.type === "video" ? (*/}
-                            {/*                                <video src={media.url} className="w-full h-full object-cover rounded" controls />*/}
-                            {/*                            ) : (*/}
-                            {/*                                <div className="text-xs text-red-500">Không hỗ trợ media</div>*/}
-                            {/*                            )}*/}
-                            {/*                        </div>*/}
-                            {/*                    ))}*/}
-                            {/*                </div>*/}
-                            {/*            )}*/}
-                            {/*            <div className="text-end mt-1">*/}
-                            {/*                <small className={`${msg.senderId === user?.id ? "text-[var(--light-text-color)]" : "text-[var(--text-color-muted)]"} text-xs`}>*/}
-                            {/*                    {new Date(msg.createdAt).toLocaleTimeString()}*/}
-                            {/*                </small>*/}
-                            {/*            </div>*/}
-                            {/*        </>*/}
-                            {/*    )}*/}
-                            {/*</div>*/}
-                            <div className={`mb-2 flex ${msg.senderId === user?.id ? "justify-end" : "justify-start"}`}>
-                                <div className="group relative flex flex-col items-end max-w-[70%] transition-all duration-300 ease-in-out">
-                                    <div className={`p-3 rounded-3xl shadow-md w-fit ${isMissedCall
-                                        ? "bg-yellow-100 text-yellow-800 italic"
-                                        : msg.senderId === user?.id
-                                            ? "bg-[var(--primary-color)] text-white"
-                                            : "bg-[var(--message-other-bg)] text-[var(--text-color)]"
-                                    }`}>
-                                        {isMissedCall ? (
-                                            <div className="flex items-center justify-between gap-2">
-                                                <span>{msg.content}</span>
-                                                <button
-                                                    onClick={() => navigate(`/call/${chatId}`)}
-                                                    className="text-sm text-blue-600 hover:underline"
-                                                >
-                                                    Gọi lại
-                                                </button>
-                                            </div>
-                                        ) : (
-                                            <>
-                                                {msg.content}
-                                                {msg.mediaList?.length > 0 && (
-                                                    <div className="grid grid-cols-3 gap-1 mt-2">
-                                                        {msg.mediaList.map((media, idx) => (
-                                                            <div key={idx} className="relative w-full aspect-square">
-                                                                {media.type === "image" ? (
-                                                                    <img src={media.url} className="w-full h-full object-cover rounded" alt="media" />
-                                                                ) : media.type === "video" ? (
-                                                                    <video src={media.url} className="w-full h-full object-cover rounded" controls />
-                                                                ) : (
-                                                                    <div className="text-xs text-red-500">Không hỗ trợ media</div>
-                                                                )}
-                                                            </div>
-                                                        ))}
+                            <div className={`p-3 rounded-3xl shadow-md max-w-[70%] ${isMissedCall
+                                ? "bg-yellow-100 text-yellow-800 italic"
+                                : msg.senderId === user?.id
+                                    ? "bg-[var(--primary-color)] text-white"
+                                    : "bg-[var(--message-other-bg)] text-[var(--text-color)]"
+                            }`}>
+                                {isMissedCall ? (
+                                    <div className="flex items-center justify-between gap-2">
+                                        <span className="mr-2">{msg.content}</span>
+                                        <button
+                                            onClick={() => navigate(`/call/${chatId}`)}
+                                            className="text-sm text-blue-600 hover:underline"
+                                        >
+                                            Gọi lại
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <>
+                                        {msg.content}
+                                        {/* ✅ Hiển thị media nếu có */}
+                                        {msg.mediaList && msg.mediaList.length > 0 && (
+                                            <div className="grid grid-cols-3 gap-1 mt-2">
+                                                {msg.mediaList.map((media, idx) => (
+                                                    <div key={idx} className="relative w-full aspect-square">
+                                                        {media.type === "image" ? (
+                                                            <img src={media.url} className="w-full h-full object-cover rounded" alt="media" />
+                                                        ) : media.type === "video" ? (
+                                                            <video src={media.url} className="w-full h-full object-cover rounded" controls />
+                                                        ) : (
+                                                            <div className="text-xs text-red-500">Không hỗ trợ media</div>
+                                                        )}
                                                     </div>
-                                                )}
-                                            </>
+                                                ))}
+                                            </div>
                                         )}
-                                    </div>
-
-                                    {/* Tách phần thời gian */}
-                                    <div className="text-[0.75rem] text-gray-400 mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
-                                        {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                    </div>
-                                </div>
+                                        <div className="text-end mt-1">
+                                            <small className={`${msg.senderId === user?.id ? "text-[var(--light-text-color)]" : "text-[var(--text-color-muted)]"} text-xs`}>
+                                                {new Date(msg.createdAt).toLocaleTimeString()}
+                                            </small>
+                                        </div>
+                                    </>
+                                )}
                             </div>
-
                         </div>
                     );
                 })}
