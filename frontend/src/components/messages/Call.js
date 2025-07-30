@@ -34,6 +34,19 @@
         let reconnectTimer = null;
         const callEndedRef = useRef(false);
 
+        const [remoteVideoOff, setRemoteVideoOff] = useState(false); // Thêm trạng thái cho camera người nhận
+
+        const { mediaUrl: localAvatarUrl, loading: localAvatarLoading } = useSingleMedia(
+            user?.id,
+            "PROFILE",
+            "image"
+        );
+        const { mediaUrl: remoteAvatarUrl, loading: remoteAvatarLoading } = useSingleMedia(
+            recipientId,
+            "PROFILE",
+            "image"
+        );
+
         const sendCallStatusMessage = (statusMessage) => {
             if (!publish || !chatId || !user) return;
 
