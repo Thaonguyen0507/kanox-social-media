@@ -54,35 +54,14 @@ function HomePage({ onShowCreatePost, onToggleDarkMode }) {
 
   useEffect(() => {
     fetchPosts();
-    if (postId) {
-      fetchHighlightedPost();
-    }
-  }, [user, postId]);
+  }, [user]);
 
-  // Logic cuộn đến bài viết
   useEffect(() => {
-    if (!postId || !posts.length) return;
-
-    const targetPost = posts.find((post) => String(post.id) === postId);
-    if (targetPost && postRefs.current[postId]) {
-      console.log(`Cuộn đến bài viết với postId: ${postId}`);
-      // Đợi render hoàn tất trước khi cuộn
+    if (postId && postRefs.current[postId]) {
+      postRefs.current[postId].scrollIntoView({ behavior: "smooth", block: "center" });
       setTimeout(() => {
-        if (postRefs.current[postId]) {
-          postRefs.current[postId].scrollIntoView({
-            behavior: "smooth",
-            block: "center",
-          });
-          // Xóa postId khỏi URL sau khi cuộn
-          setTimeout(() => {
-            setSearchParams({}, { replace: true });
-          }, 1000);
-        } else {
-          console.warn(`Ref cho postId ${postId} chưa được gán.`);
-        }
-      }, 100); // Đợi 100ms để đảm bảo render hoàn tất
-    } else {
-      console.warn(`Bài viết với postId ${postId} không tìm thấy trong danh sách posts.`);
+        setSearchParams({}, { replace: true });
+      }, 5000);
     }
   }, [postId, posts, setSearchParams]);
 
@@ -142,11 +121,7 @@ function HomePage({ onShowCreatePost, onToggleDarkMode }) {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                     >
-                      <Spinner
-                          animation="border"
-                          role="status"
-                          style={{ color: "var(--text-color)" }}
-                      />
+                      <Spinner animation="border" role="status" style={{ color: "var(--text-color)" }} />
                     </motion.div>
                 ) : error ? (
                     <motion.p
