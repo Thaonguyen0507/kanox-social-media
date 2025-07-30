@@ -391,18 +391,18 @@ const Chat = ({ chatId, messages, onMessageUpdate, onSendMessage }) => {
                         <FaPhone />
                     </Button>
                 </OverlayTrigger>
-                <OverlayTrigger placement="left" overlay={<Tooltip className="!bg-[var(--tooltip-bg-color)] !text-[var(--text-color)] dark:!bg-gray-800 dark:!text-white">
-                    {isSpam ? "Bỏ đánh dấu spam" : "Đánh dấu spam"}
-                </Tooltip>}>
-                    <Button
-                        variant={isSpam ? "outline-success" : "outline-warning"}
-                        size="sm"
-                        onClick={isSpam ? handleUnmarkSpam : handleMarkSpam}
-                        className="ms-2"
-                    >
-                        {isSpam ? <FaCheckCircle /> : <FaExclamationTriangle />}
-                    </Button>
-                </OverlayTrigger>
+                {/*<OverlayTrigger placement="left" overlay={<Tooltip className="!bg-[var(--tooltip-bg-color)] !text-[var(--text-color)] dark:!bg-gray-800 dark:!text-white">*/}
+                {/*    {isSpam ? "Bỏ đánh dấu spam" : "Đánh dấu spam"}*/}
+                {/*</Tooltip>}>*/}
+                {/*    <Button*/}
+                {/*        variant={isSpam ? "outline-success" : "outline-warning"}*/}
+                {/*        size="sm"*/}
+                {/*        onClick={isSpam ? handleUnmarkSpam : handleMarkSpam}*/}
+                {/*        className="ms-2"*/}
+                {/*    >*/}
+                {/*        {isSpam ? <FaCheckCircle /> : <FaExclamationTriangle />}*/}
+                {/*    </Button>*/}
+                {/*</OverlayTrigger>*/}
             </div>
             <div className="flex-grow overflow-y-auto p-3 max-h-[calc(100vh-200px)]" ref={chatContainerRef}>
                 {messages.map((msg) => {

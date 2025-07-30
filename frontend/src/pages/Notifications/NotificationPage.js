@@ -326,12 +326,12 @@ function NotificationPage({ onToggleDarkMode, isDarkMode, onShowCreatePost }) {
                     <div className="sticky top-0 bg-[var(--content-bg)] border-b border-gray-300 py-2 z-50">
                         <div className="px-4 flex justify-between items-center">
                             <h5 className="font-bold m-0 text-[var(--text-color)]">Thông báo</h5>
-                            <button
-                                className="text-[var(--text-color)] hover:text-[var(--primary-color)] p-1"
-                                title="Cài đặt"
-                            >
-                                <FaCog />
-                            </button>
+                            {/*<button*/}
+                            {/*    className="text-[var(--text-color)] hover:text-[var(--primary-color)] p-1"*/}
+                            {/*    title="Cài đặt"*/}
+                            {/*>*/}
+                            {/*    <FaCog />*/}
+                            {/*</button>*/}
                         </div>
                     </div>
 

@@ -508,22 +508,22 @@ function TweetInput({ onPostSuccess, groupId }) {
                         value={tweetContent}
                         onChange={(e) => setTweetContent(e.target.value)}
                     />
-                    {selectedPlace && (
-                        <div className="mb-3">
-                            <div className="flex items-center mb-2">
-                                <FaMapMarkerAlt className="mr-1" />
-                                <span>{selectedPlace.locationName}</span>
-                                <Button
-                                    variant="link"
-                                    className="text-red-600 p-0 ml-2"
-                                    onClick={() => setSelectedPlace(null)}
-                                >
-                                    <AiOutlineClose size={18} />
-                                </Button>
-                            </div>
-                            <MapView lat={selectedPlace.lat} lng={selectedPlace.lng} />
-                        </div>
-                    )}
+                    {/*{selectedPlace && (*/}
+                    {/*    <div className="mb-3">*/}
+                    {/*        <div className="flex items-center mb-2">*/}
+                    {/*            <FaMapMarkerAlt className="mr-1" />*/}
+                    {/*            <span>{selectedPlace.locationName}</span>*/}
+                    {/*            <Button*/}
+                    {/*                variant="link"*/}
+                    {/*                className="text-red-600 p-0 ml-2"*/}
+                    {/*                onClick={() => setSelectedPlace(null)}*/}
+                    {/*            >*/}
+                    {/*                <AiOutlineClose size={18} />*/}
+                    {/*            </Button>*/}
+                    {/*        </div>*/}
+                    {/*        <MapView lat={selectedPlace.lat} lng={selectedPlace.lng} />*/}
+                    {/*    </div>*/}
+                    {/*)}*/}
 
                     <div className="mb-3">{renderMediaPreview()}</div>
 

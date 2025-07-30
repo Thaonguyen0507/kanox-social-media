@@ -129,19 +129,19 @@ function SidebarRight() {
         {/*  </div>*/}
         {/*</div>*/}
 
-        {/* Premium Card (LCP target) */}
-        <div className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-2xl shadow-sm mb-4 p-4">
-          <h5 className="font-bold mb-2">Đăng ký gói Premium</h5>
-          <p className="text-sm mb-3" style={{ minHeight: "1.25rem" }}>
-            Đăng ký để mở khóa các tính năng mới và nhận chia sẻ doanh thu nếu bạn là người sáng tạo nội dung.
-          </p>
-          <button
-              onClick={handleSubscribePremiumClick}
-              className="bg-[var(--background-color)] text-[var(--text-color)] px-4 py-2 rounded-full font-bold"
-          >
-            Đăng ký
-          </button>
-        </div>
+        {/*/!* Premium Card (LCP target) *!/*/}
+        {/*<div className="bg-[var(--card-bg)] border border-[var(--border-color)] rounded-2xl shadow-sm mb-4 p-4">*/}
+        {/*  <h5 className="font-bold mb-2">Đăng ký gói Premium</h5>*/}
+        {/*  <p className="text-sm mb-3" style={{ minHeight: "1.25rem" }}>*/}
+        {/*    Đăng ký để mở khóa các tính năng mới và nhận chia sẻ doanh thu nếu bạn là người sáng tạo nội dung.*/}
+        {/*  </p>*/}
+        {/*  <button*/}
+        {/*      onClick={handleSubscribePremiumClick}*/}
+        {/*      className="bg-[var(--background-color)] text-[var(--text-color)] px-4 py-2 rounded-full font-bold"*/}
+        {/*  >*/}
+        {/*    Đăng ký*/}
+        {/*  </button>*/}
+        {/*</div>*/}
 
 
         {/* Suggested users */}

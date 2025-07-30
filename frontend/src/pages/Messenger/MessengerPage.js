@@ -559,7 +559,7 @@ function MessengerPage() {
                 <Nav.Link eventKey="inbox">Hộp thư đến</Nav.Link>
               </Nav.Item>
               <Nav.Item>
-                <Nav.Link eventKey="spam">Tin nhắn spam</Nav.Link>
+                {/*<Nav.Link eventKey="spam">Tin nhắn spam</Nav.Link>*/}
               </Nav.Item>
             </Nav>
           </div>

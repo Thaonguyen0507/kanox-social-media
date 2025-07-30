@@ -51,16 +51,16 @@ function SidebarLeft({ onToggleDarkMode, isDarkMode, onShowCreatePost }) {
       badge: unreadMessageCount,
     },
     { icon: <FaUserAlt />, label: "Cộng đồng", path: "/communities" },
-    { icon: <BsStars />, label: "Premium", path: "/premium" },
+    // { icon: <BsStars />, label: "Premium", path: "/premium" },
     { icon: <FaUserAlt />, label: "Hồ sơ", path: `/profile/${user?.username}` },
   ];
 
   const additionalTabs = [
     { icon: <FaUserFriends />, label: "Bạn bè", path: "/friends" },
     { icon: <FaUserSlash />, label: "Người bị chặn", path: "/blocks" },
-    { icon: <FaRegPlusSquare />, label: "Tạo Story", path: "/create-story" },
+    // { icon: <FaRegPlusSquare />, label: "Tạo Story", path: "/create-story" },
     { icon: <FaLock />, label: "Cài đặt Bảo mật", path: "/settings" },
-    { icon: <FaTrash />, label: "Xóa Tài khoản", path: "/delete-account" },
+    // { icon: <FaTrash />, label: "Xóa Tài khoản", path: "/delete-account" },
   ];
 
   const isLinkActive = (path) => {
