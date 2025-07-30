@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Spinner, Row, Col, Card, Badge, Button, ListGroup } from "react-bootstrap";
 import { fetchGroupDetailById } from "../../api/groupApi";
 
 const GroupAdminPage = () => {
     const { groupId: id } = useParams();
+    const navigate = useNavigate();
     const [groupInfo, setGroupInfo] = useState(null);
     const [loading, setLoading] = useState(true);
 
@@ -39,6 +40,15 @@ const GroupAdminPage = () => {
 
     return (
         <div className="container mt-4">
+            {/* Nút quay lại CommunitiesManagement */}
+            <Button
+                variant="secondary"
+                className="mb-3"
+                onClick={() => navigate("/admin/communities")}
+            >
+                ← Quay lại quản lý cộng đồng
+            </Button>
+
             <h2 className="mb-4 fw-bold text-primary">Quản trị Nhóm</h2>
             <Row>
                 <Col md={4}>
@@ -83,8 +93,6 @@ const GroupAdminPage = () => {
                             </ListGroup>
                         </Card.Body>
                     </Card>
-
-
                 </Col>
             </Row>
         </div>

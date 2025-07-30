@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0805ce12-b01d-4b2d-bea6-61b2f552f0b9" name="Changes" comment="fix post">
+    <list default="true" id="0805ce12-b01d-4b2d-bea6-61b2f552f0b9" name="Changes" comment="fix communitymemberpage">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -70,7 +70,7 @@
       <updated>1753192153031</updated>
       <workItem from="1753192154417" duration="70000" />
       <workItem from="1753799436287" duration="5320000" />
-      <workItem from="1753890513058" duration="2951000" />
+      <workItem from="1753890513058" duration="3671000" />
     </task>
     <task id="LOCAL-00001" summary="ok">
       <option name="closed" value="true" />
@@ -160,7 +160,15 @@
       <option name="project" value="LOCAL" />
       <updated>1753894315469</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="fix communitymemberpage">
+      <option name="closed" value="true" />
+      <created>1753895938464</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1753895938464</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -182,6 +190,7 @@
     <MESSAGE value="fix" />
     <MESSAGE value="fix UI" />
     <MESSAGE value="fix post" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix post" />
+    <MESSAGE value="fix communitymemberpage" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix communitymemberpage" />
   </component>
 </project>
