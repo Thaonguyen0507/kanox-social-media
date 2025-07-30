@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import {
   Container,
   Row,
@@ -75,6 +75,30 @@ function AppContent() {
   const [showCreatePost, setShowCreatePost] = useState(false);
   const location = useLocation();
   const [notifications, setNotifications] = useState([]);
+  const ringtoneRef = useRef(null);
+
+  useEffect(() => {
+    if (!ringtoneRef.current) {
+      ringtoneRef.current = new Audio("/assets/sound/ringtone.mp3");
+      ringtoneRef.current.loop = true;
+    }
+
+    if (showCallModal) {
+      ringtoneRef.current.play().catch(err => {
+        console.warn("Không thể phát chuông:", err);
+      });
+    } else {
+      ringtoneRef.current.pause();
+      ringtoneRef.current.currentTime = 0;
+    }
+
+    return () => {
+      if (ringtoneRef.current) {
+        ringtoneRef.current.pause();
+        ringtoneRef.current.currentTime = 0;
+      }
+    };
+  }, [showCallModal]);
 
   const { mediaUrl, loading: mediaLoading, error: mediaError } = useSingleMedia(
       incomingCall?.fromId,
@@ -576,45 +600,39 @@ function AppContent() {
               show={showCallModal}
               centered
               onHide={rejectCall}
-              className="bg-[var(--background-color)] text-[var(--text-color)] modal-shake"
+              className="modal-shake modal-fade-slide"
               animation={true}
           >
-            <Modal.Header closeButton>
-              <Modal.Title>Cuộc gọi đến</Modal.Title>
-            </Modal.Header>
-            <Modal.Body className="d-flex align-items-center">
+            <Modal.Body className="bg-[var(--background-color)] text-[var(--text-color)] text-center py-5">
+              <h4 className="mb-4 font-semibold">📞 Cuộc gọi đến</h4>
+
               {mediaLoading ? (
-                  <Spinner animation="border" size="sm" className="me-3" />
-              ) : mediaError ? (
-                  <Image
-                      src="https://via.placeholder.com/50"
-                      roundedCircle
-                      width={50}
-                      height={50}
-                      className="me-3"
-                  />
+                  <div className="d-flex justify-content-center mb-4">
+                    <Spinner animation="border" size="lg" />
+                  </div>
               ) : (
-                  <Image
-                      src={mediaUrl || "https://via.placeholder.com/50"}
-                      roundedCircle
-                      width={50}
-                      height={50}
-                      className="me-3"
-                  />
+                  <div className="ringing-avatar d-inline-block mb-4">
+                    <Image
+                        src={mediaError ? "https://via.placeholder.com/100" : mediaUrl || "https://via.placeholder.com/100"}
+                        roundedCircle
+                        width={100}
+                        height={100}
+                        className="shadow-lg"
+                    />
+                  </div>
               )}
-              <div>
-                <h5>{incomingCall?.from || "Người gọi không xác định"}</h5>
-                <p>Đang gọi video...</p>
+
+              <h5 className="mb-5">{incomingCall?.from || "Người gọi không xác định"}</h5>
+
+              <div className="d-flex justify-content-center gap-3">
+                <Button variant="outline-danger" size="lg" onClick={rejectCall}>
+                  ❌ Từ chối
+                </Button>
+                <Button variant="success" size="lg" onClick={acceptCall}>
+                  ✅ Chấp nhận
+                </Button>
               </div>
             </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={rejectCall}>
-                Từ chối
-              </Button>
-              <Button variant="primary" onClick={acceptCall}>
-                Chấp nhận
-              </Button>
-            </Modal.Footer>
           </Modal>
         </>
       )}

@@ -1,12 +1,12 @@
 import React from "react";
 import { Image, Spinner } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import useMedia from "../../hooks/useMedia";
+import useSingleMedia from "../../hooks/useSingleMedia";
 import FriendshipButton from "../friendship/FriendshipButton";
 import FollowActionButton from "../utils/FollowActionButton";
 
 function FriendItem({ user, showActions, handleAccept, handleReject, onAction }) {
-    const { mediaUrl: avatarUrl, loading: mediaLoading } = useMedia(user.id, "PROFILE", "image");
+    const { mediaUrl: avatarUrl, loading: mediaLoading } = useSingleMedia(user.id, "PROFILE", "image");
 
     const renderAvatar = () => {
         if (mediaLoading) {
