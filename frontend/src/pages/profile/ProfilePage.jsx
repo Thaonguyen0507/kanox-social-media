@@ -507,19 +507,28 @@ function ProfilePage() {
                                             }
                                         />
                                         {!isBlocked && <FriendshipButton targetId={userProfile.id} />}
-                                        <Button
-                                            variant={isBlocked ? "outline-secondary" : "outline-danger"}
+                                        <button
                                             onClick={handleBlockToggle}
+                                            className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                                                isBlocked
+                                                    ? "bg-white text-gray-700 border border-gray-300 hover:bg-gray-100"
+                                                    : "bg-red-100 text-red-600 border border-red-400 hover:bg-red-200"
+                                            }`}
                                         >
-                                            <FaUserSlash className="mr-1" /> {isBlocked ? "Bỏ chặn" : "Chặn"}
-                                        </Button>
-                                        <Button
-                                            variant="outline-warning"
+                                            <FaUserSlash className="inline mr-1" />
+                                            {isBlocked ? "Bỏ chặn" : "Chặn"}
+                                        </button>
+                                        <button
                                             onClick={() => setShowReportModal(true)}
                                             disabled={isBlocked}
+                                            className={`rounded-full px-4 py-2 text-sm font-semibold border transition ${
+                                                isBlocked
+                                                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                                                    : "bg-yellow-100 text-yellow-700 border-yellow-400 hover:bg-yellow-200"
+                                            }`}
                                         >
                                             Báo cáo
-                                        </Button>
+                                        </button>
                                     </>
                                 )}
                             </div>
