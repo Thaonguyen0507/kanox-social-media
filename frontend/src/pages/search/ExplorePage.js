@@ -119,15 +119,15 @@ function ExplorePage() {
 
   const renderSearchResults = () =>
       searchKeyword.trim() && (
-          <div className="absolute top-full left-0 w-full mt-2 bg-[var(--content-bg)] dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 z-50 max-h-80 overflow-y-auto">
-            <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
-              <p className="text-sm font-semibold text-gray-700 dark:text-gray-200">
+          <div className="absolute top-full left-0 w-full mt-2 bg-[var(--background-color)] text-[var(--text-color)] rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 z-50 max-h-80 overflow-y-auto">
+            <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700 bg-[var(--background-color)] text-[var(--text-color)]">
+              <p className="text-sm font-semibold bg-[var(--background-color)] text-[var(--text-color)]">
                 Kết quả tìm kiếm
               </p>
             </div>
             {isSearching ? (
-                <div className="px-4 py-3 text-center text-sm text-gray-500 dark:text-gray-400">
-                  <div className="animate-spin inline-block w-5 h-5 border-2 border-t-gray-500 rounded-full mr-2"></div>
+                <div className="px-4 py-3 text-center text-sm text-gray-500 bg-[var(--background-color)] text-[var(--text-color)]">
+                  <div className="animate-spin inline-block w-5 h-5 border-2 border-t-gray-500 rounded-full mr-2 bg-[var(--background-color)] text-[var(--text-color)]"></div>
                   Đang tải...
                 </div>
             ) : searchResults.length > 0 ? (
@@ -135,7 +135,7 @@ function ExplorePage() {
                     <UserSearchItem key={item.id} item={item} />
                 ))
             ) : (
-                <div className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400 text-center">
+                <div className="px-4 py-3 text-sm text-gray-500 bg-[var(--background-color)] text-[var(--text-color)]-400 text-center">
                   Không tìm thấy kết quả.
                 </div>
             )}
@@ -236,7 +236,7 @@ function ExplorePage() {
           {/*</div>*/}
         </div>
 
-         Sidebar 
+         {/*Sidebar */}
         <div className="hidden lg:block w-[350px] border-l border-gray-200 dark:border-gray-700">
           <SidebarRight />
         </div>
