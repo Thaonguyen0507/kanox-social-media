@@ -8,18 +8,23 @@ const PostsManagement = () => {
   const API_URL = process.env.REACT_APP_API_URL; // ví dụ: http://localhost:8080/api
   const token = localStorage.getItem("token");
 
-  const formatDate = (dateStr) => {
-    if (!dateStr) return "--";
-    const d = new Date(dateStr);
-    return isNaN(d.getTime())
-        ? "--"
-        : d.toLocaleDateString("vi-VN", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-        });
+  // Fix: Convert từ epoch seconds sang milliseconds
+  const formatDate = (timestamp) => {
+    if (timestamp == null) return "--";
+
+    // Backend trả về số giây (float hoặc int)
+    const millis = Number(timestamp) * 1000;
+    const d = new Date(millis);
+
+    if (isNaN(d.getTime())) return "--";
+
+    return d.toLocaleString("vi-VN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   };
 
   useEffect(() => {
@@ -68,7 +73,7 @@ const PostsManagement = () => {
     };
 
     fetchPosts();
-  }, []);
+  }, [API_URL, token]);
 
   if (loading) return <div className="p-6">Đang tải dữ liệu bài viết...</div>;
 
