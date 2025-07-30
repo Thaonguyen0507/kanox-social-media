@@ -66,7 +66,8 @@ const TweetCard = forwardRef(({ tweet, onPostUpdate }, ref) => {
   const { publish } = useContext(WebSocketContext);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const postId = searchParams.get("postId");
+  const highlightedPostId = searchParams.get("postId");
+  const renderPostId = tweet?.id;
   const [isHighlighted, setIsHighlighted] = useState(false);
   const {
     id,
@@ -85,12 +86,12 @@ const TweetCard = forwardRef(({ tweet, onPostUpdate }, ref) => {
   } = tweet || {};
 
   useEffect(() => {
-    if (postId && postId === String(id)) {
+    if (highlightedPostId  && highlightedPostId  === String(id)) {
       setIsHighlighted(true);
       const timer = setTimeout(() => setIsHighlighted(false), 2000);
       return () => clearTimeout(timer);
     }
-  }, [postId, id]);
+  }, [highlightedPostId , id]);
 
   const isSaved = tweet?.isSaved ?? false;
   const isOwnTweet = user && user.username === owner?.username;
@@ -220,7 +221,7 @@ const TweetCard = forwardRef(({ tweet, onPostUpdate }, ref) => {
   };
 
   const handleCopyLink = () => {
-    const postUrl = `${window.location.origin}/home?postId=${id}`;
+    const postUrl = `${window.location.origin}/home?highlightedPostId=${id}`;
     navigator.clipboard.writeText(postUrl);
     toast.info("Đã sao chép liên kết!");
   };
@@ -364,10 +365,12 @@ const TweetCard = forwardRef(({ tweet, onPostUpdate }, ref) => {
     setShowEmojiPicker((prev) => !prev);
   };
 
+  console.log("📌 postId passed to useCommentActions:", postId);
+
   const { handleReplyToComment, handleUpdateComment, handleDeleteComment } =
     useCommentActions({
       user,
-      postId,
+      postId: renderPostId,
       setComments,
       fetchComments,
     });
