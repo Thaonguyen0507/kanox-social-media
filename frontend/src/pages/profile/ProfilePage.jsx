@@ -49,6 +49,8 @@ function ProfilePage() {
     const [isSubmittingReport, setIsSubmittingReport] = useState(false);
     const isOwnProfile = user?.username === username;
     const hasAccess = userProfile?.bio !== null || isOwnProfile;
+    const [followers, setFollowers] = useState([]);
+    const [following, setFollowing] = useState([]);
     const defaultUserProfile = {
         id: null,
         username: "testuser",
@@ -158,6 +160,8 @@ function ProfilePage() {
                     isPremium: profileData.isPremium || false,
                     profileImageUrl: profileData.profileImageUrl || "https://via.placeholder.com/150?text=Avatar",
                     location: profileData.locationName || "",
+                    followerCount: profileData.followerCount || 0,
+                    followeeCount: profileData.followeeCount || 0,
                 });
 
                 // Chỉ lấy bài đăng nếu có quyền truy cập (bio không null)
@@ -230,6 +234,74 @@ function ProfilePage() {
             fetchSavedPosts();
         }
     }, [activeTab, user, username]);
+
+    useEffect(() => {
+        const fetchFollowers = async () => {
+            const token = sessionStorage.getItem("token") || localStorage.getItem("token");
+            if (!token || !userProfile?.id) return;
+
+            try {
+                const response = await fetch(
+                    `${process.env.REACT_APP_API_URL}/follows/users/${userProfile.id}/followers?page=0&size=20`,
+                    {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Accept: "application/json",
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.message || "Lỗi khi lấy danh sách người theo dõi.");
+                }
+
+                setFollowers(Array.isArray(data.data.content) ? data.data.content : []);
+            } catch (error) {
+                console.error("Lỗi khi lấy danh sách người theo dõi:", error);
+                toast.error(error.message || "Không thể tải danh sách người theo dõi!");
+                setFollowers([]);
+            }
+        };
+
+        const fetchFollowing = async () => {
+            const token = sessionStorage.getItem("token") || localStorage.getItem("token");
+            if (!token || !userProfile?.id) return;
+
+            try {
+                const response = await fetch(
+                    `${process.env.REACT_APP_API_URL}/follows/users/${userProfile.id}/following?page=0&size=20`,
+                    {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Accept: "application/json",
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.message || "Lỗi khi lấy danh sách đang theo dõi.");
+                }
+
+                setFollowing(Array.isArray(data.data.content) ? data.data.content : []);
+            } catch (error) {
+                console.error("Lỗi khi lấy danh sách đang theo dõi:", error);
+                toast.error(error.message || "Không thể tải danh sách đang theo dõi!");
+                setFollowing([]);
+            }
+        };
+        if (activeTab === "followers" && hasAccess) {
+            fetchFollowers();
+        }
+        if (activeTab === "following" && hasAccess) {
+            fetchFollowing();
+        }
+    }, [activeTab, userProfile, hasAccess]);
 
 //     useEffect(() => {
 //     const fetchSharedPosts = async () => {
@@ -428,24 +500,53 @@ function ProfilePage() {
                 <p className="text-dark text-center p-4">Không có bài đăng nào.</p>
             );
 
+        const renderUserList = (list) =>
+            list.length > 0 ? (
+                <ListGroup>
+                    {list.map((user) => (
+                        <ListGroup.Item
+                            key={user.id}
+                            className="d-flex align-items-center p-3 border-bottom"
+                            action
+                            onClick={() => navigate(`/profile/${user.username}`)}
+                        >
+                            <Image
+                                src={user.profileImageUrl || "https://via.placeholder.com/40?text=Avatar"}
+                                roundedCircle
+                                className="w-10 h-10 mr-3"
+                            />
+                            <div>
+                                <p className="mb-0 font-semibold">{user.displayName}</p>
+                                <p className="mb-0 text-gray-500">@{user.username}</p>
+                            </div>
+                        </ListGroup.Item>
+                    ))}
+                </ListGroup>
+            ) : (
+                <p className="text-dark text-center p-4">Không có người dùng nào.</p>
+            );
+
         switch (activeTab) {
             case "posts":
                 return renderPostsList(posts);
-
-            case "shares":
-                return sharedPosts.length > 0 ? (
-                sharedPosts.map((item) => (
-                    <TweetCard
-                        key={item.id}
-                        tweet={item}
-                        onPostUpdate={fetchProfileAndPosts}
-                    />
-                ))
-            ) : (
-                <p className="text-dark text-center p-4">
-                    Không có bài chia sẻ nào.
-                </p>
-            );
+            case "followers":
+                return renderUserList(followers);
+            case "following":
+                return renderUserList(following);
+            // case "shares":
+            //     return sharedPosts.length > 0 ? (
+            //     sharedPosts.map((item) => (
+            //         <TweetCard
+            //             key={item.id}
+            //             tweet={item}
+            //             onPostUpdate={fetchProfileAndPosts}
+            //         />
+            //     ))
+            // ) : (
+            //     <p className="text-dark text-center p-4">
+            //         Không có bài chia sẻ nào.
+            //     </p>
+            // );
 
             case "savedArticles":
                 return savedPosts.length > 0 ? (
@@ -604,6 +705,14 @@ function ProfilePage() {
                                             <FaPhoneAlt className="mr-2" /> Liên hệ: {userProfile.phoneNumber}
                                         </p>
                                     )}
+                                    <p className="flex items-center">
+                                        <span className="mr-2">Người theo dõi: </span>
+                                        <span className="font-semibold">{userProfile.followerCount || 0}</span>
+                                    </p>
+                                    <p className="flex items-center">
+                                        <span className="mr-2">Đang theo dõi: </span>
+                                        <span className="font-semibold">{userProfile.followeeCount || 0}</span>
+                                    </p>
                                 </div>
                             )}
                         </div>
@@ -612,7 +721,7 @@ function ProfilePage() {
                     {/* Tab Navigation */}
                     {hasAccess && (
                         <Nav variant="tabs" className="mb-4 border-b border-gray-300 dark:border-gray-700">
-                            {["posts", ...(isOwnProfile ? ["savedArticles"] : [])].map((tab) => (
+                            {["posts", "followers", "following", ...(isOwnProfile ? ["savedArticles"] : [])].map((tab) => (
                                 <Nav.Item key={tab} className="flex-1 text-center">
                                     <Nav.Link
                                         active={activeTab === tab}
@@ -626,6 +735,8 @@ function ProfilePage() {
                                         {tab === "posts" && "Bài đăng"}
                                         {/* {tab === "shares" && "Chia sẻ"} */}
                                         {tab === "savedArticles" && "Đã lưu"}
+                                        {tab === "followers" && "Người theo dõi"}
+                                        {tab === "following" && "Đang theo dõi"}
                                     </Nav.Link>
                                 </Nav.Item>
                             ))}

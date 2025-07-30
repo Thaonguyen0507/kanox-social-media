@@ -15,7 +15,7 @@ function NotificationPage({ onToggleDarkMode, isDarkMode, onShowCreatePost }) {
     const [loading, setLoading] = useState(true);
     const { subscribe, unsubscribe } = useContext(WebSocketContext);
     const [unreadCount, setUnreadCount] = useState(0);
-    
+
     const fetchNotifications = async () => {
         setLoading(true);
         try {

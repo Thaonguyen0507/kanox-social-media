@@ -14,9 +14,16 @@ import { useLocation } from "react-router-dom";
 
 // Main Admin Dashboard App Component - Component ứng dụng Dashboard Admin chính
 const AdminDashboardApp = () => {
-  const [activeTab, setActiveTab] = useState("dashboard"); // Tab mặc định là 'Tổng quan'
   const location = useLocation();
+  const defaultTab = location.state?.tab || "dashboard"; // lấy tab từ state nếu có
+  const [activeTab, setActiveTab] = useState(defaultTab);
   const newReport = location.state?.newReport;
+  useEffect(() => {
+    if (location.state?.tab) {
+      setActiveTab(location.state.tab);
+    }
+  }, [location.state]);
+
 
   useEffect(() => {
     if (newReport) {

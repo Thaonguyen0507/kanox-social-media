@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0805ce12-b01d-4b2d-bea6-61b2f552f0b9" name="Changes" comment="fix UI">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/admin/GroupMembersManagementPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/admin/GroupMembersManagementPage.js" afterDir="false" />
-    </list>
+    <list default="true" id="0805ce12-b01d-4b2d-bea6-61b2f552f0b9" name="Changes" comment="fix community" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -70,7 +67,9 @@
       <option name="presentableId" value="Default" />
       <updated>1753192153031</updated>
       <workItem from="1753192154417" duration="70000" />
-      <workItem from="1753799436287" duration="5151000" />
+      <workItem from="1753799436287" duration="5320000" />
+      <workItem from="1753890513058" duration="5358000" />
+      <workItem from="1753899021495" duration="1245000" />
     </task>
     <task id="LOCAL-00001" summary="ok">
       <option name="closed" value="true" />
@@ -136,7 +135,79 @@
       <option name="project" value="LOCAL" />
       <updated>1753804003681</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="fix UI">
+      <option name="closed" value="true" />
+      <created>1753804771934</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1753804771934</updated>
+    </task>
+    <task id="LOCAL-00010" summary="fix UI">
+      <option name="closed" value="true" />
+      <created>1753893591359</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1753893591359</updated>
+    </task>
+    <task id="LOCAL-00011" summary="fix post">
+      <option name="closed" value="true" />
+      <created>1753894315469</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1753894315469</updated>
+    </task>
+    <task id="LOCAL-00012" summary="fix communitymemberpage">
+      <option name="closed" value="true" />
+      <created>1753895938464</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1753895938464</updated>
+    </task>
+    <task id="LOCAL-00013" summary="fix community">
+      <option name="closed" value="true" />
+      <created>1753896560366</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1753896560366</updated>
+    </task>
+    <task id="LOCAL-00014" summary="fix community">
+      <option name="closed" value="true" />
+      <created>1753896854228</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1753896854228</updated>
+    </task>
+    <task id="LOCAL-00015" summary="fix community">
+      <option name="closed" value="true" />
+      <created>1753897907830</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1753897907830</updated>
+    </task>
+    <task id="LOCAL-00016" summary="fix community">
+      <option name="closed" value="true" />
+      <created>1753899052326</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1753899052326</updated>
+    </task>
+    <task id="LOCAL-00017" summary="fix community">
+      <option name="closed" value="true" />
+      <created>1753900433344</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1753900433344</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -157,6 +228,9 @@
     <MESSAGE value="ok" />
     <MESSAGE value="fix" />
     <MESSAGE value="fix UI" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix UI" />
+    <MESSAGE value="fix post" />
+    <MESSAGE value="fix communitymemberpage" />
+    <MESSAGE value="fix community" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix community" />
   </component>
 </project>

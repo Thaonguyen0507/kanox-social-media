@@ -45,8 +45,8 @@ function NotificationItem({ notification, handleMarkRead, handleMarkUnread }) {
                         className="font-bold text-[var(--primary-color)] cursor-pointer hover:underline"
                         onClick={() => navigate(`/community/${notification.targetId}`)}
                     >
-            {displayName}
-          </span>
+           {displayName}
+         </span>
                     {parts[1]}
                 </p>
             );
@@ -137,8 +137,8 @@ function NotificationItem({ notification, handleMarkRead, handleMarkUnread }) {
                             <p className="text-[var(--primary-color)] text-sm mb-1">
                                 {notification.tags.map((tag, idx) => (
                                     <span key={idx} className="mr-2">
-                    {tag}
-                  </span>
+                   {tag}
+                 </span>
                                 ))}
                             </p>
                         )}

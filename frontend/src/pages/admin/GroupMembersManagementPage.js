@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Card, Button, Spinner, Row, Col, Badge } from "react-bootstrap";
 
 const GroupMembersManagementPage = () => {
     const { groupId } = useParams();
+    const navigate = useNavigate();
     const [members, setMembers] = useState([]);
     const [loading, setLoading] = useState(true);
     const API_URL = process.env.REACT_APP_API_URL;
@@ -88,6 +89,15 @@ const GroupMembersManagementPage = () => {
 
     return (
         <div className="container mt-4">
+            {/* Nút quay lại */}
+            <Button
+                variant="secondary"
+                className="mb-3"
+                onClick={() => navigate("/admin", { state: { tab: "communities" } })}
+            >
+                ← Quay lại quản lý cộng đồng
+            </Button>
+
             <h3 className="fw-bold mb-4 text-primary">Quản lý thành viên nhóm</h3>
             {loading ? (
                 <Spinner animation="border" />
@@ -99,24 +109,44 @@ const GroupMembersManagementPage = () => {
                         <Col key={member.id}>
                             <Card className="shadow-sm border-0 rounded-4">
                                 <Card.Body className="d-flex flex-column justify-content-between h-100">
-                                    <div>
-                                        <Card.Title className="fw-semibold fs-5">
-                                            {member.displayName || member.username}
-                                        </Card.Title>
-                                        <Card.Subtitle className="mb-2 text-muted">@{member.username}</Card.Subtitle>
-                                        <Card.Text className="mt-2">
-                      <span className="me-2">
-                        {member.isOwner ? (
-                            <Badge bg="dark">👑 Chủ nhóm</Badge>
-                        ) : member.isAdmin ? (
-                            <Badge bg="warning" text="dark">
-                                🛡️ Admin
-                            </Badge>
-                        ) : (
-                            <Badge bg="secondary">👤 Thành viên</Badge>
-                        )}
-                      </span>
-                                        </Card.Text>
+                                    <div className="d-flex align-items-center">
+                                        {/* Avatar */}
+                                        {member.avatarUrl ? (
+                                            <img
+                                                src={member.avatarUrl}
+                                                alt={member.displayName || member.username}
+                                                className="rounded-circle me-3"
+                                                style={{ width: "50px", height: "50px", objectFit: "cover" }}
+                                            />
+                                        ) : (
+                                            <div
+                                                className="rounded-circle bg-secondary text-white d-flex justify-content-center align-items-center me-3"
+                                                style={{ width: "50px", height: "50px" }}
+                                            >
+                                                {member.displayName?.charAt(0)?.toUpperCase() ||
+                                                    member.username.charAt(0).toUpperCase()}
+                                            </div>
+                                        )}
+
+                                        {/* Info */}
+                                        <div>
+                                            <Card.Title className="fw-semibold fs-5">
+                                                {member.displayName || member.username}
+                                            </Card.Title>
+                                            <Card.Subtitle className="mb-2 text-muted">
+                                                @{member.username}
+                                            </Card.Subtitle>
+
+                                            {/* Badge vai trò */}
+                                            {member.owner ? (
+                                                <Badge bg="warning" text="dark">👑 Chủ nhóm</Badge>
+                                            ) : member.admin ? (
+                                                <Badge bg="primary">🛡️ Admin</Badge>
+                                            ) : (
+                                                <Badge bg="secondary">👤 Thành viên</Badge>
+                                            )}
+
+                                        </div>
                                     </div>
                                 </Card.Body>
                             </Card>
