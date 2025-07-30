@@ -1184,68 +1184,6 @@ const TweetCard = forwardRef(({ tweet, onPostUpdate }, ref) => {
                         >
                           Gửi
                         </Button>
-
-                        {/* Emoji Popover */}
-                        {showEmojiPicker && (
-                          <Overlay
-                            target={commentInputRef.current}
-                            show={showEmojiPicker}
-                            placement="top"
-                            rootClose
-                            onHide={() => setShowEmojiPicker(false)}
-                          >
-                            {(props) => (
-                              <Popover {...props} className="z-50">
-                                <Popover.Body
-                                  style={{
-                                    maxWidth: 300,
-                                    maxHeight: 200,
-                                    overflowY: "auto",
-                                  }}
-                                  className="scrollbar-hide"
-                                >
-                                  <div className="flex flex-wrap">
-                                    {messageEmojiList.map((emoji, idx) => (
-                                      <span
-                                        key={idx}
-                                        className="text-2xl cursor-pointer m-1"
-                                        onClick={() => {
-                                          const input = commentInputRef.current;
-                                          if (!input) return;
-
-                                          const start = input.selectionStart;
-                                          const end = input.selectionEnd;
-                                          const emojiChar = emoji.emoji;
-
-                                          const updated =
-                                            newComment.slice(0, start) +
-                                            emojiChar +
-                                            newComment.slice(end);
-                                          setNewComment(updated);
-
-                                          // Đặt lại vị trí con trỏ sau emoji
-                                          setTimeout(() => {
-                                            input.focus();
-                                            const cursor =
-                                              start + emojiChar.length;
-                                            input.setSelectionRange(
-                                              cursor,
-                                              cursor
-                                            );
-                                          }, 0);
-
-                                          setShowEmojiPicker(false);
-                                        }}
-                                      >
-                                        {emoji.emoji}
-                                      </span>
-                                    ))}
-                                  </div>
-                                </Popover.Body>
-                              </Popover>
-                            )}
-                          </Overlay>
-                        )}
                       </div>
                     </div>
                   </div>

@@ -9,7 +9,7 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
     { name: "Bài viết", icon: "📋", tab: "posts" },
     { name: "Cộng đồng", icon: "🏘️", tab: "communities" }, // Thêm lại các tab bị thiếu
     { name: "Báo cáo", icon: "⚠️", tab: "reports" }, // Thêm lại các tab bị thiếu
-    { name: "Cài đặt", icon: "⚙️", tab: "settings" }, // Thêm lại các tab bị thiếu
+    // { name: "Cài đặt", icon: "⚙️", tab: "settings" }, // Thêm lại các tab bị thiếu
   ];
 
   const navigate = useNavigate(); // Hook để điều hướng
