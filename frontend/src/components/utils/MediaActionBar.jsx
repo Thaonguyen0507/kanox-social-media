@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { Overlay, OverlayTrigger, Popover, Tooltip } from "react-bootstrap";
 import { FaImage, FaSmile } from "react-icons/fa";
-import { useEmojiContext } from "../../contexts/EmojiContext"; // Đảm bảo đường dẫn đúng
+import { useEmojiContext } from "../../context/EmojiContext"; // Đảm bảo đường dẫn đúng
 
 const MediaActionBar = ({ onEmojiClick, onFileSelect, onSelectEmoji }) => {
     const fileInputRef = useRef(null);
