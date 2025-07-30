@@ -52,35 +52,6 @@ function HomePage({ onShowCreatePost, onToggleDarkMode }) {
     }
   };
 
-  // Tải bài viết cụ thể nếu postId không có trong danh sách
-  const fetchHighlightedPost = async () => {
-    if (!postId || !user) return;
-    const targetPost = posts.find((post) => String(post.id) === postId);
-    if (!targetPost) {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(
-            `${process.env.REACT_APP_API_URL}/posts/${postId}`,
-            {
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-            }
-        );
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || "Không thể tải bài viết!");
-        }
-        const { data } = await response.json();
-        setPosts((prev) => [data, ...prev]); // Thêm bài viết vào đầu danh sách
-      } catch (error) {
-        console.error("Lỗi khi tải bài viết cụ thể:", error);
-        toast.error("Không thể tải bài viết: " + error.message);
-      }
-    }
-  };
-
   useEffect(() => {
     fetchPosts();
     if (postId) {
