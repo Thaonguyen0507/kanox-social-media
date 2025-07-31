@@ -163,6 +163,17 @@ const TweetCard = forwardRef(({ tweet, onPostUpdate }, ref) => {
     initialReactionCountMap: memoizedInitialReactionCountMap,
   });
 
+  const handleFileSelect = (files) => {
+    setSelectedMediaFiles((prev) => [...prev, ...files]);
+    setSelectedMediaPreviews((prev) => [
+      ...prev,
+      ...files.map((f) => ({
+        url: URL.createObjectURL(f),
+        type: f.type,
+      })),
+    ]);
+  };
+
   const totalCount = Object.values(reactionCountMap).reduce(
     (sum, count) => sum + count,
     0
@@ -585,6 +596,8 @@ const TweetCard = forwardRef(({ tweet, onPostUpdate }, ref) => {
           Chưa có bình luận nào.
         </div>
       );
+
+
 
     return (
       <>
