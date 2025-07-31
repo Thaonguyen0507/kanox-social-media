@@ -123,6 +123,8 @@ const TweetCard = forwardRef(({ tweet, onPostUpdate }, ref) => {
   const [reportReasonId, setReportReasonId] = useState("");
   const [reasons, setReasons] = useState([]);
   const [isSubmittingReport, setIsSubmittingReport] = useState(false);
+  const [text, setText] = useState("");
+  const inputRef = useRef(null);
   const memoizedInitialReactionCountMap = React.useMemo(
       () => tweet.reactionCountMap || {},
       [tweet.reactionCountMap]
@@ -1170,20 +1172,23 @@ const TweetCard = forwardRef(({ tweet, onPostUpdate }, ref) => {
                       {/* Action bar below the input */}
                       <div className="d-flex justify-content-between align-items-center mt-2 px-1">
                         <MediaActionBar
-                          onEmojiClick={handleEmojiClick}
-                          onFileSelect={(files) => {
-                            setSelectedMediaFiles((prev) => [
-                              ...prev,
-                              ...files,
-                            ]);
-                            setSelectedMediaPreviews((prev) => [
-                              ...prev,
-                              ...files.map((f) => ({
-                                url: URL.createObjectURL(f),
-                                type: f.type,
-                              })),
-                            ]);
-                          }}
+                            onFileSelect={handleFileSelect}
+                            onSelectEmoji={(emoji) => {
+                              const input = commentInputRef.current;
+                              if (!input) return;
+
+                              const start = input.selectionStart;
+                              const end = input.selectionEnd;
+                              const newText = text.substring(0, start) + emoji.emoji + text.substring(end);
+                              setText(newText);
+
+                              // Đặt lại con trỏ sau emoji
+                              setTimeout(() => {
+                                input.focus();
+                                const cursor = start + emoji.emoji.length;
+                                input.setSelectionRange(cursor, cursor);
+                              }, 0);
+                            }}
                         />
                         {/* Send button */}
                         <Button
