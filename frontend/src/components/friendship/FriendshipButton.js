@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 
-function FriendshipButton({ targetId, disabled, onAction }) {
+function FriendshipButton({ targetId, disabled, onAction, onFollowAction }) {
   const { user } = useContext(AuthContext);
   const [status, setStatus] = useState("none");
   const [loading, setLoading] = useState(false);
@@ -66,6 +66,11 @@ function FriendshipButton({ targetId, disabled, onAction }) {
       });
 
       if (!response.ok) throw new Error("Hành động thất bại");
+
+      if (action === "send" && onFollowAction) {
+        await onFollowAction(); // Gọi hàm theo dõi
+      }
+      
       setStatus(
           action === "send"
               ? "pendingSent"
