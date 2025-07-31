@@ -29,9 +29,44 @@ function FriendItem({ user, showActions, handleAccept, handleReject, onAction })
         >
             {/* User Info */}
             <div className="flex items-center gap-3">
-                <Link to={`/profile/${user.username}`} className="shrink-0">
-                    {renderAvatar()}
-                </Link>
+                <div className="relative shrink-0 group">
+                    <Link to={`/profile/${user.username}`}>
+                        {renderAvatar()}
+                    </Link>
+
+                    {/* Mutual Friends Tooltip */}
+                    {user.reason === "mutual_friends" && user.mutualFriends?.length > 0 && (
+                        <div
+                            className="absolute opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-xs rounded-md p-2 shadow-lg mt-2 z-10 max-w-[200px] w-max"
+                            style={{
+                                top: "100%",
+                                left: "50%",
+                                transform: "translateX(-50%)",
+                                backgroundColor: "var(--background-color)",
+                                color: "var(--text-color)",
+                                border: "1px solid var(--border-color)",
+                                whiteSpace: "normal",
+                                pointerEvents: "none",
+                            }}
+                        >
+                            Bạn chung:{" "}
+                            {user.mutualFriends.slice(0, 5).map((friend, index) => (
+                                <React.Fragment key={friend.id}>
+                                    {index > 0 && ", "}
+                                    <Link
+                                        to={`/profile/${friend.username}`}
+                                        className="hover:underline"
+                                        style={{ color: "var(--primary-color)" }}
+                                    >
+                                        {friend.displayName || friend.username}
+                                    </Link>
+                                </React.Fragment>
+                            ))}
+                            {user.mutualFriends.length > 5 &&
+                                ` và ${user.mutualFriends.length - 5} người khác`}
+                        </div>
+                    )}
+                </div>
                 <div className="flex-grow">
                     <Link
                         to={`/profile/${user.username}`}
@@ -48,34 +83,6 @@ function FriendItem({ user, showActions, handleAccept, handleReject, onAction })
             </div>
 
             {/* Mutual Friends Tooltip */}
-            {user.reason === "mutual_friends" && user.mutualFriends?.length > 0 && (
-                <div
-                    className="absolute hidden group-hover:block text-xs rounded-md p-2 shadow-lg mt-2 z-10 max-w-xs"
-                    style={{
-                        top: "100%",
-                        left: "1rem",
-                        backgroundColor: "var(--background-color)",
-                        color: "var(--text-color)",
-                        border: "1px solid var(--border-color)",
-                    }}
-                >
-                    Bạn chung:{" "}
-                    {user.mutualFriends.slice(0, 5).map((friend, index) => (
-                        <React.Fragment key={friend.id}>
-                            {index > 0 && ", "}
-                            <Link
-                                to={`/profile/${friend.username}`}
-                                className="hover:underline"
-                                style={{ color: "var(--primary-color)" }}
-                            >
-                                {friend.displayName || friend.username}
-                            </Link>
-                        </React.Fragment>
-                    ))}
-                    {user.mutualFriends.length > 5 &&
-                        ` và ${user.mutualFriends.length - 5} người khác`}
-                </div>
-            )}
 
             {/* Actions */}
             <div className="flex justify-center gap-2 mt-3">
