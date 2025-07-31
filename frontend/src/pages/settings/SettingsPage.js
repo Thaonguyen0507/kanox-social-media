@@ -13,7 +13,7 @@ function SettingsPage() {
         postVisibility: "public",
         commentPermission: "public",
         profileViewer: "public",
-        customListId: null,
+        // customListId: null,
     });
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -138,12 +138,13 @@ function SettingsPage() {
             if (!generalRes.ok || !profileRes.ok) {
                 throw new Error("Không thể lấy cài đặt quyền riêng tư.");
             }
-            console.log("generalData", generalData);
+            console.log("generalData:", JSON.stringify(generalData, null, 2));
+            console.log("profileData:", JSON.stringify(profileData, null, 2));
 
             setSettings({
                 postVisibility: generalData.data?.postVisibility ?? "public",
                 commentPermission: generalData.data?.commentPermission ?? "public",
-                profileViewer: profileData.data?.profilePrivacySetting ?? "public",
+                profileViewer: generalData.data?.profileViewer ?? profileData.data?.profilePrivacySetting ?? "public",
                 customListId: profileData.data?.customListId ?? null,
             });
         } catch (error) {
@@ -188,6 +189,12 @@ function SettingsPage() {
                 throw new Error(generalData.message || "Lỗi khi cập nhật quyền riêng tư bài đăng.");
             }
 
+            const profilePrivacyPayload = {
+                profilePrivacySetting: settings.profileViewer,
+                customListId: settings.profileViewer === "custom" ? settings.customListId : null,
+            };
+            console.log("Sending profile privacy update:", profilePrivacyPayload);
+
             // Gửi cập nhật hồ sơ cá nhân
             const profilePrivacyRes = await fetch(`${process.env.REACT_APP_API_URL}/user/profile/${user.username}/privacy`, {
                 method: "PUT",
@@ -195,16 +202,14 @@ function SettingsPage() {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({
-                    profilePrivacySetting: settings.profileViewer,
-                }),
+                body: JSON.stringify(profilePrivacyPayload),
             });
             console.log("Sending profile privacy update:", {
                 profilePrivacySetting: settings.profileViewer,
-                customListId: settings.profileViewer === "custom" ? settings.customListId : null,
             });
 
             const profileData = await profilePrivacyRes.json();
+            console.log("Profile privacy response:", profileData);
             if (!profilePrivacyRes.ok) {
                 throw new Error(profileData.message || "Lỗi khi cập nhật quyền riêng tư hồ sơ.");
             }
