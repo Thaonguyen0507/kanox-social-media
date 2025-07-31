@@ -478,6 +478,8 @@ function ProfilePage() {
         }
     };
 
+
+
     const renderTabContent = () => {
         if (!hasAccess) {
             return (
@@ -567,6 +569,36 @@ function ProfilePage() {
         }
     };
 
+    const handleFollowAction = async (action) => {
+        const token = sessionStorage.getItem("token") || localStorage.getItem("token");
+        if (!token) {
+            toast.error("Không tìm thấy token");
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                `${process.env.REACT_APP_API_URL}/follows/${userProfile.id}`,
+                {
+                    method: action === "follow" ? "POST" : "DELETE",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            if (!response.ok) throw new Error(await response.text());
+            setUserProfile((prev) => ({
+                ...prev,
+                followerCount: prev.followerCount + (action === "follow" ? 1 : -1),
+            }));
+        } catch (err) {
+            console.error("Lỗi khi theo dõi:", err);
+            toast.error("Lỗi khi theo dõi: " + err.message);
+        }
+    };
+
     if (loading) {
         return (
             <div className="d-flex justify-content-center align-items-center min-vh-100">
@@ -652,7 +684,14 @@ function ProfilePage() {
                                                 }))
                                             }
                                         />
-                                        {!isBlocked && <FriendshipButton targetId={userProfile.id} />}
+                                        {!isBlocked && (
+                                            <FriendshipButton
+                                                targetId={userProfile.id}
+                                                onFollowAction={() =>
+                                                    handleFollowAction("follow") // Gọi hành động theo dõi từ FollowActionButton
+                                                }
+                                            />
+                                        )}
                                         <button
                                             onClick={handleBlockToggle}
                                             className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
@@ -721,7 +760,7 @@ function ProfilePage() {
                     {/* Tab Navigation */}
                     {hasAccess && (
                         <Nav variant="tabs" className="mb-4 border-b border-gray-300 dark:border-gray-700">
-                            {["posts", ...(isOwnProfile ? ["savedArticles", "following", "savedArticles"] : [])].map((tab) => (
+                            {["posts", ...(isOwnProfile ? ["savedArticles", "followers", "following"] : [])].map((tab) => (
                                 <Nav.Item key={tab} className="flex-1 text-center">
                                     <Nav.Link
                                         active={activeTab === tab}
