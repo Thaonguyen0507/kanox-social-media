@@ -54,7 +54,6 @@ import useReaction from "../../../hooks/useReaction";
 import ReactionUserListModal from "./ReactionUserListModal";
 import PostImages from "./PostImages";
 import { useCommentActions } from "../../../hooks/useCommentAction";
-import useEmojiList from "../../../hooks/useEmojiList";
 import MediaActionBar from "../../utils/MediaActionBar";
 import useCommentAvatar from "../../../hooks/useCommentAvatar";
 import usePostMedia from "../../../hooks/usePostMedia";
@@ -110,12 +109,10 @@ const TweetCard = forwardRef(({ tweet, onPostUpdate }, ref) => {
   const [newComment, setNewComment] = useState("");
   const [isCommenting, setIsCommenting] = useState(false);
   const [showCommentBox, setShowCommentBox] = useState(false);
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [isLoadingComments, setIsLoadingComments] = useState(true);
   const [showReactionUserModal, setShowReactionUserModal] = useState(false);
   const [selectedEmojiName, setSelectedEmojiName] = useState("");
   const [commentUserList, setCommentUserList] = useState([]);
-  const [selectedFiles, setSelectedFiles] = useState([]);
   const [selectedMediaFiles, setSelectedMediaFiles] = useState([]);
   const [selectedMediaPreviews, setSelectedMediaPreviews] = useState([]);
   const commentInputRef = useRef(null);
@@ -123,8 +120,6 @@ const TweetCard = forwardRef(({ tweet, onPostUpdate }, ref) => {
   const [reportReasonId, setReportReasonId] = useState("");
   const [reasons, setReasons] = useState([]);
   const [isSubmittingReport, setIsSubmittingReport] = useState(false);
-  const [text, setText] = useState("");
-  const inputRef = useRef(null);
   const memoizedInitialReactionCountMap = React.useMemo(
       () => tweet.reactionCountMap || {},
       [tweet.reactionCountMap]
@@ -140,8 +135,7 @@ const TweetCard = forwardRef(({ tweet, onPostUpdate }, ref) => {
   const { imageData, videoData } = usePostMedia(id);
   const avatarData = !loading && token && ownerId ? avatarMedia.mediaData : {};
   const avatarError = avatarMedia.error;
-  const { emojiList: mainEmojiList, emojiMap } = useEmojiContext();
-  const { emojiList: messageEmojiList } = useEmojiList();
+  const { emojiList: mainEmojiList, emojiMap, emojiMessagingList } = useEmojiContext();
 
   const avatarUrl = avatarData?.[ownerId]?.[0]?.url || null;
   const imageUrls = imageData || [];
@@ -381,9 +375,6 @@ const TweetCard = forwardRef(({ tweet, onPostUpdate }, ref) => {
     if (id) fetchComments();
   }, [id]);
 
-  const handleEmojiClick = () => {
-    setShowEmojiPicker((prev) => !prev);
-  };
 
   console.log("📌 postId passed to useCommentActions:", renderPostId );
 
@@ -397,7 +388,10 @@ const TweetCard = forwardRef(({ tweet, onPostUpdate }, ref) => {
 
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
-    if (!newComment.trim() && selectedMediaFiles.length === 0) return;
+
+    const hasText = newComment.replace(/\s/g, '') !== '';
+    const hasMedia = selectedMediaFiles.length > 0;
+    if (!hasText && !hasMedia) return;
 
     try {
       setIsCommenting(true);
@@ -415,8 +409,8 @@ const TweetCard = forwardRef(({ tweet, onPostUpdate }, ref) => {
       };
 
       formData.append(
-        "comment",
-        new Blob([JSON.stringify(commentPayload)], { type: "application/json" })
+          "comment",
+          new Blob([JSON.stringify(commentPayload)], { type: "application/json" })
       );
 
       selectedMediaFiles.forEach((file) => {
@@ -424,14 +418,14 @@ const TweetCard = forwardRef(({ tweet, onPostUpdate }, ref) => {
       });
 
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/comments`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          body: formData,
-        }
+          `${process.env.REACT_APP_API_URL}/comments`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            body: formData,
+          }
       );
 
       const data = await response.json();
@@ -1185,17 +1179,24 @@ const TweetCard = forwardRef(({ tweet, onPostUpdate }, ref) => {
                       {/* Action bar below the input */}
                       <div className="d-flex justify-content-between align-items-center mt-2 px-1">
                         <MediaActionBar
-                            onFileSelect={handleFileSelect}
+                            emojiList={emojiMessagingList}
+                            onFileSelect={(files) => {
+                              setSelectedMediaFiles((prev) => [...prev, ...files]);
+                              setSelectedMediaPreviews((prev) => [
+                                ...prev,
+                                ...files.map((f) => ({
+                                  url: URL.createObjectURL(f),
+                                  type: f.type,
+                                })),
+                              ]);
+                            }}
                             onSelectEmoji={(emoji) => {
                               const input = commentInputRef.current;
                               if (!input) return;
-
                               const start = input.selectionStart;
                               const end = input.selectionEnd;
-                              const newText = text.substring(0, start) + emoji.emoji + text.substring(end);
-                              setText(newText);
-
-                              // Đặt lại con trỏ sau emoji
+                              const newText = newComment.substring(0, start) + emoji.emoji + newComment.substring(end);
+                              setNewComment(newText);
                               setTimeout(() => {
                                 input.focus();
                                 const cursor = start + emoji.emoji.length;

@@ -40,14 +40,15 @@ function CommentThread({
 
     const handleReplySubmit = (e) => {
         e.preventDefault();
-        if (replyText.trim()) {
-            console.log("Replying to commentId:", comment.commentId); // Debug
-            onReply(comment.commentId, replyText, selectedMediaFiles);
-            setReplyText("");
-            setSelectedMediaFiles([]);
-            setSelectedMediaPreviews([]);
-            setShowReplyBox(false);
-        }
+        const hasText = replyText.replace(/\s/g, '') !== '';
+        const hasMedia = selectedMediaFiles.length > 0;
+        if (!hasText && !hasMedia) return;
+
+        onReply(comment.commentId, replyText, selectedMediaFiles);
+        setReplyText("");
+        setSelectedMediaFiles([]);
+        setSelectedMediaPreviews([]);
+        setShowReplyBox(false);
     };
 
     const handleEditSubmit = (e) => {
