@@ -40,9 +40,7 @@ function CommentThread({
 
     const handleReplySubmit = (e) => {
         e.preventDefault();
-        const hasText = replyText.replace(/\s/g, '') !== '';
-        const hasMedia = selectedMediaFiles.length > 0;
-        if (!hasText && !hasMedia) return;
+        if (!replyText && selectedMediaFiles.length === 0) return;
 
         onReply(comment.commentId, replyText, selectedMediaFiles);
         setReplyText("");

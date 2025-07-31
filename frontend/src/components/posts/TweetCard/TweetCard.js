@@ -389,9 +389,7 @@ const TweetCard = forwardRef(({ tweet, onPostUpdate }, ref) => {
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
 
-    const hasText = newComment.replace(/\s/g, '') !== '';
-    const hasMedia = selectedMediaFiles.length > 0;
-    if (!hasText && !hasMedia) return;
+    if (!newComment && selectedMediaFiles.length === 0) return;
 
     try {
       setIsCommenting(true);
