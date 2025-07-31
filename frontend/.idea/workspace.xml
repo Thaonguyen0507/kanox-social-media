@@ -5,10 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c6c17ae2-c6cb-4c94-a6b8-91c54839fa5e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/friendship/FriendshipButton.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/friendship/FriendshipButton.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/utils/FollowActionButton.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/utils/FollowActionButton.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/profile/ProfilePage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/profile/ProfilePage.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -182,7 +180,7 @@
       <workItem from="1753780404482" duration="1414000" />
       <workItem from="1753785658023" duration="4565000" />
       <workItem from="1753797497733" duration="11719000" />
-      <workItem from="1753930335094" duration="9375000" />
+      <workItem from="1753930335094" duration="7596000" />
     </task>
     <servers />
   </component>

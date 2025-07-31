@@ -4,6 +4,7 @@ import { Spinner } from "react-bootstrap";
 import useSingleMedia from "../../hooks/useSingleMedia";
 import FriendshipButton from "../friendship/FriendshipButton";
 import FollowActionButton from "../utils/FollowActionButton";
+import UserAvatar from "./UserAvatar"
 
 function FriendItemSocial({ user, showActions, handleAccept, handleReject, onAction }) {
     const { mediaUrl: avatarUrl, loading: mediaLoading } = useSingleMedia(user.id, "PROFILE", "image");
@@ -13,17 +14,7 @@ function FriendItemSocial({ user, showActions, handleAccept, handleReject, onAct
             {/* Avatar + Info */}
             <div className="flex items-center gap-4">
                 <Link to={`/profile/${user.username}`}>
-                    <div className="w-12 h-12 flex items-center justify-center">
-                        {mediaLoading ? (
-                            <Spinner animation="border" size="sm" />
-                        ) : (
-                            <img
-                                src={avatarUrl || "https://placehold.co/48x48"}
-                                alt={user.displayName || user.username}
-                                className="w-12 h-12 rounded-full object-cover shadow-sm hover:scale-105 transition-transform duration-200"
-                            />
-                        )}
-                    </div>
+                    <UserAvatar userId={user.id} username={user.username} size={48} />
                 </Link>
                 <div className="flex flex-col">
                     <Link
