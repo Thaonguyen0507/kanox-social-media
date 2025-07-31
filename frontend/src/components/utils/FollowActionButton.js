@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 
 function FollowActionButton({ targetId, disabled, onFollowChange, isFollowing, setIsFollowing }) {
