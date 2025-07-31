@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import { toast } from "react-toastify"; // Thêm import toast
 
-function FriendshipButton({ targetId, disabled, onAction, onFollowAction }) {
+function FriendshipButton({ targetId, disabled, onAction, onFollowAction, setIsFollowing }) {
   const { user } = useContext(AuthContext);
   const [status, setStatus] = useState("none");
   const [loading, setLoading] = useState(false);
@@ -65,12 +66,13 @@ function FriendshipButton({ targetId, disabled, onAction, onFollowAction }) {
         },
       });
 
-      if (!response.ok) throw new Error("Hành động thất bại");
+      if (!response.ok) throw new Error("Hành động kết bạn thất bại");
 
       if (action === "send" && onFollowAction) {
         await onFollowAction(); // Gọi hàm theo dõi
+        setIsFollowing(true); // Cập nhật trạng thái theo dõi
       }
-      
+
       setStatus(
           action === "send"
               ? "pendingSent"
@@ -83,6 +85,7 @@ function FriendshipButton({ targetId, disabled, onAction, onFollowAction }) {
       if (onAction) onAction();
     } catch (err) {
       console.error("Lỗi:", err);
+      toast.error("Lỗi: " + err.message); // Sử dụng toast đã import
     } finally {
       setLoading(false);
     }
@@ -105,12 +108,12 @@ function FriendshipButton({ targetId, disabled, onAction, onFollowAction }) {
           }
           disabled={loading || disabled}
           className={`
-      inline-flex items-center justify-center px-4 py-2 rounded-full border
-      font-medium text-sm transition-all duration-200 ease-in-out
-      disabled:opacity-50 disabled:cursor-not-allowed
-      hover:shadow-md hover:-translate-y-[1px] active:scale-[0.98]
-      bg-white text-black border-gray-300 dark:bg-gray-900 dark:text-white dark:border-gray-600
-    `}
+        inline-flex items-center justify-center px-4 py-2 rounded-full border
+        font-medium text-sm transition-all duration-200 ease-in-out
+        disabled:opacity-50 disabled:cursor-not-allowed
+        hover:shadow-md hover:-translate-y-[1px] active:scale-[0.98]
+        bg-white text-black border-gray-300 dark:bg-gray-900 dark:text-white dark:border-gray-600
+      `}
       >
         {loading ? (
             <svg

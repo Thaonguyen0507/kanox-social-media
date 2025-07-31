@@ -51,7 +51,7 @@ function FollowActionButton({ targetId, disabled, onFollowChange }) {
 
       if (!res.ok) throw new Error(await res.text());
       const newStatus = action === "follow";
-      setIsFollowing(newStatus);
+      setIsFollowing(newStatus); // Cập nhật trạng thái từ props
       if (onFollowChange) onFollowChange(newStatus);
     } catch (err) {
       console.error("Lỗi:", err);
