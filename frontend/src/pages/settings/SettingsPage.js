@@ -196,9 +196,13 @@ function SettingsPage() {
                     Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
-                    privacySetting: settings.profileViewer,
+                    profilePrivacySetting: settings.profileViewer,
                     customListId: settings.profileViewer === "custom" ? settings.customListId : null,
                 }),
+            });
+            console.log("Sending profile privacy update:", {
+                profilePrivacySetting: settings.profileViewer,
+                customListId: settings.profileViewer === "custom" ? settings.customListId : null,
             });
 
             const profileData = await profilePrivacyRes.json();
@@ -291,7 +295,7 @@ function SettingsPage() {
                                 >
                                     <option value="public">Mọi người</option>
                                     <option value="friends">Bạn bè</option>
-                                    <option value="onlyme">Chỉ mình tôi</option>
+                                    <option value="only_me">Chỉ mình tôi</option>
                                 </Form.Select>
                             </Form.Group>
 
