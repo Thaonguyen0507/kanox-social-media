@@ -34,19 +34,15 @@ function FriendItem({ user, showActions, handleAccept, handleReject, onAction })
                         {renderAvatar()}
                     </Link>
 
-                    {/* Mutual Friends Tooltip */}
                     {user.reason === "mutual_friends" && user.mutualFriends?.length > 0 && (
                         <div
-                            className="absolute opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-xs rounded-md p-2 shadow-lg mt-2 z-10 max-w-[200px] w-max"
+                            className="absolute left-1/2 top-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none text-xs rounded-md p-2 shadow-lg z-10 mt-2 w-max max-w-[200px]"
                             style={{
-                                top: "100%",
-                                left: "50%",
                                 transform: "translateX(-50%)",
                                 backgroundColor: "var(--background-color)",
                                 color: "var(--text-color)",
                                 border: "1px solid var(--border-color)",
                                 whiteSpace: "normal",
-                                pointerEvents: "none",
                             }}
                         >
                             Bạn chung:{" "}
