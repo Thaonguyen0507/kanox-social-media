@@ -11,7 +11,9 @@ function SettingsPage() {
     const navigate = useNavigate();
     const [settings, setSettings] = useState({
         postVisibility: "public",
+        commentPermission: "public",
         profileViewer: "public",
+        // customListId: null,
     });
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -30,9 +32,90 @@ function SettingsPage() {
     const [showNewPasswordForm, setShowNewPasswordForm] = useState(false);
     const [showEmailModal, setShowEmailModal] = useState(false);
 
+    const handlePasswordChange = (e) => {
+        const { name, value } = e.target;
+        setPasswordForm((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const submitChangePassword = async () => {
+        setChangingPassword(true);
+        const token = sessionStorage.getItem("token") || localStorage.getItem("token");
+        try {
+            const res = await fetch(`${process.env.REACT_APP_API_URL}/auth/change-password`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify(passwordForm),
+            });
+
+            const data = await res.text(); // backend trả string
+            if (!res.ok) throw new Error(data);
+            toast.success("Đổi mật khẩu thành công");
+            setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
+        } catch (err) {
+            toast.error(err.message || "Lỗi khi đổi mật khẩu");
+        } finally {
+            setChangingPassword(false);
+        }
+    };
+
+    const submitSendVerifyEmail = async () => {
+        setEmailForm((prev) => ({ ...prev, sending: true }));
+        const token = sessionStorage.getItem("token") || localStorage.getItem("token");
+        try {
+            const res = await fetch(`${process.env.REACT_APP_API_URL}/auth/send-verification-email`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ email: emailForm.email }),
+            });
+
+            const data = await res.text(); // hoặc json tùy backend
+            if (!res.ok) throw new Error(data);
+            toast.success("Đã gửi email xác minh");
+            setEmailSent(true);
+        } catch (err) {
+            toast.error(err.message || "Không thể gửi email xác minh");
+        } finally {
+            setEmailForm((prev) => ({ ...prev, sending: false }));
+        }
+    };
+
+    const handleVerifyCode = async () => {
+        setVerifying(true);
+        try {
+            const res = await fetch(`${process.env.REACT_APP_API_URL}/auth/verify-email`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ code: verifyCode }),
+            });
+
+            const data = await res.text();
+            if (!res.ok) throw new Error(data);
+
+            toast.success("Xác minh email thành công");
+            setVerifyCode("");
+            setEmailSent(false); // reset sau xác minh
+        } catch (err) {
+            toast.error(err.message || "Mã xác minh không hợp lệ");
+        } finally {
+            setVerifying(false);
+        }
+    };
+
     const fetchPrivacySettings = async () => {
         setLoading(true);
         const token = sessionStorage.getItem("token") || localStorage.getItem("token");
+        // if (!token) {
+        //     toast.error("Không tìm thấy token. Vui lòng đăng nhập lại.");
+        //     navigate("/login");
+        //     return;
+        // }
+
         try {
             const [generalRes, profileRes] = await Promise.all([
                 fetch(`${process.env.REACT_APP_API_URL}/privacy`, {
@@ -52,19 +135,17 @@ function SettingsPage() {
             const generalData = await generalRes.json();
             const profileData = await profileRes.json();
 
-            if (!generalRes.ok) {
-                throw new Error(generalData.message || "Không thể lấy cài đặt quyền riêng tư (general).");
+            if (!generalRes.ok || !profileRes.ok) {
+                throw new Error("Không thể lấy cài đặt quyền riêng tư.");
             }
-            if (!profileRes.ok) {
-                throw new Error(profileData.message || "Không thể lấy cài đặt quyền riêng tư hồ sơ.");
-            }
-
-            console.log("generalData:", generalData);
-            console.log("profileData:", profileData);
+            console.log("generalData:", JSON.stringify(generalData, null, 2));
+            console.log("profileData:", JSON.stringify(profileData, null, 2));
 
             setSettings({
                 postVisibility: generalData.data?.postVisibility ?? "public",
-                profileViewer: profileData.data?.profilePrivacySetting ?? "public", // Sử dụng privacySetting thay vì profilePrivacySetting
+                commentPermission: generalData.data?.commentPermission ?? "public",
+                profileViewer: generalData.data?.profileViewer ?? profileData.data?.profilePrivacySetting ?? "public",
+                customListId: profileData.data?.customListId ?? null,
             });
         } catch (error) {
             console.error("Lỗi khi lấy cài đặt:", error);
@@ -99,7 +180,7 @@ function SettingsPage() {
                 },
                 body: JSON.stringify({
                     postVisibility: settings.postVisibility,
-                    profileViewer: settings.profileViewer,
+                    commentPermission: settings.commentPermission,
                 }),
             });
 
@@ -108,6 +189,12 @@ function SettingsPage() {
                 throw new Error(generalData.message || "Lỗi khi cập nhật quyền riêng tư bài đăng.");
             }
 
+            const profilePrivacyPayload = {
+                profilePrivacySetting: settings.profileViewer,
+                customListId: settings.profileViewer === "custom" ? settings.customListId : null,
+            };
+            console.log("Sending profile privacy update:", profilePrivacyPayload);
+
             // Gửi cập nhật hồ sơ cá nhân
             const profilePrivacyRes = await fetch(`${process.env.REACT_APP_API_URL}/user/profile/${user.username}/privacy`, {
                 method: "PUT",
@@ -115,12 +202,14 @@ function SettingsPage() {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({
-                    profilePrivacySetting: settings.profileViewer,
-                }),
+                body: JSON.stringify(profilePrivacyPayload),
+            });
+            console.log("Sending profile privacy update:", {
+                profilePrivacySetting: settings.profileViewer,
             });
 
             const profileData = await profilePrivacyRes.json();
+            console.log("Profile privacy response:", profileData);
             if (!profilePrivacyRes.ok) {
                 throw new Error(profileData.message || "Lỗi khi cập nhật quyền riêng tư hồ sơ.");
             }
@@ -135,86 +224,13 @@ function SettingsPage() {
         }
     };
 
-    const handlePasswordChange = (e) => {
-        const { name, value } = e.target;
-        setPasswordForm((prev) => ({ ...prev, [name]: value }));
-    };
-
-    const submitChangePassword = async (e) => {
-        e.preventDefault();
-        setChangingPassword(true);
-        const token = sessionStorage.getItem("token") || localStorage.getItem("token");
-        try {
-            const res = await fetch(`${process.env.REACT_APP_API_URL}/auth/change-password`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify(passwordForm),
-            });
-
-            const data = await res.text();
-            if (!res.ok) throw new Error(data);
-            toast.success("Đổi mật khẩu thành công");
-            setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
-            setShowPasswordModal(false);
-        } catch (err) {
-            toast.error(err.message || "Lỗi khi đổi mật khẩu");
-        } finally {
-            setChangingPassword(false);
-        }
-    };
-
-    const submitSendVerifyEmail = async () => {
-        setEmailForm((prev) => ({ ...prev, sending: true }));
-        const token = sessionStorage.getItem("token") || localStorage.getItem("token");
-        try {
-            const res = await fetch(`${process.env.REACT_APP_API_URL}/auth/send-verification-email`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({ email: emailForm.email }),
-            });
-
-            const data = await res.text();
-            if (!res.ok) throw new Error(data);
-            toast.success("Đã gửi email xác minh");
-            setEmailSent(true);
-        } catch (err) {
-            toast.error(err.message || "Không thể gửi email xác minh");
-        } finally {
-            setEmailForm((prev) => ({ ...prev, sending: false }));
-        }
-    };
-
-    const handleVerifyCode = async () => {
-        setVerifying(true);
-        try {
-            const res = await fetch(`${process.env.REACT_APP_API_URL}/auth/verify-email`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ code: verifyCode }),
-            });
-
-            const data = await res.text();
-            if (!res.ok) throw new Error(data);
-
-            toast.success("Xác minh email thành công");
-            setVerifyCode("");
-            setEmailSent(false);
-        } catch (err) {
-            toast.error(err.message || "Mã xác minh không hợp lệ");
-        } finally {
-            setVerifying(false);
-        }
-    };
-
     const handleToggleDarkMode = () => {
         setIsDarkMode((prev) => !prev);
         document.body.classList.toggle("dark-mode", !isDarkMode);
+    };
+
+    const handleShowCreatePost = () => {
+        console.log("Mở modal tạo bài đăng");
     };
 
     if (loading) {
@@ -259,6 +275,20 @@ function SettingsPage() {
                                 </Form.Select>
                             </Form.Group>
 
+                            {/*<Form.Group controlId="commentPermission" className="mb-3">*/}
+                            {/*    <Form.Label className="text-[var(--text-color)]">Ai có thể bình luận trên bài viết của bạn?</Form.Label>*/}
+                            {/*    <Form.Select*/}
+                            {/*        name="commentPermission"*/}
+                            {/*        value={settings.commentPermission}*/}
+                            {/*        onChange={handleChange}*/}
+                            {/*        className="bg-input"*/}
+                            {/*    >*/}
+                            {/*        <option value="public">Mọi người</option>*/}
+                            {/*        <option value="friends">Bạn bè</option>*/}
+                            {/*        <option value="onlyme">Chỉ mình tôi</option>*/}
+                            {/*    </Form.Select>*/}
+                            {/*</Form.Group>*/}
+
                             <Form.Group controlId="profileViewer" className="mb-3">
                                 <Form.Label className="text-[var(--text-color)]">Ai có thể xem hồ sơ của bạn?</Form.Label>
                                 <Form.Select
@@ -273,15 +303,16 @@ function SettingsPage() {
                                 </Form.Select>
                             </Form.Group>
 
+
+
                             <div className="d-flex justify-content-end">
-                                <Button
-                                    variant="primary"
+                                <button
+                                    className="btn-primary"
                                     onClick={handleSave}
                                     disabled={saving}
-                                    className="rounded-full"
                                 >
-                                    {saving ? "Đang lưu..." : "Lưu thay đổi"}
-                                </Button>
+                                    {saving ? 'Đang lưu...' : 'Lưu thay đổi'}
+                                </button>
                             </div>
                         </div>
 
@@ -292,7 +323,8 @@ function SettingsPage() {
                                 Đổi mật khẩu
                             </h4>
 
-                            <Form onSubmit={submitChangePassword}>
+
+                            <Form onSubmit={handlePasswordChange}>
                                 <Form.Group controlId="currentPassword" className="mb-3">
                                     <Form.Label className="text-[var(--text-color)]">Mật khẩu hiện tại</Form.Label>
                                     <Form.Control
@@ -330,21 +362,19 @@ function SettingsPage() {
                                 </Form.Group>
 
                                 <div className="d-flex justify-content-end">
-                                    <Button
+                                    <button
                                         type="submit"
-                                        variant="primary"
+                                        className="btn-primary"
                                         disabled={changingPassword}
-                                        className="rounded-full"
                                     >
-                                        {changingPassword ? "Đang đổi..." : "Đổi mật khẩu"}
-                                    </Button>
+                                        {changingPassword ? 'Đang đổi...' : 'Đổi mật khẩu'}
+                                    </button>
                                 </div>
                             </Form>
                         </div>
                     </Col>
                 </Row>
             </Container>
-            <ToastContainer />
         </div>
     );
 }
