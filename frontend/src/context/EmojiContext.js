@@ -4,43 +4,71 @@ import { toast } from "react-toastify";
 const EmojiContext = createContext();
 
 export const EmojiProvider = ({ children }) => {
-    const [emojiList, setEmojiList] = useState([]);
+    const [emojiMainList, setEmojiMainList] = useState([]);
     const [emojiMap, setEmojiMap] = useState({});
+    const [emojiMessagingList, setEmojiMessagingList] = useState([]);
+
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     const token = localStorage.getItem("token");
 
     useEffect(() => {
-        const fetchEmojiList = async () => {
+        const fetchEmojiData = async () => {
             try {
-                const res = await fetch(`${process.env.REACT_APP_API_URL}/reactions/emoji-main-list`, {
-                    headers: { Authorization: `Bearer ${token}` },
+                if (!token) return;
+
+                const headers = {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                };
+
+                // Fetch emoji-main-list
+                const mainRes = await fetch(`${process.env.REACT_APP_API_URL}/reactions/emoji-main-list`, {
+                    headers,
                 });
 
-                if (!res.ok) throw new Error("Không thể lấy danh sách emoji.");
-                const data = await res.json();
+                if (!mainRes.ok) throw new Error("Không thể lấy danh sách emoji chính.");
+                const mainData = await mainRes.json();
+                setEmojiMainList(mainData);
 
                 const map = {};
-                data.forEach((e) => {
+                mainData.forEach((e) => {
                     map[e.name] = e;
                 });
-
-                setEmojiList(data);
                 setEmojiMap(map);
+
+                // Fetch emoji-messaging list
+                const msgRes = await fetch(`${process.env.REACT_APP_API_URL}/reactions/messaging`, {
+                    headers,
+                });
+
+                if (!msgRes.ok) throw new Error("Không thể lấy danh sách emoji tin nhắn.");
+                const msgData = await msgRes.json();
+                setEmojiMessagingList(msgData);
+
             } catch (err) {
+                console.error("[EmojiContext] Lỗi:", err);
+                setError(err.message || "Lỗi khi lấy danh sách emoji.");
                 toast.error(err.message || "Lỗi khi lấy emoji.");
-                setError(err.message);
             } finally {
                 setLoading(false);
             }
         };
 
-        if (token) fetchEmojiList();
+        fetchEmojiData();
     }, [token]);
 
     return (
-        <EmojiContext.Provider value={{ emojiList, emojiMap, loading, error }}>
+        <EmojiContext.Provider
+            value={{
+                emojiMainList,
+                emojiMap,
+                emojiMessagingList,
+                loading,
+                error,
+            }}
+        >
             {children}
         </EmojiContext.Provider>
     );

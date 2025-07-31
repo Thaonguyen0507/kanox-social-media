@@ -15,7 +15,8 @@ import moment from "moment";
 import useCommentAvatar from "../../../hooks/useCommentAvatar";
 import ReactionButtonGroup from "./ReactionButtonGroup";
 import MediaActionBar from "../../utils/MediaActionBar"
-import useEmojiList from "../../../hooks/useEmojiList";
+import { useEmojiContext } from "../../../context/EmojiContext";
+
 
 function CommentThread({
                            comment,
@@ -32,18 +33,16 @@ function CommentThread({
     const [showReplies, setShowReplies] = useState(false);
     const [selectedMediaFiles, setSelectedMediaFiles] = useState([]);
     const [selectedMediaPreviews, setSelectedMediaPreviews] = useState([]);
-    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
     const replyInputRef = useRef(null);
-    const { emojiList } = useEmojiList();
+    const { emojiMessagingList } = useEmojiContext();
 
     const { avatarUrl } = useCommentAvatar(comment.user?.id);
 
     const handleReplySubmit = (e) => {
         e.preventDefault();
         if (replyText.trim()) {
+            console.log("Replying to commentId:", comment.commentId); // Debug
             onReply(comment.commentId, replyText, selectedMediaFiles);
-
-            // ✅ Reset sau khi gửi
             setReplyText("");
             setSelectedMediaFiles([]);
             setSelectedMediaPreviews([]);
@@ -269,7 +268,7 @@ function CommentThread({
 
                                     <div className="d-flex justify-content-between align-items-center mt-2 px-1">
                                         <MediaActionBar
-                                            onEmojiClick={() => setShowEmojiPicker((prev) => !prev)}
+                                            emojiList={emojiMessagingList}
                                             onFileSelect={(files) => {
                                                 setSelectedMediaFiles((prev) => [...prev, ...files]);
                                                 setSelectedMediaPreviews((prev) => [

@@ -66,7 +66,8 @@ const TweetCard = forwardRef(({ tweet, onPostUpdate }, ref) => {
   const { publish } = useContext(WebSocketContext);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const postId = searchParams.get("postId");
+  const highlightedPostId = searchParams.get("postId");
+  const renderPostId = tweet?.id;
   const [isHighlighted, setIsHighlighted] = useState(false);
   const {
     id,
@@ -85,12 +86,19 @@ const TweetCard = forwardRef(({ tweet, onPostUpdate }, ref) => {
   } = tweet || {};
 
   useEffect(() => {
-    if (postId && postId === String(id)) {
+    if (highlightedPostId && highlightedPostId === String(id)) {
       setIsHighlighted(true);
+      // Cuộn đến bài viết
+      if (ref.current) {
+        ref.current.scrollIntoView({
+          behavior: "smooth", // Cuộn mượt mà
+          block: "start", // Cuộn để bài viết nằm ở đầu khung nhìn
+        });
+      }
       const timer = setTimeout(() => setIsHighlighted(false), 2000);
       return () => clearTimeout(timer);
     }
-  }, [postId, id]);
+  }, [highlightedPostId, id, ref]);
 
   const isSaved = tweet?.isSaved ?? false;
   const isOwnTweet = user && user.username === owner?.username;
@@ -364,10 +372,12 @@ const TweetCard = forwardRef(({ tweet, onPostUpdate }, ref) => {
     setShowEmojiPicker((prev) => !prev);
   };
 
+  console.log("📌 postId passed to useCommentActions:", renderPostId );
+
   const { handleReplyToComment, handleUpdateComment, handleDeleteComment } =
     useCommentActions({
       user,
-      postId,
+      postId: renderPostId,
       setComments,
       fetchComments,
     });
@@ -1212,7 +1222,7 @@ const TweetCard = forwardRef(({ tweet, onPostUpdate }, ref) => {
         <ReactionUserListModal
           show={showReactionUserModal}
           onHide={() => setShowReactionUserModal(false)}
-          targetId={postId}
+          targetId={renderPostId }
           targetTypeCode="POST"
           emojiName={selectedEmojiName}
         />

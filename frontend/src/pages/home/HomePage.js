@@ -61,7 +61,7 @@ function HomePage({ onShowCreatePost, onToggleDarkMode }) {
       postRefs.current[postId].scrollIntoView({ behavior: "smooth", block: "center" });
       setTimeout(() => {
         setSearchParams({}, { replace: true });
-      }, 1000);
+      }, 5000);
     }
   }, [postId, posts, setSearchParams]);
 

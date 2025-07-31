@@ -3,61 +3,92 @@ import React, { useState, useEffect } from "react";
 const PostsManagement = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(0); // page index từ 0
-  const [totalPages, setTotalPages] = useState(0);
+  const [error, setError] = useState(null);
 
-  const pageSize = 5; // số bài mỗi trang
-  const API_URL = process.env.REACT_APP_API_URL;
+  const API_URL = process.env.REACT_APP_API_URL; // ví dụ: http://localhost:8080/api
   const token = localStorage.getItem("token");
 
-  const fetchPosts = async (page = 0) => {
-    setLoading(true);
-    try {
-      const response = await fetch(
-          `${API_URL}/posts/newsfeed?page=${page}&size=${pageSize}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-      );
+  // Fix: Convert từ epoch seconds sang milliseconds
+  const formatDate = (timestamp) => {
+    if (timestamp == null) return "--";
 
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.message || "Lỗi khi lấy bài viết");
+    // Backend trả về số giây (float hoặc int)
+    const millis = Number(timestamp) * 1000;
+    const d = new Date(millis);
 
-      // API backend nên trả về dạng { content, totalPages }
-      setPosts(result.content || result.data || []);
-      setTotalPages(result.totalPages || 1);
-    } catch (err) {
-      console.error("Lỗi khi load bài viết:", err.message);
-    } finally {
-      setLoading(false);
-    }
+    if (isNaN(d.getTime())) return "--";
+
+    return d.toLocaleString("vi-VN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   };
 
   useEffect(() => {
-    fetchPosts(currentPage);
-    // eslint-disable-next-line
-  }, [currentPage]);
+    const fetchPosts = async () => {
+      console.log("=== DEBUG fetchPosts ===");
+      console.log("API_URL:", API_URL);
+      console.log("Token:", token);
 
-  const handlePrevPage = () => {
-    if (currentPage > 0) setCurrentPage(currentPage - 1);
-  };
+      if (!API_URL) {
+        setError("API_URL không được định nghĩa. Kiểm tra file .env");
+        setLoading(false);
+        return;
+      }
 
-  const handleNextPage = () => {
-    if (currentPage < totalPages - 1) setCurrentPage(currentPage + 1);
-  };
+      if (!token) {
+        setError("Không có token trong localStorage");
+        setLoading(false);
+        return;
+      }
 
-  if (loading) {
-    return <div className="p-6 text-gray-600">Đang tải dữ liệu bài viết...</div>;
-  }
+      try {
+        const response = await fetch(`${API_URL}/posts/newsfeed`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        console.log("Fetch status:", response.status);
+
+        if (!response.ok) {
+          const text = await response.text();
+          throw new Error(`HTTP ${response.status}: ${text}`);
+        }
+
+        const result = await response.json();
+        console.log("API result:", result);
+
+        setPosts(result.data || []);
+      } catch (err) {
+        console.error("Lỗi khi load bài viết:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, [API_URL, token]);
+
+  if (loading) return <div className="p-6">Đang tải dữ liệu bài viết...</div>;
+
+  if (error)
+    return (
+        <div className="p-6 text-red-600">
+          Lỗi: {error}
+          <br />
+          Xem chi tiết trong console (F12)
+        </div>
+    );
 
   return (
-      <div className="p-6 bg-white rounded-xl shadow-lg">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">
-          Quản lý Bài viết
-        </h2>
-
+      <div className="p-6 bg-white rounded-lg shadow-md">
+        <h2 className="text-3xl font-bold mb-6 text-gray-800">Quản lý Bài viết</h2>
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white border border-gray-200 rounded-lg">
             <thead className="bg-gray-100">
@@ -77,64 +108,25 @@ const PostsManagement = () => {
             </tr>
             </thead>
             <tbody>
-            {posts.length > 0 ? (
-                posts.map((post) => (
-                    <tr
-                        key={post.id}
-                        className="border-b border-gray-200 last:border-b-0 hover:bg-gray-50"
-                    >
-                      <td className="py-3 px-4 text-gray-800">{post.id}</td>
-                      <td className="py-3 px-4 text-gray-800">
-                        {post.owner?.displayName || post.owner?.username}
-                      </td>
-                      <td className="py-3 px-4 text-gray-800 truncate max-w-xs">
-                        {post.content}
-                      </td>
-                      <td className="py-3 px-4 text-gray-800">
-                        {new Date(post.createdAt).toLocaleDateString()}
-                      </td>
-                    </tr>
-                ))
-            ) : (
-                <tr>
-                  <td colSpan={4} className="text-center py-4 text-gray-500">
-                    Không có bài viết nào.
+            {posts.map((post) => (
+                <tr
+                    key={post.id}
+                    className="border-b border-gray-200 last:border-b-0 hover:bg-gray-50"
+                >
+                  <td className="py-3 px-4 text-gray-800">{post.id}</td>
+                  <td className="py-3 px-4 text-gray-800">
+                    {post.owner?.displayName || post.owner?.username}
+                  </td>
+                  <td className="py-3 px-4 text-gray-800 truncate max-w-xs">
+                    {post.content}
+                  </td>
+                  <td className="py-3 px-4 text-gray-800">
+                    {formatDate(post.createdAt)}
                   </td>
                 </tr>
-            )}
+            ))}
             </tbody>
           </table>
-        </div>
-
-        {/* Pagination */}
-        <div className="flex items-center justify-between mt-6">
-        <span className="text-sm text-gray-600">
-          Trang {currentPage + 1} / {totalPages}
-        </span>
-          <div className="flex space-x-3">
-            <button
-                onClick={handlePrevPage}
-                disabled={currentPage === 0}
-                className={`px-4 py-2 rounded-lg text-white ${
-                    currentPage === 0
-                        ? "bg-gray-300 cursor-not-allowed"
-                        : "bg-blue-500 hover:bg-blue-600"
-                }`}
-            >
-              Trước
-            </button>
-            <button
-                onClick={handleNextPage}
-                disabled={currentPage === totalPages - 1}
-                className={`px-4 py-2 rounded-lg text-white ${
-                    currentPage === totalPages - 1
-                        ? "bg-gray-300 cursor-not-allowed"
-                        : "bg-blue-500 hover:bg-blue-600"
-                }`}
-            >
-              Sau
-            </button>
-          </div>
         </div>
       </div>
   );

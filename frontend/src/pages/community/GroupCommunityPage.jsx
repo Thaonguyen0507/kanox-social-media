@@ -91,6 +91,26 @@ export default function GroupCommunityPage() {
         }
     };
 
+    const handleDeleteGroup = async () => {
+        if (!window.confirm("Bạn có chắc muốn xóa nhóm này? Hành động này không thể hoàn tác.")) return;
+        try {
+            const res = await fetch(`${process.env.REACT_APP_API_URL}/groups/${groupId}?username=${user.username}`, {
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.message || "Không thể xóa nhóm.");
+            }
+            toast.success("Đã xóa nhóm thành công!");
+            navigate("/groups"); // chuyển hướng về trang danh sách nhóm hoặc home
+        } catch (err) {
+            toast.error(err.message);
+        }
+    };
+
     const fetchPostsByGroup = async () => {
         setLoadingPosts(true);
         try {
@@ -433,7 +453,7 @@ export default function GroupCommunityPage() {
                                             Báo cáo nhóm
                                         </Dropdown.Item>
                                         <Dropdown.Divider />
-                                        <Dropdown.Item className="text-danger" onClick={() => alert("Xóa nhóm")}>
+                                        <Dropdown.Item className="text-danger" onClick={handleDeleteGroup}>
                                             Xóa nhóm
                                         </Dropdown.Item>
                                         <Dropdown.Item onClick={() => setShowAssignModal(true)}>

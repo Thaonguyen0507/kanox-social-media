@@ -36,6 +36,25 @@ function NotificationItem({ notification, handleMarkRead, handleMarkUnread }) {
         const displayName = notification.displayName || notification.username || "Người dùng";
         const message = notification.message || "Không có nội dung";
 
+        if (notification.type === "POST_COMMENT" && notification.targetType === "POST") {
+            return (
+                <p
+                    className="mb-1 text-[var(--text-color)] cursor-pointer hover:underline"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        if (!notification.targetId) {
+                            toast.error("Không thể điều hướng: Thiếu ID bài đăng.");
+                            return;
+                        }
+                        navigate(`/home?postId=${notification.targetId}`);
+                    }}
+                >
+                    {message.replace("{displayName}", displayName)}
+                </p>
+            );
+        }
+
+        // Trường hợp GROUP notification
         if (notification.targetType === "GROUP" && displayName && message.includes(displayName)) {
             const parts = message.split(displayName);
             return (
@@ -45,8 +64,8 @@ function NotificationItem({ notification, handleMarkRead, handleMarkUnread }) {
                         className="font-bold text-[var(--primary-color)] cursor-pointer hover:underline"
                         onClick={() => navigate(`/community/${notification.targetId}`)}
                     >
-           {displayName}
-         </span>
+                    {displayName}
+                </span>
                     {parts[1]}
                 </p>
             );
@@ -61,9 +80,15 @@ function NotificationItem({ notification, handleMarkRead, handleMarkUnread }) {
 
     const renderAvatar = () => (
         <img
-            src={notification.image || "https://placehold.co/40x40?text=Avatar"}
-            alt={`Avatar của ${notification.displayName || "Người dùng"}`}
-            className={`w-10 h-10 object-cover mr-3 ${notification.targetType === "GROUP" ? "rounded-none" : "rounded-full"}`}
+            src={
+                notification.type === "POST_COMMENT"
+                    ? notification.senderAvatar || notification.image || "https://placehold.co/40x40?text=Avatar"
+                    : notification.image || "https://placehold.co/40x40?text=Avatar"
+            }
+            alt={`Avatar của ${notification.senderDisplayName || notification.displayName || "Người dùng"}`}
+            className={`w-10 h-10 object-cover mr-3 ${
+                notification.targetType === "GROUP" ? "rounded-none" : "rounded-full"
+            }`}
         />
     );
 
@@ -95,7 +120,9 @@ function NotificationItem({ notification, handleMarkRead, handleMarkUnread }) {
                                 }
                             }}
                         >
-                            {notification.displayName || notification.username || "Người dùng"}
+                            {notification.type === "POST_COMMENT"
+                                ? notification.senderDisplayName || "Người dùng"
+                                : notification.displayName || notification.username || "Người dùng"}
                         </p>
                         <div className="flex items-center space-x-2">
                             {!isRead ? (

@@ -69,6 +69,8 @@ function NotificationPage({ onToggleDarkMode, isDarkMode, onShowCreatePost }) {
                         image: notif.image || null,
                         targetId: notif.targetId, // Bỏ fallback notif.userId
                         targetType: notif.targetType || "PROFILE",
+                        senderDisplayName: notif.senderDisplayName || null,
+                        senderAvatar: notif.senderAvatar || null,
                     }))
                 : [];
 
@@ -147,7 +149,9 @@ function NotificationPage({ onToggleDarkMode, isDarkMode, onShowCreatePost }) {
                     timestamp: notification.createdAt * 1000,
                     isRead: notification.status === "read",
                     image: notification.image || null,
-                    targetId: notification.targetId, // Bỏ fallback user.id
+                    senderDisplayName: notification.senderDisplayName || null,
+                    senderAvatar: notification.senderAvatar || null,
+                    targetId: notification.targetId,
                     targetType: notification.targetType || "PROFILE",
                 };
 
