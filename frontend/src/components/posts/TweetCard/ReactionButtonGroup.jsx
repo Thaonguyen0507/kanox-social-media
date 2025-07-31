@@ -23,7 +23,7 @@ function ReactionButtonGroup({ user, targetId, targetTypeCode, initialReactionCo
         targetTypeCode,
         initialReactionCountMap: memoizedReactionCountMap,
     });
-    const { emojiList: mainEmojiList, emojiMap } = useEmojiContext();
+    const { emojiMainList: mainEmojiList = [], emojiMap = {} } = useEmojiContext();
 
     const totalCount = Object.values(reactionCountMap).reduce((sum, count) => sum + count, 0);
 
@@ -104,7 +104,7 @@ function ReactionButtonGroup({ user, targetId, targetTypeCode, initialReactionCo
                     style={popoverAnimation}
                     className="reaction-popover bg-[var(--background-color)] rounded-xl p-2 shadow-lg border border-[var(--border-color)] flex gap-2 absolute bottom-10 left-0 z-50"
                 >
-                    {mainEmojiList.map((emojiObj) => (
+                    {Array.isArray(mainEmojiList) && mainEmojiList.map((emojiObj) => (
                         <OverlayTrigger
                             key={emojiObj.name}
                             placement="top"
