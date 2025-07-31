@@ -264,25 +264,25 @@ function SettingsPage() {
                                     onChange={handleChange}
                                     className="bg-input"
                                 >
-                                    <option value="everyone">Mọi người</option>
+                                    <option value="public">Mọi người</option>
                                     <option value="friends">Bạn bè</option>
-                                    <option value="onlyme">Chỉ mình tôi</option>
+                                    <option value="only_me">Chỉ mình tôi</option>
                                 </Form.Select>
                             </Form.Group>
 
-                            <Form.Group controlId="commentPermission" className="mb-3">
-                                <Form.Label className="text-[var(--text-color)]">Ai có thể bình luận trên bài viết của bạn?</Form.Label>
-                                <Form.Select
-                                    name="commentPermission"
-                                    value={settings.commentPermission}
-                                    onChange={handleChange}
-                                    className="bg-input"
-                                >
-                                    <option value="everyone">Mọi người</option>
-                                    <option value="friends">Bạn bè</option>
-                                    <option value="onlyme">Chỉ mình tôi</option>
-                                </Form.Select>
-                            </Form.Group>
+                            {/*<Form.Group controlId="commentPermission" className="mb-3">*/}
+                            {/*    <Form.Label className="text-[var(--text-color)]">Ai có thể bình luận trên bài viết của bạn?</Form.Label>*/}
+                            {/*    <Form.Select*/}
+                            {/*        name="commentPermission"*/}
+                            {/*        value={settings.commentPermission}*/}
+                            {/*        onChange={handleChange}*/}
+                            {/*        className="bg-input"*/}
+                            {/*    >*/}
+                            {/*        <option value="public">Mọi người</option>*/}
+                            {/*        <option value="friends">Bạn bè</option>*/}
+                            {/*        <option value="onlyme">Chỉ mình tôi</option>*/}
+                            {/*    </Form.Select>*/}
+                            {/*</Form.Group>*/}
 
                             <Form.Group controlId="profileViewer" className="mb-3">
                                 <Form.Label className="text-[var(--text-color)]">Ai có thể xem hồ sơ của bạn?</Form.Label>
@@ -294,7 +294,7 @@ function SettingsPage() {
                                 >
                                     <option value="public">Mọi người</option>
                                     <option value="friends">Bạn bè</option>
-                                    <option value="onlyme">Chỉ mình tôi</option>
+                                    <option value="only_me">Chỉ mình tôi</option>
                                 </Form.Select>
                             </Form.Group>
 
