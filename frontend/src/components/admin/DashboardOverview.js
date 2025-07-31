@@ -291,9 +291,6 @@ const DashboardOverview = () => {
             <Card className="shadow-sm">
               <Card.Header className="d-flex justify-content-between align-items-center">
                 <h3 className="mb-0 fs-4 fw-bold text-dark">Thống kê hoạt động hàng tháng</h3>
-                <Button variant="outline-primary" size="sm">
-                  <span className="me-1">⬇️</span> Xuất báo cáo
-                </Button>
               </Card.Header>
               <Card.Body>
                 <div className="table-responsive" style={{ height: 400, overflowY: "auto" }}>
