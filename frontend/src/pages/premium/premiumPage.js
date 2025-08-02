@@ -131,23 +131,42 @@ const PremiumPage = () => {
         {error && <Alert variant="danger">{error}</Alert>}
         {success && <Alert variant="success">{success}</Alert>}
 
-        <Row>
+        <Row className="justify-content-center">
           {plans.map((plan) => (
-              <Col md={4} key={plan.id} className="mb-4">
-                <Card className="text-center h-100 bg-[var(--background-color-secondary)] border-[var(--border-color)]">
-                  <Card.Header as="h5" className="text-[var(--text-color)]">
+              <Col
+                  key={plan.id}
+                  xs={12}
+                  sm={10}
+                  md={6}
+                  lg={4}
+                  className="mb-4 d-flex justify-content-center"
+              >
+                <Card
+                    className="text-center shadow-sm p-3 border-0"
+                    style={{
+                      backgroundColor: "var(--background-color-secondary)",
+                      color: "var(--text-color)",
+                      width: "100%",
+                      borderRadius: "1rem",
+                    }}
+                >
+                  <Card.Header
+                      as="h5"
+                      className="fw-bold border-0 bg-transparent text-[var(--text-color)]"
+                  >
                     {plan.name}
                   </Card.Header>
                   <Card.Body>
-                    <Card.Title className="display-4 text-[var(--text-color)]">
+                    <Card.Title className="display-5 fw-bold mb-3 text-[var(--text-color)]">
                       {plan.price}
                     </Card.Title>
-                    <Card.Text className="text-[var(--text-color-muted)]">
+                    <Card.Text className="text-[var(--text-color-muted)] mb-4">
                       Gói {plan.duration} dành cho bạn.
                     </Card.Text>
                     <Button
                         variant="primary"
                         size="lg"
+                        className="w-100 rounded-pill"
                         onClick={() => handleSubscription(plan.id)}
                         disabled={loading === plan.id || isPremium}
                     >
@@ -169,7 +188,7 @@ const PremiumPage = () => {
                       )}
                     </Button>
                   </Card.Body>
-                  <Card.Footer className="text-muted">
+                  <Card.Footer className="bg-transparent text-muted border-0">
                     Thanh toán một lần
                   </Card.Footer>
                 </Card>
@@ -177,6 +196,7 @@ const PremiumPage = () => {
           ))}
         </Row>
       </Container>
+
   );
 };
 
