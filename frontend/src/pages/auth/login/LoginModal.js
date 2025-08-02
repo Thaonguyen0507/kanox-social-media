@@ -59,11 +59,12 @@ const LoginModal = ({ show, handleClose, onShowLogin }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const storeUserSession = (user, token, refreshToken, remember) => {
+  const storeUserSession = (user, token, refreshToken, isPremium, remember) => {
     setUser(user, token, refreshToken);
     const storage = remember ? localStorage : sessionStorage;
     storage.setItem("token", token);
     storage.setItem("refreshToken", refreshToken);
+    storage.setItem("isPremium", isPremium);
   };
 
   const handleSubmit = async (e) => {
@@ -84,7 +85,7 @@ const LoginModal = ({ show, handleClose, onShowLogin }) => {
           : { message: await res.text() || "Lỗi không xác định từ máy chủ" };
 
       if (res.ok) {
-        storeUserSession(data.user, data.token, data.refreshToken, rememberMe);
+        storeUserSession(data.user, data.token, data.refreshToken, data.isPremium, rememberMe);
         toast.success("Đăng nhập thành công! Đang chuyển hướng...");
         handleClose();
         setTimeout(() => {
@@ -120,7 +121,7 @@ const LoginModal = ({ show, handleClose, onShowLogin }) => {
 
       const data = await res.json();
       if (res.ok) {
-        storeUserSession(data.user, data.token, data.refreshToken, true);
+        storeUserSession(data.user, data.token, data.refreshToken, data.isPremium, true);
         toast.success("Đăng nhập bằng Google thành công! Đang chuyển hướng...");
         handleClose();
         setTimeout(() => navigate("/home"), 2000);
