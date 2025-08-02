@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0805ce12-b01d-4b2d-bea6-61b2f552f0b9" name="Changes" comment="fix community">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/context/AuthContext.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/context/AuthContext.js" afterDir="false" />
-    </list>
+    <list default="true" id="0805ce12-b01d-4b2d-bea6-61b2f552f0b9" name="Changes" comment="fix community" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -74,7 +71,7 @@
       <workItem from="1753890513058" duration="5358000" />
       <workItem from="1753899021495" duration="4346000" />
       <workItem from="1753931975065" duration="2713000" />
-      <workItem from="1754101383431" duration="3738000" />
+      <workItem from="1754101383431" duration="4039000" />
     </task>
     <task id="LOCAL-00001" summary="ok">
       <option name="closed" value="true" />
@@ -284,7 +281,15 @@
       <option name="project" value="LOCAL" />
       <updated>1754104610236</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="fix community">
+      <option name="closed" value="true" />
+      <created>1754105427470</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1754105427470</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -309,5 +314,17 @@
     <MESSAGE value="fix communitymemberpage" />
     <MESSAGE value="fix community" />
     <option name="LAST_COMMIT_MESSAGE" value="fix community" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/frontend/src/context/AuthContext.js</url>
+          <line>26</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

@@ -60,7 +60,7 @@ const LoginModal = ({ show, handleClose, onShowLogin }) => {
   };
 
   const storeUserSession = (user, token, refreshToken, isPremium, remember) => {
-    setUser(user, token, refreshToken);
+    setUser(user, token, refreshToken, isPremium);
     const storage = remember ? localStorage : sessionStorage;
     storage.setItem("token", token);
     storage.setItem("refreshToken", refreshToken);
