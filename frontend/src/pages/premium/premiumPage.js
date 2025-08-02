@@ -23,7 +23,7 @@ const PremiumPage = () => {
   const plans = [
     {
       id: "SEMI_ANNUALLY",
-      name: "Gói 6 Tháng",
+      name: "Gói 1 Tháng",
       price: "2.000đ",
       duration: "tiết kiệm",
     },
