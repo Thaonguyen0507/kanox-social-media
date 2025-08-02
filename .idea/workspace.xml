@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="0805ce12-b01d-4b2d-bea6-61b2f552f0b9" name="Changes" comment="fix community">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/premium/premiumPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/premium/premiumPage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/context/AuthContext.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/context/AuthContext.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,7 +74,7 @@
       <workItem from="1753890513058" duration="5358000" />
       <workItem from="1753899021495" duration="4346000" />
       <workItem from="1753931975065" duration="2713000" />
-      <workItem from="1754101383431" duration="2978000" />
+      <workItem from="1754101383431" duration="3738000" />
     </task>
     <task id="LOCAL-00001" summary="ok">
       <option name="closed" value="true" />
@@ -276,7 +276,15 @@
       <option name="project" value="LOCAL" />
       <updated>1754102945626</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="fix community">
+      <option name="closed" value="true" />
+      <created>1754104610236</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1754104610236</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
