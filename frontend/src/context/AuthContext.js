@@ -21,7 +21,8 @@ export const AuthProvider = ({ children }) => {
 
   const navigate = useNavigate();
 
-  const setUser = (userObj, newToken = null, newRefreshToken = null) => {
+
+  const setUser = (userObj, newToken = null, newRefreshToken = null, isPremium = null) => {
     setUserState(userObj);
     if (userObj) {
       if (newToken) {
@@ -33,6 +34,12 @@ export const AuthProvider = ({ children }) => {
         setRefreshToken(newRefreshToken);
         localStorage.setItem("refreshToken", newRefreshToken);
       }
+
+      // ✅ Lưu isPremium nếu có
+      if (isPremium !== null) {
+        localStorage.setItem("isPremium", isPremium ? "true" : "false");
+      }
+
       localStorage.setItem("user", JSON.stringify(userObj));
     } else {
       setToken(null);
@@ -41,6 +48,8 @@ export const AuthProvider = ({ children }) => {
       sessionStorage.clear();
     }
   };
+
+
 
   const syncAllData = async (authToken) => {
     if (hasSynced) return;
@@ -96,7 +105,7 @@ export const AuthProvider = ({ children }) => {
       if (response.ok) {
         setToken(data.token);
         localStorage.setItem("token", data.token);
-        setUser(data.user, data.token, refreshToken);
+        setUser(data.user, data.token, refreshToken, data.isPremium);
         return data.token;
       } else if (response.status === 401) {
         return await refreshAccessToken();
@@ -124,7 +133,7 @@ export const AuthProvider = ({ children }) => {
         const data = await response.json();
         setToken(data.token);
         localStorage.setItem("token", data.token);
-        setUser(data.user, data.token, refreshToken);
+        setUser(data.user, data.token, refreshToken, data.isPremium);
         return data.token;
       } else {
         logout();
@@ -186,9 +195,19 @@ export const AuthProvider = ({ children }) => {
 
   return (
       <AuthContext.Provider
-          value={{ user, setUser, token, logout, loading, isSyncing, hasSynced }}
+          value={{
+            user,
+            setUser,
+            token,
+            logout,
+            loading,
+            isSyncing,
+            hasSynced,
+            isPremium: localStorage.getItem("isPremium") === "true"
+          }}
       >
-        {loading || isSyncing ? (
+
+      {loading || isSyncing ? (
             <div className="d-flex justify-content-center align-items-center min-vh-100">
               <Spinner animation="border" role="status" />
               <span className="ms-2">Đang tải dữ liệu...</span>

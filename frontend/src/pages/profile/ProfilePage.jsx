@@ -51,6 +51,7 @@ function ProfilePage() {
     const hasAccess = userProfile?.bio !== null || isOwnProfile;
     const [followers, setFollowers] = useState([]);
     const [following, setFollowing] = useState([]);
+    const [isFollowing, setIsFollowing] = useState(false);
     const defaultUserProfile = {
         id: null,
         username: "testuser",
@@ -66,6 +67,34 @@ function ProfilePage() {
         gender: 0,
         profileImageUrl: "https://via.placeholder.com/150?text=Avatar",
     };
+
+    useEffect(() => {
+        if (!user || user.id === userProfile?.id || !userProfile?.id) return;
+
+        const fetchFollowStatus = async () => {
+            try {
+                const token = sessionStorage.getItem("token") || localStorage.getItem("token");
+                if (!token) throw new Error("Không tìm thấy token");
+
+                const res = await fetch(
+                    `${process.env.REACT_APP_API_URL}/follows/status/${userProfile.id}`,
+                    {
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+                if (!res.ok) throw new Error("Không thể lấy trạng thái theo dõi");
+                const data = await res.json();
+                setIsFollowing(data.isFollowing);
+            } catch (err) {
+                console.error("Lỗi khi lấy trạng thái theo dõi:", err);
+            }
+        };
+
+        fetchFollowStatus();
+    }, [user, userProfile]);
 
     useEffect(() => {
         const fetchReportReasons = async () => {
@@ -589,6 +618,8 @@ function ProfilePage() {
             );
 
             if (!response.ok) throw new Error(await response.text());
+            const newStatus = action === "follow";
+            setIsFollowing(newStatus); // Cập nhật isFollowing
             setUserProfile((prev) => ({
                 ...prev,
                 followerCount: prev.followerCount + (action === "follow" ? 1 : -1),
@@ -677,19 +708,21 @@ function ProfilePage() {
                                         <FollowActionButton
                                             targetId={userProfile.id}
                                             disabled={isBlocked}
-                                            onFollowChange={(isFollowing) =>
+                                            isFollowing={isFollowing}
+                                            setIsFollowing={setIsFollowing}
+                                            onFollowChange={(newStatus) => {
                                                 setUserProfile((prev) => ({
                                                     ...prev,
-                                                    followerCount: prev.followerCount + (isFollowing ? 1 : -1),
-                                                }))
-                                            }
+                                                    followerCount: prev.followerCount + (newStatus ? 1 : -1),
+                                                }));
+                                                setIsFollowing(newStatus);
+                                            }}
                                         />
                                         {!isBlocked && (
                                             <FriendshipButton
                                                 targetId={userProfile.id}
-                                                onFollowAction={() =>
-                                                    handleFollowAction("follow") // Gọi hành động theo dõi từ FollowActionButton
-                                                }
+                                                onFollowAction={() => handleFollowAction("follow")} // Giữ nguyên
+                                                setIsFollowing={setIsFollowing} // Truyền setIsFollowing
                                             />
                                         )}
                                         <button

@@ -1,38 +1,9 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
 
-function FollowActionButton({ targetId, disabled, onFollowChange }) {
+function FollowActionButton({ targetId, disabled, onFollowChange, isFollowing, setIsFollowing }) {
   const { user } = useContext(AuthContext);
-  const [isFollowing, setIsFollowing] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (!user || user.id === targetId) return;
-
-    const fetchFollowStatus = async () => {
-      try {
-        const token = sessionStorage.getItem("token") || localStorage.getItem("token");
-        if (!token) throw new Error("Không tìm thấy token");
-
-        const res = await fetch(
-            `${process.env.REACT_APP_API_URL}/follows/status/${targetId}`,
-            {
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-            }
-        );
-        if (!res.ok) throw new Error("Không thể lấy trạng thái theo dõi");
-        const data = await res.json();
-        setIsFollowing(data.isFollowing);
-      } catch (err) {
-        console.error("Lỗi khi lấy trạng thái theo dõi:", err);
-      }
-    };
-
-    fetchFollowStatus();
-  }, [user, targetId]);
 
   const handleAction = async (action) => {
     if (loading || disabled) return;
@@ -51,7 +22,7 @@ function FollowActionButton({ targetId, disabled, onFollowChange }) {
 
       if (!res.ok) throw new Error(await res.text());
       const newStatus = action === "follow";
-      setIsFollowing(newStatus);
+      setIsFollowing(newStatus); // Cập nhật trạng thái từ props
       if (onFollowChange) onFollowChange(newStatus);
     } catch (err) {
       console.error("Lỗi:", err);

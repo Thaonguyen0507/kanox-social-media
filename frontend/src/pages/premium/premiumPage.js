@@ -22,22 +22,10 @@ const PremiumPage = () => {
 
   const plans = [
     {
-      id: "MONTHLY",
-      name: "Gói 1 Tháng",
-      price: "10.000đ",
-      duration: "trải nghiệm",
-    },
-    {
       id: "SEMI_ANNUALLY",
-      name: "Gói 6 Tháng",
-      price: "50.000đ",
+      name: "Gói 1 Tháng",
+      price: "2.000đ",
       duration: "tiết kiệm",
-    },
-    {
-      id: "ANNUALLY",
-      name: "Gói 1 Năm",
-      price: "100.000đ",
-      duration: "tối ưu",
     },
   ];
 
@@ -127,64 +115,90 @@ const PremiumPage = () => {
     }
   };
 
+  // Kiểm tra xem người dùng đã có Premium hay chưa
+  const isPremium = localStorage.getItem("isPremium") === "true";
+
 
   return (
-    <Container className="mt-4">
-      <div className="text-center mb-5">
-        <h1 className="text-[var(--text-color)]">Nâng cấp tài khoản Premium</h1>
-        <p className="lead text-[var(--text-color-muted)]">
-          Trải nghiệm các tính năng độc quyền và hỗ trợ đội ngũ phát triển.
-        </p>
-      </div>
+      <Container className="mt-4">
+        <div className="text-center mb-5">
+          <h1 className="text-[var(--text-color)]">Nâng cấp tài khoản Premium</h1>
+          <p className="lead text-[var(--text-color-muted)]">
+            Trải nghiệm các tính năng độc quyền và hỗ trợ đội ngũ phát triển.
+          </p>
+        </div>
 
-      {error && <Alert variant="danger">{error}</Alert>}
-      {success && <Alert variant="success">{success}</Alert>}
+        {error && <Alert variant="danger">{error}</Alert>}
+        {success && <Alert variant="success">{success}</Alert>}
 
-      <Row>
-        {plans.map((plan) => (
-          <Col md={4} key={plan.id} className="mb-4">
-            <Card className="text-center h-100 bg-[var(--background-color-secondary)] border-[var(--border-color)]">
-              <Card.Header as="h5" className="text-[var(--text-color)]">
-                {plan.name}
-              </Card.Header>
-              <Card.Body>
-                <Card.Title className="display-4 text-[var(--text-color)]">
-                  {plan.price}
-                </Card.Title>
-                <Card.Text className="text-[var(--text-color-muted)]">
-                  Gói {plan.duration} dành cho bạn.
-                </Card.Text>
-                <Button
-                  variant="primary"
-                  size="lg"
-                  onClick={() => handleSubscription(plan.id)}
-                  disabled={loading === plan.id}
+        <Row className="justify-content-center">
+          {plans.map((plan) => (
+              <Col
+                  key={plan.id}
+                  xs={12}
+                  sm={10}
+                  md={6}
+                  lg={4}
+                  className="mb-4 d-flex justify-content-center"
+              >
+                <Card
+                    className="text-center shadow-sm p-3 border-0"
+                    style={{
+                      backgroundColor: "var(--background-color-secondary)",
+                      color: "var(--text-color)",
+                      width: "100%",
+                      borderRadius: "1rem",
+                    }}
                 >
-                  {loading === plan.id ? (
-                    <>
-                      <Spinner
-                        as="span"
-                        animation="border"
-                        size="sm"
-                        role="status"
-                        aria-hidden="true"
-                      />{" "}
-                      Đang xử lý...
-                    </>
-                  ) : (
-                    "Đăng ký ngay"
-                  )}
-                </Button>
-              </Card.Body>
-              <Card.Footer className="text-muted">
-                Thanh toán một lần
-              </Card.Footer>
-            </Card>
-          </Col>
-        ))}
-      </Row>
-    </Container>
+                  <Card.Header
+                      as="h5"
+                      className="fw-bold border-0 bg-transparent text-[var(--text-color)]"
+                  >
+                    {plan.name}
+                  </Card.Header>
+                  <Card.Body>
+                    <Card.Title className="display-5 fw-bold mb-3 text-[var(--text-color)]">
+                      {plan.price}
+                    </Card.Title>
+                    <Card.Text className="text-[var(--text-color-muted)] mb-4">
+                      Gói {plan.duration} dành cho bạn.
+                    </Card.Text>
+                    <Button
+                        variant="primary"
+                        size="lg"
+                        className="w-100 rounded-pill"
+                        onClick={() => handleSubscription(plan.id)}
+                        disabled={loading === plan.id || isPremium}
+                    >
+                      {isPremium ? (
+                          "Bạn đã có tài khoản Premium"
+                      ) : loading === plan.id ? (
+                          <>
+                            <Spinner
+                                as="span"
+                                animation="border"
+                                size="sm"
+                                role="status"
+                                aria-hidden="true"
+                            />{" "}
+                            Đang xử lý...
+                          </>
+                      ) : (
+                          "Đăng ký ngay"
+                      )}
+                    </Button>
+                  </Card.Body>
+                  <Card.Footer className="bg-transparent text-muted border-0">
+                    Thanh toán một lần
+                  </Card.Footer>
+                </Card>
+              </Col>
+          ))}
+        </Row>
+      </Container>
+
   );
 };
+
 
 export default PremiumPage;
