@@ -379,7 +379,7 @@ function AppContent() {
                     onToggleDarkMode={toggleDarkMode}
                     isDarkMode={isDarkMode}
                   >
-                    <ReelsPage />
+                    <PremiumPage />
                   </MainLayout>
                 </PrivateRoute>
               }
@@ -393,7 +393,7 @@ function AppContent() {
                         onToggleDarkMode={toggleDarkMode}
                         isDarkMode={isDarkMode}
                     >
-                      <PremiumPage />
+                      <ReelsPage />
                     </MainLayout>
                   </PrivateRoute>
                 }

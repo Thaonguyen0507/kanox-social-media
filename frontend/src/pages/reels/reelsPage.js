@@ -20,7 +20,7 @@ import { Image as BootstrapImage, Modal, Button } from "react-bootstrap";
 const MOCK_REELS = [
     {
         id: "r1",
-        src: "https://youtube.com/shorts/KCeEjhDMIv4?si=KBD7fIq7TQtzT4G2",
+        src: "https://storage.googleapis.com/social-media-uploads/258be77f-a6e9-4156-8d5d-72983f0c143f_480705509_9193275347425484_3121235449629224349_n (1).mp4",
         poster: "/reels/poster1.jpg",
         user: { name: "Lana", avatar: "https://i.pravatar.cc/100?img=15" },
         caption: "Sunset skating vibes ✨",
@@ -32,7 +32,7 @@ const MOCK_REELS = [
     },
     {
         id: "r2",
-        src: "https://youtube.com/shorts/KCeEjhDMIv4?si=KBD7fIq7TQtzT4G2",
+        src: "https://storage.googleapis.com/social-media-uploads/258be77f-a6e9-4156-8d5d-72983f0c143f_480705509_9193275347425484_3121235449629224349_n (1).mp4",
         poster: "/reels/poster2.jpg",
         user: { name: "Kenji", avatar: "https://i.pravatar.cc/100?img=11" },
         caption: "Quick ramen hack you need to try 🍜",
@@ -44,7 +44,7 @@ const MOCK_REELS = [
     },
     {
         id: "r3",
-        src: "https://youtube.com/shorts/KCeEjhDMIv4?si=KBD7fIq7TQtzT4G2",
+        src: "https://storage.googleapis.com/social-media-uploads/258be77f-a6e9-4156-8d5d-72983f0c143f_480705509_9193275347425484_3121235449629224349_n (1).mp4",
         poster: "/reels/poster3.jpg",
         user: { name: "Maya", avatar: "https://i.pravatar.cc/100?img=5" },
         caption: "3 tips to boost your CSS game 💡",
