@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
     FaPlay,
     FaPause,
@@ -13,6 +13,9 @@ import {
     FaMusic,
     FaEllipsisH,
     FaChevronLeft,
+    FaChevronUp,
+    FaChevronDown,
+    FaPlus,
 } from "react-icons/fa";
 import { Image as BootstrapImage, Modal, Button } from "react-bootstrap";
 
@@ -56,7 +59,7 @@ const MOCK_REELS = [
     },
 ];
 
-// A single Reel item
+// A single Reel item (6:19 frame with rounded corners)
 function Reel({ data, isActive, onRequestPrev, onRequestNext }) {
     const videoRef = useRef(null);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -110,190 +113,221 @@ function Reel({ data, isActive, onRequestPrev, onRequestNext }) {
     };
 
     return (
-        <div
-            className="relative w-full h-screen overflow-hidden"
-            style={{ scrollSnapAlign: "start" }}
-        >
-            <video
-                ref={videoRef}
-                src={data.src}
-                poster={data.poster}
-                className="absolute inset-0 w-full h-full object-cover"
-                loop={false}
-                playsInline
-                muted={isMuted}
-                onEnded={onVideoEnded}
-                onClick={togglePlay}
-            />
-
-            {/* Top bar */}
-            <div className="absolute top-0 left-0 right-0 p-3 flex items-center justify-between text-white pointer-events-none">
-                <button
-                    className="pointer-events-auto bg-black/40 hover:bg-black/60 rounded-full px-3 py-2"
-                    onClick={onRequestPrev}
-                >
-                    <FaChevronLeft />
-                </button>
-                <div className="flex items-center gap-2 bg-black/30 px-3 py-1 rounded-full text-sm">
-                    <span>Reels</span>
-                </div>
-                <button className="pointer-events-auto bg-black/40 rounded-full p-2">
-                    <FaEllipsisH />
-                </button>
-            </div>
-
-            {/* Right action rail */}
-            <div className="absolute right-3 bottom-24 flex flex-col items-center gap-4 text-white">
-                <button
-                    className="bg-black/40 hover:bg-black/60 rounded-full p-3"
-                    onClick={handleLike}
-                >
-                    {isLiked ? <FaHeart /> : <FaRegHeart />}
-                </button>
-                <div className="text-xs opacity-90">{likeCount.toLocaleString()}</div>
-
-                <button
-                    className="bg-black/40 hover:bg-black/60 rounded-full p-3"
-                    onClick={() => setShowComments(true)}
-                >
-                    <FaCommentDots />
-                </button>
-                <div className="text-xs opacity-90">{data.comments}</div>
-
-                <button className="bg-black/40 hover:bg-black/60 rounded-full p-3">
-                    <FaShare />
-                </button>
-
-                <button
-                    className="bg-black/40 hover:bg-black/60 rounded-full p-3"
-                    onClick={() => setIsSaved((s) => !s)}
-                >
-                    {isSaved ? <FaBookmark /> : <FaRegBookmark />}
-                </button>
-
-                <button
-                    className="bg-black/40 hover:bg-black/60 rounded-full p-3"
-                    onClick={toggleMute}
-                >
-                    {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
-                </button>
-
-                <button
-                    className="bg-black/40 hover:bg-black/60 rounded-full p-3"
+        <div className="relative w-full h-screen overflow-hidden flex items-center justify-center">
+            {/* Framed container with 6:19 aspect ratio and rounded corners */}
+            <div
+                className="relative shadow-xl"
+                style={{ width: "min(480px, 92vw)", aspectRatio: "6 / 19" }}
+            >
+                <video
+                    ref={videoRef}
+                    src={data.src}
+                    poster={data.poster}
+                    className="absolute inset-0 w-full h-full object-cover rounded-2xl"
+                    loop={false}
+                    playsInline
+                    muted={isMuted}
+                    onEnded={onVideoEnded}
                     onClick={togglePlay}
-                >
-                    {isPlaying ? <FaPause /> : <FaPlay />}
-                </button>
-            </div>
+                />
 
-            {/* Bottom meta */}
-            <div className="absolute bottom-0 left-0 right-0 p-4 text-white bg-gradient-to-t from-black/60 to-transparent">
-                <div className="flex items-center gap-3 mb-2">
-                    <BootstrapImage
-                        src={data.user.avatar}
-                        roundedCircle
-                        width={40}
-                        height={40}
-                        alt={data.user.name}
-                    />
-                    <div className="font-semibold">{data.user.name}</div>
-                    <button className="ml-2 text-sm bg-white text-black rounded-full px-3 py-1">
-                        Follow
+                {/* Top bar inside frame */}
+                <div className="absolute top-0 left-0 right-0 p-3 flex items-center justify-between text-white pointer-events-none">
+                    <button
+                        className="pointer-events-auto bg-black/40 hover:bg-black/60 rounded-full px-3 py-2"
+                        onClick={onRequestPrev}
+                    >
+                        <FaChevronLeft />
+                    </button>
+                    <div className="flex items-center gap-2 bg-black/30 px-3 py-1 rounded-full text-sm">
+                        <span>Reels</span>
+                    </div>
+                    <button className="pointer-events-auto bg-black/40 rounded-full p-2">
+                        <FaEllipsisH />
                     </button>
                 </div>
-                <div className="text-sm leading-snug whitespace-pre-wrap">
-                    {data.caption} {" "}
-                    {data.hashtags?.map((h) => (
-                        <span key={h} className="opacity-80 mr-1">
-              {h}
-            </span>
-                    ))}
-                </div>
-                {data.music && (
-                    <div className="mt-1 flex items-center gap-2 text-sm opacity-90">
-                        <FaMusic /> <span>{data.music}</span>
-                    </div>
-                )}
-            </div>
 
-            {/* Comments modal (mock) */}
-            <Modal show={showComments} onHide={() => setShowComments(false)} centered>
-                <Modal.Header closeButton>
-                    <Modal.Title>Bình luận</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <div className="text-sm text-muted">
-                        (Giả lập) Chỗ này hiển thị danh sách bình luận và ô nhập bình luận.
+                {/* Right action rail inside frame */}
+                <div className="absolute right-3 bottom-24 flex flex-col items-center gap-4 text-white">
+                    <button
+                        className="bg-black/40 hover:bg-black/60 rounded-full p-3"
+                        onClick={handleLike}
+                    >
+                        {isLiked ? <FaHeart /> : <FaRegHeart />}
+                    </button>
+                    <div className="text-xs opacity-90">{likeCount.toLocaleString()}</div>
+
+                    <button
+                        className="bg-black/40 hover:bg-black/60 rounded-full p-3"
+                        onClick={() => setShowComments(true)}
+                    >
+                        <FaCommentDots />
+                    </button>
+                    <div className="text-xs opacity-90">{data.comments}</div>
+
+                    <button className="bg-black/40 hover:bg-black/60 rounded-full p-3">
+                        <FaShare />
+                    </button>
+
+                    <button
+                        className="bg-black/40 hover:bg-black/60 rounded-full p-3"
+                        onClick={() => setIsSaved((s) => !s)}
+                    >
+                        {isSaved ? <FaBookmark /> : <FaRegBookmark />}
+                    </button>
+
+                    <button
+                        className="bg-black/40 hover:bg-black/60 rounded-full p-3"
+                        onClick={toggleMute}
+                    >
+                        {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
+                    </button>
+
+                    <button
+                        className="bg-black/40 hover:bg-black/60 rounded-full p-3"
+                        onClick={togglePlay}
+                    >
+                        {isPlaying ? <FaPause /> : <FaPlay />}
+                    </button>
+                </div>
+
+                {/* Bottom meta inside frame */}
+                <div className="absolute bottom-0 left-0 right-0 p-4 text-white bg-gradient-to-t from-black/60 to-transparent rounded-b-2xl">
+                    <div className="flex items-center gap-3 mb-2">
+                        <BootstrapImage
+                            src={data.user.avatar}
+                            roundedCircle
+                            width={40}
+                            height={40}
+                            alt={data.user.name}
+                        />
+                        <div className="font-semibold">{data.user.name}</div>
+                        <button className="ml-2 text-sm bg-white text-black rounded-full px-3 py-1">
+                            Follow
+                        </button>
                     </div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShowComments(false)}>
-                        Đóng
-                    </Button>
-                    <Button variant="primary">Gửi</Button>
-                </Modal.Footer>
-            </Modal>
+                    <div className="text-sm leading-snug whitespace-pre-wrap">
+                        {data.caption} {" "}
+                        {data.hashtags?.map((h) => (
+                            <span key={h} className="opacity-80 mr-1">
+                {h}
+              </span>
+                        ))}
+                    </div>
+                    {data.music && (
+                        <div className="mt-1 flex items-center gap-2 text-sm opacity-90">
+                            <FaMusic /> <span>{data.music}</span>
+                        </div>
+                    )}
+                </div>
+
+                {/* Comments modal (mock) */}
+                <Modal show={showComments} onHide={() => setShowComments(false)} centered>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Bình luận</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div className="text-sm text-muted">
+                            (Giả lập) Chỗ này hiển thị danh sách bình luận và ô nhập bình luận.
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => setShowComments(false)}>
+                            Đóng
+                        </Button>
+                        <Button variant="primary">Gửi</Button>
+                    </Modal.Footer>
+                </Modal>
+            </div>
         </div>
     );
 }
 
 export default function ReelsPage() {
     const [activeIndex, setActiveIndex] = useState(0);
-    const containerRef = useRef(null);
-
-    const onScroll = (e) => {
-        const el = e.currentTarget;
-        const idx = Math.round(el.scrollTop / window.innerHeight);
-        if (idx !== activeIndex) setActiveIndex(idx);
-    };
+    const [reels, setReels] = useState(MOCK_REELS);
 
     // Keyboard navigation
     useEffect(() => {
         const onKey = (e) => {
             if (e.key === "ArrowDown") {
-                setActiveIndex((i) => Math.min(MOCK_REELS.length - 1, i + 1));
+                setActiveIndex((i) => Math.min(reels.length - 1, i + 1));
             } else if (e.key === "ArrowUp") {
                 setActiveIndex((i) => Math.max(0, i - 1));
             }
         };
         window.addEventListener("keydown", onKey);
         return () => window.removeEventListener("keydown", onKey);
-    }, []);
+    }, [reels.length]);
 
-    // Snap to active on index change
-    useEffect(() => {
-        const el = containerRef.current;
-        if (!el) return;
-        el.scrollTo({ top: activeIndex * window.innerHeight, behavior: "smooth" });
-    }, [activeIndex]);
+    const goPrev = () => setActiveIndex((i) => Math.max(0, i - 1));
+    const goNext = () => setActiveIndex((i) => Math.min(reels.length - 1, i + 1));
+
+    const handleAddReel = () => {
+        // Giả lập thêm 1 reel mới
+        const id = `mock_${Date.now()}`;
+        const newReel = {
+            id,
+            src: "/reels/sample.mp4", // đổi sang file có thật trong public nếu cần
+            poster: "/reels/sample.jpg",
+            user: { name: "You", avatar: "https://i.pravatar.cc/100?img=20" },
+            caption: "New mock reel 🚀",
+            hashtags: ["#mock", "#new"],
+            music: "Sample Track",
+            liked: false,
+            likes: 0,
+            comments: 0,
+        };
+        setReels((prev) => [...prev, newReel]);
+        setActiveIndex(reels.length); // jump to the new one
+    };
 
     return (
-        <div className="relative h-screen w-full bg-black text-white">
-            {/* Header (optional). Hide if you embed in your own layout) */}
-            {/* <div className="absolute z-10 top-0 left-0 right-0 p-3 text-center text-sm opacity-80">Reels</div> */}
+        <div className="relative h-screen w-full bg-black text-white overflow-hidden">
+            {/* Render only the active reel (no page scroll) */}
+            <Reel
+                key={reels[activeIndex]?.id}
+                data={reels[activeIndex]}
+                isActive={true}
+                onRequestPrev={goPrev}
+                onRequestNext={goNext}
+            />
 
-            <div
-                ref={containerRef}
-                onScroll={onScroll}
-                className="h-full w-full overflow-y-scroll"
-                style={{ scrollSnapType: "y mandatory" }}
-            >
-                {MOCK_REELS.map((reel, idx) => (
-                    <Reel
-                        key={reel.id}
-                        data={reel}
-                        isActive={idx === activeIndex}
-                        onRequestPrev={() => setActiveIndex((i) => Math.max(0, i - 1))}
-                        onRequestNext={() =>
-                            setActiveIndex((i) => Math.min(MOCK_REELS.length - 1, i + 1))
-                        }
-                    />)
-                )}
+            {/* Up/Down nav buttons */}
+            <div className="pointer-events-none absolute inset-0 flex items-center justify-between px-4">
+                <div className="hidden" />
+                <div className="flex flex-col items-center gap-3 pointer-events-auto">
+                    <button
+                        className="bg-white/10 hover:bg-white/20 rounded-full p-3 backdrop-blur-md"
+                        onClick={goPrev}
+                        disabled={activeIndex === 0}
+                        title="Lên"
+                    >
+                        <FaChevronUp />
+                    </button>
+                    <button
+                        className="bg-white/10 hover:bg-white/20 rounded-full p-3 backdrop-blur-md"
+                        onClick={goNext}
+                        disabled={activeIndex === reels.length - 1}
+                        title="Xuống"
+                    >
+                        <FaChevronDown />
+                    </button>
+                </div>
             </div>
+
+            {/* Floating Add Reel button */}
+            <button
+                onClick={handleAddReel}
+                className="absolute bottom-6 right-6 bg-[var(--primary-color,#0d6efd)] text-white rounded-full p-4 shadow-lg hover:opacity-90"
+                title="Thêm Reel"
+            >
+                <FaPlus />
+            </button>
 
             {/* Tiny helper to show current index for debugging */}
             <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-xs opacity-70">
-                {activeIndex + 1}/{MOCK_REELS.length}
+                {activeIndex + 1}/{reels.length}
             </div>
         </div>
     );
