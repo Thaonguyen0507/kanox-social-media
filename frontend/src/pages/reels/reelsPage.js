@@ -291,6 +291,7 @@ export default function ReelsPage() {
 
             if (Array.isArray(data)) {
                 const normalized = normalizeReels(data);
+                console.log(normalized);
                 setReels(normalized);
                 toast.success(message || "Lấy reels thành công");
             } else {
