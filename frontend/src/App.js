@@ -56,6 +56,9 @@ import GroupCommunityPage from "./pages/community/GroupCommunityPage";
 import GroupMembersPage from "./pages/community/GroupMembersPage";
 import GroupMembersManagementPage from "./pages/admin/GroupMembersManagementPage";
 import GroupAdminPage from "./pages/admin/GroupAdminPage";
+import PostDetail from "./pages/admin/PostDetail";
+import PostsManagement from "./components/admin/PostsManagement";
+
 import PremiumPage from "./pages/premium/premiumPage";
 import CreateStoryPage from "./pages/story/CreateStoryPage";
 import GroupReportsPage from "./pages/community/GroupReportsPage";
@@ -504,6 +507,8 @@ function AppContent() {
                 </PrivateRoute>
               }
             />
+            <Route path="/posts" element={<PostsManagement />} />
+            <Route path="/posts/:id" element={<PostDetail />} />
             <Route
               path="/settings"
               element={
@@ -550,6 +555,7 @@ function AppContent() {
                 </PrivateRoute>
               }
             />
+
             <Route
                 path="/groups/:groupId/reports"
                 element={

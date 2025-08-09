@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const PostsManagement = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const API_URL = process.env.REACT_APP_API_URL; // ví dụ: http://localhost:8080/api
   const token = localStorage.getItem("token");
@@ -105,6 +107,10 @@ const PostsManagement = () => {
               <th className="py-3 px-4 border-b text-left text-gray-600 font-semibold text-sm">
                 Ngày đăng
               </th>
+              <th className="py-3 px-4 border-b text-left text-gray-600 font-semibold text-sm">
+                Hành động
+              </th>
+
             </tr>
             </thead>
             <tbody>
@@ -123,6 +129,15 @@ const PostsManagement = () => {
                   <td className="py-3 px-4 text-gray-800">
                     {formatDate(post.createdAt)}
                   </td>
+                  <td className="py-3 px-4">
+                    <button
+                        onClick={() => navigate(`/posts/${post.id}`)}
+                        className="text-blue-500 hover:underline"
+                    >
+                      Xem chi tiết
+                    </button>
+                  </td>
+
                 </tr>
             ))}
             </tbody>
