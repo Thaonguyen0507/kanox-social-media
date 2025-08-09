@@ -241,6 +241,7 @@ export default function ReelsPage() {
 
             if (Array.isArray(data)) {
                 // chỉ giữ những item có src đuôi .mp4
+                console.log(data);
                 const filtered = data.filter(
                     (item) =>
                         typeof item?.src === "string" &&
