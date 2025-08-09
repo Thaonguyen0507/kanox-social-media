@@ -371,20 +371,6 @@ function AppContent() {
               }
             />
             <Route
-                path="/reels"
-                element={
-                  <PrivateRoute>
-                    <MainLayout
-                        onShowCreatePost={() => setShowCreatePost(true)}
-                        onToggleDarkMode={toggleDarkMode}
-                        isDarkMode={isDarkMode}
-                    >
-                      <PremiumPage />
-                    </MainLayout>
-                  </PrivateRoute>
-                }
-            />
-            <Route
               path="/premium"
               element={
                 <PrivateRoute>
@@ -397,6 +383,20 @@ function AppContent() {
                   </MainLayout>
                 </PrivateRoute>
               }
+            />
+            <Route
+                path="/reels"
+                element={
+                  <PrivateRoute>
+                    <MainLayout
+                        onShowCreatePost={() => setShowCreatePost(true)}
+                        onToggleDarkMode={toggleDarkMode}
+                        isDarkMode={isDarkMode}
+                    >
+                      <PremiumPage />
+                    </MainLayout>
+                  </PrivateRoute>
+                }
             />
             <Route
               path="/profile/:username"
