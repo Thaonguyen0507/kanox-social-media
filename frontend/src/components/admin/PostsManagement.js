@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-const navigate = useNavigate();
 
 const PostsManagement = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   const API_URL = process.env.REACT_APP_API_URL; // ví dụ: http://localhost:8080/api
   const token = localStorage.getItem("token");
