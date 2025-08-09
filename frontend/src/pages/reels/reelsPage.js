@@ -19,6 +19,53 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AuthContext } from "../../context/AuthContext";
 
+/**
+ * Helper: từ API posts => mảng reels
+ * - Mỗi media có url .mp4 trong 1 post => 1 reel
+ * - poster: lấy ảnh đầu tiên (media.type === "image") nếu có
+ */
+function normalizeReels(apiData = []) {
+    const reels = [];
+
+    for (const post of apiData) {
+        const medias = Array.isArray(post.media) ? post.media : [];
+        const firstImage =
+            medias.find((m) => (m?.type || "").toLowerCase() === "image" && typeof m?.url === "string")?.url || null;
+
+        const videos = medias.filter((m) => {
+            if (!m || typeof m.url !== "string") return false;
+            const url = m.url.trim().toLowerCase();
+            // Ưu tiên type === "video", đồng thời đảm bảo đuôi .mp4 như yêu cầu
+            return (m.type || "").toLowerCase() === "video" && url.endsWith(".mp4");
+        });
+
+        for (const v of videos) {
+            reels.push({
+                // id duy nhất cho reel này
+                id: `${post.id}_${v.id}`,
+                src: v.url,                // video .mp4
+                poster: firstImage,        // ảnh đại diện (nếu có)
+                user: {
+                    name: post?.owner?.displayName || post?.owner?.username || "Unknown",
+                    avatar: post?.groupAvatarUrl || null, // nếu không có, component sẽ tự fallback
+                },
+                caption: post?.content || "",
+                hashtags: undefined,       // không có trong response => để trống
+                music: undefined,          // không có trong response => để trống
+                liked: false,              // chưa có field => để mặc định
+                likes: Number(post?.likeCount) || 0,
+                comments: Number(post?.commentCount) || 0,
+                // lưu thêm vài info nếu bạn cần dùng sau
+                _rawPostId: post?.id,
+                _rawMediaId: v?.id,
+                _createdAt: post?.createdAt,
+            });
+        }
+    }
+
+    return reels;
+}
+
 // ===================== A single Reel item =====================
 function Reel({ data, isActive, onRequestPrev, onRequestNext }) {
     const videoRef = useRef(null);
@@ -64,11 +111,10 @@ function Reel({ data, isActive, onRequestPrev, onRequestNext }) {
     const handleLike = () => {
         setIsLiked((prev) => !prev);
         setLikeCount((c) => (isLiked ? Math.max(0, c - 1) : c + 1));
-        // TODO: call like API here if cần
+        // TODO: call like API here nếu cần
     };
 
     const onVideoEnded = () => {
-        // auto advance to next reel when finished
         onRequestNext?.();
     };
 
@@ -81,7 +127,7 @@ function Reel({ data, isActive, onRequestPrev, onRequestNext }) {
                 <video
                     ref={videoRef}
                     src={data?.src}
-                    poster={data?.poster}
+                    poster={data?.poster || undefined}
                     className="absolute inset-0 w-w-80 m-auto h-full object-cover z-0"
                     loop={false}
                     playsInline
@@ -219,13 +265,17 @@ export default function ReelsPage() {
     const [error, setError] = useState(null);
     const containerRef = useRef(null);
 
+    // Đổi endpoint nếu backend của bạn khác:
+    const ENDPOINT = `${process.env.REACT_APP_API_URL}/posts/newsfeed`;
+    // ví dụ nếu có /reels feed riêng: `${process.env.REACT_APP_API_URL}/reels`
+
     const fetchReels = async () => {
         if (!user) return;
         setLoading(true);
         setError(null);
         try {
             const token = localStorage.getItem("token");
-            const res = await fetch(`${process.env.REACT_APP_API_URL}/posts/newsfeed`, {
+            const res = await fetch(ENDPOINT, {
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
@@ -240,14 +290,8 @@ export default function ReelsPage() {
             const { message, data } = await res.json();
 
             if (Array.isArray(data)) {
-                // chỉ giữ những item có src đuôi .mp4
-                console.log(data);
-                const filtered = data.filter(
-                    (item) =>
-                        typeof item?.src === "string" &&
-                        item.src.trim().toLowerCase().endsWith(".mp4")
-                );
-                setReels(filtered);
+                const normalized = normalizeReels(data);
+                setReels(normalized);
                 toast.success(message || "Lấy reels thành công");
             } else {
                 setReels([]);
