@@ -36,6 +36,8 @@ function SidebarLeft({ onToggleDarkMode, isDarkMode, onShowCreatePost }) {
 
   const { mediaUrl: avatarUrl } = useSingleMedia(user?.id, "PROFILE", "image");
 
+  const isPremiumUser = localStorage.getItem("isPremium") === "true";
+
   const mainTabs = [
     { icon: <FaHome />, label: "Trang chủ", path: "/home" },
     { icon: <FaSearch />, label: "Khám phá", path: "/explore" },
@@ -53,7 +55,9 @@ function SidebarLeft({ onToggleDarkMode, isDarkMode, onShowCreatePost }) {
     },
     { icon: <FaUserAlt />, label: "Cộng đồng", path: "/communities" },
     { icon: <BsStars />, label: "Premium", path: "/premium" },
-    { icon: <FaVideo />, label: "Reels", path: "/reels" },
+    (isPremiumUser
+        ? [{ icon: <FaVideo />, label: "Reels", path: "/reels" }]
+        : []),
     { icon: <FaUserAlt />, label: "Hồ sơ", path: `/profile/${user?.username}` },
   ];
 
