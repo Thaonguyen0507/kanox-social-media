@@ -19,6 +19,7 @@ import {
   FaUserFriends,
   FaUserSlash,
 } from "react-icons/fa";
+import { FaVideo } from "react-icons/fa";
 import { BsStars } from "react-icons/bs";
 import KLogoSvg from "../../svgs/KSvg";
 import { AuthContext } from "../../../context/AuthContext";
@@ -52,7 +53,7 @@ function SidebarLeft({ onToggleDarkMode, isDarkMode, onShowCreatePost }) {
     },
     { icon: <FaUserAlt />, label: "Cộng đồng", path: "/communities" },
     { icon: <BsStars />, label: "Premium", path: "/premium" },
-    { icon: <BsStars />, label: "Reels", path: "/reels" },
+    { icon: <FaVideo />, label: "Reels", path: "/reels" },
     { icon: <FaUserAlt />, label: "Hồ sơ", path: `/profile/${user?.username}` },
   ];
 
