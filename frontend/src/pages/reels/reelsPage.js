@@ -20,7 +20,7 @@ import { Image as BootstrapImage, Modal, Button } from "react-bootstrap";
 const MOCK_REELS = [
     {
         id: "r1",
-        src: "/reels/reel1.mp4",
+        src: "https://youtube.com/shorts/KCeEjhDMIv4?si=KBD7fIq7TQtzT4G2",
         poster: "/reels/poster1.jpg",
         user: { name: "Lana", avatar: "https://i.pravatar.cc/100?img=15" },
         caption: "Sunset skating vibes ✨",
@@ -32,7 +32,7 @@ const MOCK_REELS = [
     },
     {
         id: "r2",
-        src: "/reels/reel2.mp4",
+        src: "https://youtube.com/shorts/KCeEjhDMIv4?si=KBD7fIq7TQtzT4G2",
         poster: "/reels/poster2.jpg",
         user: { name: "Kenji", avatar: "https://i.pravatar.cc/100?img=11" },
         caption: "Quick ramen hack you need to try 🍜",
@@ -44,7 +44,7 @@ const MOCK_REELS = [
     },
     {
         id: "r3",
-        src: "/reels/reel3.mp4",
+        src: "https://youtube.com/shorts/KCeEjhDMIv4?si=KBD7fIq7TQtzT4G2",
         poster: "/reels/poster3.jpg",
         user: { name: "Maya", avatar: "https://i.pravatar.cc/100?img=5" },
         caption: "3 tips to boost your CSS game 💡",
