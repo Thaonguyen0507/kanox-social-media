@@ -119,7 +119,7 @@ function Reel({ data, isActive, onRequestPrev, onRequestNext }) {
                     ref={videoRef}
                     src={data.src}
                     poster={data.poster}
-                    className="absolute inset-0 w-full h-full object-cover"
+                    className="absolute inset-0 w-full h-full object-cover z-0"
                     loop={false}
                     playsInline
                     muted={isMuted}
@@ -128,7 +128,7 @@ function Reel({ data, isActive, onRequestPrev, onRequestNext }) {
                 />
 
                 {/* Top bar */}
-                <div className="absolute top-0 left-0 right-0 p-3 flex items-center justify-between text-white pointer-events-none">
+                <div className="absolute top-0 left-0 right-0 p-3 flex items-center justify-between text-white pointer-events-none z-10">
                     <button
                         className="pointer-events-auto bg-black/40 hover:bg-black/60 rounded-full px-3 py-2"
                         onClick={onRequestPrev}
@@ -188,7 +188,7 @@ function Reel({ data, isActive, onRequestPrev, onRequestNext }) {
                 </div>
 
                 {/* Bottom meta */}
-                <div className="absolute bottom-0 left-0 right-0 p-4 text-white bg-gradient-to-t from-black/60 to-transparent">
+                <div className="absolute bottom-0 left-0 right-0 p-4 text-white bg-gradient-to-t from-black/60 to-transparent z-10">
                     <div className="flex items-center gap-3 mb-2">
                         <BootstrapImage
                             src={data.user.avatar}
