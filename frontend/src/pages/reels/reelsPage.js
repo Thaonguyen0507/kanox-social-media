@@ -347,7 +347,7 @@ export default function ReelsPage() {
         el.scrollTo({ top: activeIndex * window.innerHeight, behavior: "smooth" });
     }, [activeIndex]);
 
-    // ====== Add Reel (mock) ======
+    // ====== Add Reel (real upload) ======
     const resetAddForm = () => {
         setNewVideo(null);
         setNewPoster(null);
@@ -384,33 +384,61 @@ export default function ReelsPage() {
         try {
             setAdding(true);
 
-            // Giả lập gọi API upload/tao reels
-            await new Promise((res) => setTimeout(res, 1000));
+            // 1) Tạo post trước
+            const token = localStorage.getItem("token");
+            const postRes = await fetch(`${process.env.REACT_APP_API_URL}/posts`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    content: newCaption,
+                    privacySetting: "public",
+                    taggedUserIds: [],
+                    customListId: null,
+                    groupId: null,
+                }),
+            });
 
-            const videoUrl = URL.createObjectURL(newVideo);
-            const posterUrl = newPoster ? URL.createObjectURL(newPoster) : null;
+            if (!postRes.ok) throw new Error("Không thể tạo bài viết!");
+            const postJson = await postRes.json();
+            const postId = postJson?.data?.id;
+            if (!postId) throw new Error("Thiếu postId từ API tạo bài viết");
 
-            const meName = user?.displayName || user?.username || "You";
-            const meAvatar = user?.avatarUrl || user?.photoURL || "https://i.pravatar.cc/100?img=1";
+            // 2) Upload media (video mp4 + poster nếu có)
+            const formData = new FormData();
+            if (user?.id) formData.append("userId", user.id);
+            formData.append("caption", newCaption || "");
+            // Nếu có location, thêm ở đây (hiện không dùng):
+            // if (selectedPlace?.locationName) formData.append("locationName", selectedPlace.locationName);
 
-            const newReel = {
-                id: `local_${Date.now()}`,
-                src: videoUrl,
-                poster: posterUrl,
-                user: { name: meName, avatar: meAvatar },
-                caption: newCaption,
-                liked: false,
-                likes: 0,
-                comments: 0,
-            };
+            formData.append("files", newVideo); // video bắt buộc
+            if (newPoster) formData.append("files", newPoster); // poster tùy chọn
 
-            setReels((prev) => [newReel, ...prev]);
+            const mediaRes = await fetch(
+                `${process.env.REACT_APP_API_URL}/media/posts/${postId}/media`,
+                {
+                    method: "POST",
+                    headers: { Authorization: `Bearer ${token}` },
+                    body: formData,
+                }
+            );
+
+            if (!mediaRes.ok) throw new Error("Tải lên media thất bại.");
+
+            toast.success("Đăng reels thành công!");
+
+            // Làm mới list bằng cách gọi lại feed
+            await fetchReels();
             setActiveIndex(0);
+
+            // Reset UI
             setShowAdd(false);
-            toast.success("Đã thêm reels (giả lập)");
             resetAddForm();
         } catch (err) {
-            toast.error("Thêm reels thất bại");
+            console.error("Add reel error:", err);
+            toast.error(err.message || "Có lỗi xảy ra khi thêm reels");
         } finally {
             setAdding(false);
         }
