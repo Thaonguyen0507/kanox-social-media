@@ -119,7 +119,7 @@ function Reel({ data, isActive, onRequestPrev, onRequestNext }) {
                     ref={videoRef}
                     src={data.src}
                     poster={data.poster}
-                    className="absolute inset-0 w-full h-full object-cover z-0"
+                    className="absolute inset-0 w-w-80 m-auto h-full object-cover z-0"
                     loop={false}
                     playsInline
                     muted={isMuted}
