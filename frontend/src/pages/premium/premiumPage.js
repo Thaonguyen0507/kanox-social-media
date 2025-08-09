@@ -103,7 +103,7 @@ const PremiumPage = () => {
 
       if (response.ok) {
         alert("🎉 Bạn đã đăng ký Premium thành công!");
-
+        localStorage.setItem("isPremium", "true");
         setTimeout(() => {
           navigate("/premium", { replace: true });
         }, 100);
