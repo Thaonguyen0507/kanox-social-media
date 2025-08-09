@@ -56,8 +56,8 @@ function SidebarLeft({ onToggleDarkMode, isDarkMode, onShowCreatePost }) {
     { icon: <FaUserAlt />, label: "Cộng đồng", path: "/communities" },
     { icon: <BsStars />, label: "Premium", path: "/premium" },
     (isPremiumUser
-        ? [{ icon: <FaVideo />, label: "Reels", path: "/reels" }]
-        : []),
+        ? { icon: <FaVideo />, label: "Reels", path: "/reels" }
+        : ""),
     { icon: <FaUserAlt />, label: "Hồ sơ", path: `/profile/${user?.username}` },
   ];
 
