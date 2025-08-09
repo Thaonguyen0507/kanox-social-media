@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import {
     FaPlay,
     FaPause,
@@ -14,55 +14,18 @@ import {
     FaEllipsisH,
     FaChevronLeft,
 } from "react-icons/fa";
-import { Image as BootstrapImage, Modal, Button } from "react-bootstrap";
+import { Image as BootstrapImage, Modal, Button, Spinner } from "react-bootstrap";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { AuthContext } from "../../context/AuthContext";
 
-// ===== Mock data (replace src with your local files in /public/reels/*) =====
-const MOCK_REELS = [
-    {
-        id: "r1",
-        src: "https://storage.googleapis.com/social-media-uploads/258be77f-a6e9-4156-8d5d-72983f0c143f_480705509_9193275347425484_3121235449629224349_n (1).mp4",
-        poster: "/reels/poster1.jpg",
-        user: { name: "Lana", avatar: "https://i.pravatar.cc/100?img=15" },
-        caption: "Sunset skating vibes ✨",
-        hashtags: ["#reels", "#sunset", "#skate"],
-        music: "Feel Good - Syn Cole",
-        liked: false,
-        likes: 1203,
-        comments: 87,
-    },
-    {
-        id: "r2",
-        src: "https://storage.googleapis.com/social-media-uploads/258be77f-a6e9-4156-8d5d-72983f0c143f_480705509_9193275347425484_3121235449629224349_n (1).mp4",
-        poster: "/reels/poster2.jpg",
-        user: { name: "Kenji", avatar: "https://i.pravatar.cc/100?img=11" },
-        caption: "Quick ramen hack you need to try 🍜",
-        hashtags: ["#food", "#ramen", "#hack"],
-        music: "Lo-fi Beat - FASSounds",
-        liked: true,
-        likes: 5342,
-        comments: 241,
-    },
-    {
-        id: "r3",
-        src: "https://storage.googleapis.com/social-media-uploads/258be77f-a6e9-4156-8d5d-72983f0c143f_480705509_9193275347425484_3121235449629224349_n (1).mp4",
-        poster: "/reels/poster3.jpg",
-        user: { name: "Maya", avatar: "https://i.pravatar.cc/100?img=5" },
-        caption: "3 tips to boost your CSS game 💡",
-        hashtags: ["#css", "#frontend", "#devtips"],
-        music: "Future Bass - Ookean",
-        liked: false,
-        likes: 987,
-        comments: 66,
-    },
-];
-
-// A single Reel item
+// ===================== A single Reel item =====================
 function Reel({ data, isActive, onRequestPrev, onRequestNext }) {
     const videoRef = useRef(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [isMuted, setIsMuted] = useState(true);
-    const [isLiked, setIsLiked] = useState(!!data.liked);
-    const [likeCount, setLikeCount] = useState(data.likes || 0);
+    const [isLiked, setIsLiked] = useState(!!data?.liked);
+    const [likeCount, setLikeCount] = useState(Number(data?.likes) || 0);
     const [isSaved, setIsSaved] = useState(false);
     const [showComments, setShowComments] = useState(false);
 
@@ -77,7 +40,7 @@ function Reel({ data, isActive, onRequestPrev, onRequestNext }) {
             v.pause();
             setIsPlaying(false);
         }
-    }, [isActive]);
+    }, [isActive, isMuted]);
 
     const togglePlay = () => {
         const v = videoRef.current;
@@ -101,7 +64,7 @@ function Reel({ data, isActive, onRequestPrev, onRequestNext }) {
     const handleLike = () => {
         setIsLiked((prev) => !prev);
         setLikeCount((c) => (isLiked ? Math.max(0, c - 1) : c + 1));
-        // TODO: call API here
+        // TODO: call like API here if cần
     };
 
     const onVideoEnded = () => {
@@ -113,12 +76,12 @@ function Reel({ data, isActive, onRequestPrev, onRequestNext }) {
         <div className="relative w-full h-screen overflow-hidden flex items-center justify-center">
             <div
                 className="shadow-xl"
-                style={{scrollSnapAlign: "start", width: "min(480px, 92vw)", aspectRatio: "6 / 19" }}
+                style={{ scrollSnapAlign: "start", width: "min(480px, 92vw)", aspectRatio: "6 / 19" }}
             >
                 <video
                     ref={videoRef}
-                    src={data.src}
-                    poster={data.poster}
+                    src={data?.src}
+                    poster={data?.poster}
                     className="absolute inset-0 w-w-80 m-auto h-full object-cover z-0"
                     loop={false}
                     playsInline
@@ -132,13 +95,14 @@ function Reel({ data, isActive, onRequestPrev, onRequestNext }) {
                     <button
                         className="pointer-events-auto bg-black/40 hover:bg-black/60 rounded-full px-3 py-2"
                         onClick={onRequestPrev}
+                        aria-label="Previous reel"
                     >
                         <FaChevronLeft />
                     </button>
                     <div className="flex items-center gap-2 bg-black/30 px-3 py-1 rounded-full text-sm">
                         <span>Reels</span>
                     </div>
-                    <button className="pointer-events-auto bg-black/40 rounded-full p-2">
+                    <button className="pointer-events-auto bg-black/40 rounded-full p-2" aria-label="More">
                         <FaEllipsisH />
                     </button>
                 </div>
@@ -148,6 +112,7 @@ function Reel({ data, isActive, onRequestPrev, onRequestNext }) {
                     <button
                         className="bg-black/40 hover:bg-black/60 rounded-full p-3"
                         onClick={handleLike}
+                        aria-label={isLiked ? "Unlike" : "Like"}
                     >
                         {isLiked ? <FaHeart /> : <FaRegHeart />}
                     </button>
@@ -156,18 +121,20 @@ function Reel({ data, isActive, onRequestPrev, onRequestNext }) {
                     <button
                         className="bg-black/40 hover:bg-black/60 rounded-full p-3"
                         onClick={() => setShowComments(true)}
+                        aria-label="Comments"
                     >
                         <FaCommentDots />
                     </button>
-                    <div className="text-xs opacity-90">{data.comments}</div>
+                    <div className="text-xs opacity-90">{data?.comments ?? 0}</div>
 
-                    <button className="bg-black/40 hover:bg-black/60 rounded-full p-3">
+                    <button className="bg-black/40 hover:bg-black/60 rounded-full p-3" aria-label="Share">
                         <FaShare />
                     </button>
 
                     <button
                         className="bg-black/40 hover:bg-black/60 rounded-full p-3"
                         onClick={() => setIsSaved((s) => !s)}
+                        aria-label={isSaved ? "Unsave" : "Save"}
                     >
                         {isSaved ? <FaBookmark /> : <FaRegBookmark />}
                     </button>
@@ -175,6 +142,7 @@ function Reel({ data, isActive, onRequestPrev, onRequestNext }) {
                     <button
                         className="bg-black/40 hover:bg-black/60 rounded-full p-3"
                         onClick={toggleMute}
+                        aria-label={isMuted ? "Unmute" : "Mute"}
                     >
                         {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
                     </button>
@@ -182,6 +150,7 @@ function Reel({ data, isActive, onRequestPrev, onRequestNext }) {
                     <button
                         className="bg-black/40 hover:bg-black/60 rounded-full p-3"
                         onClick={togglePlay}
+                        aria-label={isPlaying ? "Pause" : "Play"}
                     >
                         {isPlaying ? <FaPause /> : <FaPlay />}
                     </button>
@@ -191,26 +160,28 @@ function Reel({ data, isActive, onRequestPrev, onRequestNext }) {
                 <div className="absolute bottom-0 left-0 right-0 p-4 text-white bg-gradient-to-t from-black/60 to-transparent z-10">
                     <div className="flex items-center gap-3 mb-2">
                         <BootstrapImage
-                            src={data.user.avatar}
+                            src={data?.user?.avatar || "https://i.pravatar.cc/100"}
                             roundedCircle
                             width={40}
                             height={40}
-                            alt={data.user.name}
+                            alt={data?.user?.name || "user"}
                         />
-                        <div className="font-semibold">{data.user.name}</div>
+                        <div className="font-semibold">{data?.user?.name || "Unknown"}</div>
                         <button className="ml-2 text-sm bg-white text-black rounded-full px-3 py-1">
                             Follow
                         </button>
                     </div>
                     <div className="text-sm leading-snug whitespace-pre-wrap">
-                        {data.caption} {" "}
-                        {data.hashtags?.map((h) => (
-                            <span key={h} className="opacity-80 mr-1">
+                        {data?.caption || ""}
+                        {" "}
+                        {Array.isArray(data?.hashtags) &&
+                            data.hashtags.map((h) => (
+                                <span key={h} className="opacity-80 mr-1">
                   {h}
                 </span>
-                        ))}
+                            ))}
                     </div>
-                    {data.music && (
+                    {data?.music && (
                         <div className="mt-1 flex items-center gap-2 text-sm opacity-90">
                             <FaMusic /> <span>{data.music}</span>
                         </div>
@@ -239,9 +210,62 @@ function Reel({ data, isActive, onRequestPrev, onRequestNext }) {
     );
 }
 
+// ===================== Reels Page =====================
 export default function ReelsPage() {
+    const { user } = useContext(AuthContext);
+    const [reels, setReels] = useState([]);
     const [activeIndex, setActiveIndex] = useState(0);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
     const containerRef = useRef(null);
+
+    const fetchReels = async () => {
+        if (!user) return;
+        setLoading(true);
+        setError(null);
+        try {
+            const token = localStorage.getItem("token");
+            const res = await fetch(`${process.env.REACT_APP_API_URL}/reels`, {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.message || "Failed to fetch reels!");
+            }
+
+            const { message, data } = await res.json();
+
+            if (Array.isArray(data)) {
+                // chỉ giữ những item có src đuôi .mp4
+                const filtered = data.filter(
+                    (item) =>
+                        typeof item?.src === "string" &&
+                        item.src.trim().toLowerCase().endsWith(".mp4")
+                );
+                setReels(filtered);
+                toast.success(message || "Lấy reels thành công");
+            } else {
+                setReels([]);
+                setError("Invalid data format from API");
+                toast.error("Dữ liệu không đúng định dạng");
+            }
+        } catch (err) {
+            setError(err.message);
+            toast.error(err.message);
+            setReels([]);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchReels();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user]);
 
     const onScroll = (e) => {
         const el = e.currentTarget;
@@ -253,14 +277,14 @@ export default function ReelsPage() {
     useEffect(() => {
         const onKey = (e) => {
             if (e.key === "ArrowDown") {
-                setActiveIndex((i) => Math.min(MOCK_REELS.length - 1, i + 1));
+                setActiveIndex((i) => Math.min(reels.length - 1, i + 1));
             } else if (e.key === "ArrowUp") {
                 setActiveIndex((i) => Math.max(0, i - 1));
             }
         };
         window.addEventListener("keydown", onKey);
         return () => window.removeEventListener("keydown", onKey);
-    }, []);
+    }, [reels.length]);
 
     // Snap to active on index change
     useEffect(() => {
@@ -271,31 +295,50 @@ export default function ReelsPage() {
 
     return (
         <div className="relative h-screen w-full bg-black text-white">
-            {/* Header (optional). Hide if you embed in your own layout) */}
-            {/* <div className="absolute z-10 top-0 left-0 right-0 p-3 text-center text-sm opacity-80">Reels</div> */}
-
             <div
                 ref={containerRef}
                 onScroll={onScroll}
                 className="h-full w-full overflow-y-scroll"
                 style={{ scrollSnapType: "y mandatory" }}
             >
-                {MOCK_REELS.map((reel, idx) => (
-                    <Reel
-                        key={reel.id}
-                        data={reel}
-                        isActive={idx === activeIndex}
-                        onRequestPrev={() => setActiveIndex((i) => Math.max(0, i - 1))}
-                        onRequestNext={() =>
-                            setActiveIndex((i) => Math.min(MOCK_REELS.length - 1, i + 1))
-                        }
-                    />)
+                {loading && (
+                    <div className="h-screen w-full flex items-center justify-center">
+                        <Spinner animation="border" role="status" />
+                        <span className="ml-2">Đang tải...</span>
+                    </div>
                 )}
+
+                {!loading && error && (
+                    <div className="h-screen w-full flex items-center justify-center text-red-500">
+                        {error}
+                    </div>
+                )}
+
+                {!loading && !error && reels.length === 0 && (
+                    <div className="h-screen w-full flex items-center justify-center opacity-80">
+                        Không có reels nào.
+                    </div>
+                )}
+
+                {!loading &&
+                    !error &&
+                    reels.length > 0 &&
+                    reels.map((reel, idx) => (
+                        <Reel
+                            key={reel.id || idx}
+                            data={reel}
+                            isActive={idx === activeIndex}
+                            onRequestPrev={() => setActiveIndex((i) => Math.max(0, i - 1))}
+                            onRequestNext={() =>
+                                setActiveIndex((i) => Math.min(reels.length - 1, i + 1))
+                            }
+                        />
+                    ))}
             </div>
 
             {/* Tiny helper to show current index for debugging */}
             <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-xs opacity-70">
-                {activeIndex + 1}/{MOCK_REELS.length}
+                {reels.length > 0 ? `${activeIndex + 1}/${reels.length}` : "0/0"}
             </div>
         </div>
     );
