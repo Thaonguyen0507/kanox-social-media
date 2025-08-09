@@ -495,7 +495,7 @@ export default function ReelsPage() {
             {/* ===== FAB Add Reels ===== */}
             <button
                 onClick={() => setShowAdd(true)}
-                className="absolute bottom-4 right-4 bg-white text-black rounded-full px-4 py-3 shadow-lg flex items-center gap-2"
+                className="absolute bottom-4 right-4 bg-white text-black rounded-full px-4 py-3 shadow-lg flex items-center gap-2 z-10"
                 aria-label="Thêm reels"
             >
                 <FaPlus /> <span className="hidden sm:inline">Thêm reels</span>
