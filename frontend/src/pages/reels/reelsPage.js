@@ -110,129 +110,131 @@ function Reel({ data, isActive, onRequestPrev, onRequestNext }) {
     };
 
     return (
-        <div
-            className="relative w-full h-screen overflow-hidden"
-            style={{ scrollSnapAlign: "start" }}
-        >
-            <video
-                ref={videoRef}
-                src={data.src}
-                poster={data.poster}
-                className="absolute inset-0 w-full h-full object-cover"
-                loop={false}
-                playsInline
-                muted={isMuted}
-                onEnded={onVideoEnded}
-                onClick={togglePlay}
-            />
-
-            {/* Top bar */}
-            <div className="absolute top-0 left-0 right-0 p-3 flex items-center justify-between text-white pointer-events-none">
-                <button
-                    className="pointer-events-auto bg-black/40 hover:bg-black/60 rounded-full px-3 py-2"
-                    onClick={onRequestPrev}
-                >
-                    <FaChevronLeft />
-                </button>
-                <div className="flex items-center gap-2 bg-black/30 px-3 py-1 rounded-full text-sm">
-                    <span>Reels</span>
-                </div>
-                <button className="pointer-events-auto bg-black/40 rounded-full p-2">
-                    <FaEllipsisH />
-                </button>
-            </div>
-
-            {/* Right action rail */}
-            <div className="absolute right-3 bottom-24 flex flex-col items-center gap-4 text-white">
-                <button
-                    className="bg-black/40 hover:bg-black/60 rounded-full p-3"
-                    onClick={handleLike}
-                >
-                    {isLiked ? <FaHeart /> : <FaRegHeart />}
-                </button>
-                <div className="text-xs opacity-90">{likeCount.toLocaleString()}</div>
-
-                <button
-                    className="bg-black/40 hover:bg-black/60 rounded-full p-3"
-                    onClick={() => setShowComments(true)}
-                >
-                    <FaCommentDots />
-                </button>
-                <div className="text-xs opacity-90">{data.comments}</div>
-
-                <button className="bg-black/40 hover:bg-black/60 rounded-full p-3">
-                    <FaShare />
-                </button>
-
-                <button
-                    className="bg-black/40 hover:bg-black/60 rounded-full p-3"
-                    onClick={() => setIsSaved((s) => !s)}
-                >
-                    {isSaved ? <FaBookmark /> : <FaRegBookmark />}
-                </button>
-
-                <button
-                    className="bg-black/40 hover:bg-black/60 rounded-full p-3"
-                    onClick={toggleMute}
-                >
-                    {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
-                </button>
-
-                <button
-                    className="bg-black/40 hover:bg-black/60 rounded-full p-3"
+        <div className="relative w-full h-screen overflow-hidden flex items-center justify-center">
+            <div
+                className="shadow-xl"
+                style={{scrollSnapAlign: "start", width: "min(480px, 92vw)", aspectRatio: "6 / 19" }}
+            >
+                <video
+                    ref={videoRef}
+                    src={data.src}
+                    poster={data.poster}
+                    className="absolute inset-0 w-w-80 m-auto h-full object-cover z-0"
+                    loop={false}
+                    playsInline
+                    muted={isMuted}
+                    onEnded={onVideoEnded}
                     onClick={togglePlay}
-                >
-                    {isPlaying ? <FaPause /> : <FaPlay />}
-                </button>
-            </div>
+                />
 
-            {/* Bottom meta */}
-            <div className="absolute bottom-0 left-0 right-0 p-4 text-white bg-gradient-to-t from-black/60 to-transparent">
-                <div className="flex items-center gap-3 mb-2">
-                    <BootstrapImage
-                        src={data.user.avatar}
-                        roundedCircle
-                        width={40}
-                        height={40}
-                        alt={data.user.name}
-                    />
-                    <div className="font-semibold">{data.user.name}</div>
-                    <button className="ml-2 text-sm bg-white text-black rounded-full px-3 py-1">
-                        Follow
+                {/* Top bar */}
+                <div className="absolute top-0 left-0 right-0 p-3 flex items-center justify-between text-white pointer-events-none z-10">
+                    <button
+                        className="pointer-events-auto bg-black/40 hover:bg-black/60 rounded-full px-3 py-2"
+                        onClick={onRequestPrev}
+                    >
+                        <FaChevronLeft />
+                    </button>
+                    <div className="flex items-center gap-2 bg-black/30 px-3 py-1 rounded-full text-sm">
+                        <span>Reels</span>
+                    </div>
+                    <button className="pointer-events-auto bg-black/40 rounded-full p-2">
+                        <FaEllipsisH />
                     </button>
                 </div>
-                <div className="text-sm leading-snug whitespace-pre-wrap">
-                    {data.caption} {" "}
-                    {data.hashtags?.map((h) => (
-                        <span key={h} className="opacity-80 mr-1">
-              {h}
-            </span>
-                    ))}
-                </div>
-                {data.music && (
-                    <div className="mt-1 flex items-center gap-2 text-sm opacity-90">
-                        <FaMusic /> <span>{data.music}</span>
-                    </div>
-                )}
-            </div>
 
-            {/* Comments modal (mock) */}
-            <Modal show={showComments} onHide={() => setShowComments(false)} centered>
-                <Modal.Header closeButton>
-                    <Modal.Title>Bình luận</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <div className="text-sm text-muted">
-                        (Giả lập) Chỗ này hiển thị danh sách bình luận và ô nhập bình luận.
+                {/* Right action rail */}
+                <div className="absolute right-3 bottom-24 flex flex-col items-center gap-4 text-white">
+                    <button
+                        className="bg-black/40 hover:bg-black/60 rounded-full p-3"
+                        onClick={handleLike}
+                    >
+                        {isLiked ? <FaHeart /> : <FaRegHeart />}
+                    </button>
+                    <div className="text-xs opacity-90">{likeCount.toLocaleString()}</div>
+
+                    <button
+                        className="bg-black/40 hover:bg-black/60 rounded-full p-3"
+                        onClick={() => setShowComments(true)}
+                    >
+                        <FaCommentDots />
+                    </button>
+                    <div className="text-xs opacity-90">{data.comments}</div>
+
+                    <button className="bg-black/40 hover:bg-black/60 rounded-full p-3">
+                        <FaShare />
+                    </button>
+
+                    <button
+                        className="bg-black/40 hover:bg-black/60 rounded-full p-3"
+                        onClick={() => setIsSaved((s) => !s)}
+                    >
+                        {isSaved ? <FaBookmark /> : <FaRegBookmark />}
+                    </button>
+
+                    <button
+                        className="bg-black/40 hover:bg-black/60 rounded-full p-3"
+                        onClick={toggleMute}
+                    >
+                        {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
+                    </button>
+
+                    <button
+                        className="bg-black/40 hover:bg-black/60 rounded-full p-3"
+                        onClick={togglePlay}
+                    >
+                        {isPlaying ? <FaPause /> : <FaPlay />}
+                    </button>
+                </div>
+
+                {/* Bottom meta */}
+                <div className="absolute bottom-0 left-0 right-0 p-4 text-white bg-gradient-to-t from-black/60 to-transparent z-10">
+                    <div className="flex items-center gap-3 mb-2">
+                        <BootstrapImage
+                            src={data.user.avatar}
+                            roundedCircle
+                            width={40}
+                            height={40}
+                            alt={data.user.name}
+                        />
+                        <div className="font-semibold">{data.user.name}</div>
+                        <button className="ml-2 text-sm bg-white text-black rounded-full px-3 py-1">
+                            Follow
+                        </button>
                     </div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShowComments(false)}>
-                        Đóng
-                    </Button>
-                    <Button variant="primary">Gửi</Button>
-                </Modal.Footer>
-            </Modal>
+                    <div className="text-sm leading-snug whitespace-pre-wrap">
+                        {data.caption} {" "}
+                        {data.hashtags?.map((h) => (
+                            <span key={h} className="opacity-80 mr-1">
+                  {h}
+                </span>
+                        ))}
+                    </div>
+                    {data.music && (
+                        <div className="mt-1 flex items-center gap-2 text-sm opacity-90">
+                            <FaMusic /> <span>{data.music}</span>
+                        </div>
+                    )}
+                </div>
+
+                {/* Comments modal (mock) */}
+                <Modal show={showComments} onHide={() => setShowComments(false)} centered>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Bình luận</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div className="text-sm text-muted">
+                            (Giả lập) Chỗ này hiển thị danh sách bình luận và ô nhập bình luận.
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => setShowComments(false)}>
+                            Đóng
+                        </Button>
+                        <Button variant="primary">Gửi</Button>
+                    </Modal.Footer>
+                </Modal>
+            </div>
         </div>
     );
 }
