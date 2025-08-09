@@ -13,6 +13,7 @@ import {
     FaMusic,
     FaEllipsisH,
     FaChevronLeft,
+    FaPlus,
 } from "react-icons/fa";
 import { Image as BootstrapImage, Modal, Button, Spinner } from "react-bootstrap";
 import { toast } from "react-toastify";
@@ -28,9 +29,9 @@ function normalizeReels(apiData = []) {
     const reels = [];
 
     for (const post of apiData) {
-        console.log(post);
         const medias = Array.isArray(post.media) ? post.media : [];
-        const firstImage = post.avatarUrl || null;
+        const firstImage =
+            medias.find((m) => (m?.type || "").toLowerCase() === "image" && typeof m?.url === "string")?.url || null;
 
         const videos = medias.filter((m) => {
             if (!m || typeof m.url !== "string") return false;
@@ -223,8 +224,8 @@ function Reel({ data, isActive, onRequestPrev, onRequestNext }) {
                         {Array.isArray(data?.hashtags) &&
                             data.hashtags.map((h) => (
                                 <span key={h} className="opacity-80 mr-1">
-                  {h}
-                </span>
+                                  {h}
+                                </span>
                             ))}
                     </div>
                     {data?.music && (
@@ -264,6 +265,13 @@ export default function ReelsPage() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const containerRef = useRef(null);
+
+    // Add Reel (mock) modal state
+    const [showAdd, setShowAdd] = useState(false);
+    const [newVideo, setNewVideo] = useState(null);
+    const [newPoster, setNewPoster] = useState(null);
+    const [newCaption, setNewCaption] = useState("");
+    const [adding, setAdding] = useState(false);
 
     // Đổi endpoint nếu backend của bạn khác:
     const ENDPOINT = `${process.env.REACT_APP_API_URL}/posts/newsfeed`;
@@ -339,6 +347,75 @@ export default function ReelsPage() {
         el.scrollTo({ top: activeIndex * window.innerHeight, behavior: "smooth" });
     }, [activeIndex]);
 
+    // ====== Add Reel (mock) ======
+    const resetAddForm = () => {
+        setNewVideo(null);
+        setNewPoster(null);
+        setNewCaption("");
+    };
+
+    const handleChooseVideo = (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        if (file.type !== "video/mp4") {
+            toast.error("Vui lòng chọn file .mp4");
+            e.target.value = "";
+            return;
+        }
+        setNewVideo(file);
+    };
+
+    const handleChoosePoster = (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        if (!file.type.startsWith("image/")) {
+            toast.error("Poster phải là ảnh");
+            e.target.value = "";
+            return;
+        }
+        setNewPoster(file);
+    };
+
+    const handleAddReel = async () => {
+        if (!newVideo) {
+            toast.error("Chưa chọn video .mp4");
+            return;
+        }
+        try {
+            setAdding(true);
+
+            // Giả lập gọi API upload/tao reels
+            await new Promise((res) => setTimeout(res, 1000));
+
+            const videoUrl = URL.createObjectURL(newVideo);
+            const posterUrl = newPoster ? URL.createObjectURL(newPoster) : null;
+
+            const meName = user?.displayName || user?.username || "You";
+            const meAvatar = user?.avatarUrl || user?.photoURL || "https://i.pravatar.cc/100?img=1";
+
+            const newReel = {
+                id: `local_${Date.now()}`,
+                src: videoUrl,
+                poster: posterUrl,
+                user: { name: meName, avatar: meAvatar },
+                caption: newCaption,
+                liked: false,
+                likes: 0,
+                comments: 0,
+            };
+
+            setReels((prev) => [newReel, ...prev]);
+            setActiveIndex(0);
+            setShowAdd(false);
+            toast.success("Đã thêm reels (giả lập)");
+            resetAddForm();
+        } catch (err) {
+            toast.error("Thêm reels thất bại");
+        } finally {
+            setAdding(false);
+        }
+    };
+
     return (
         <div className="relative h-screen w-full bg-black text-white">
             <div
@@ -386,6 +463,73 @@ export default function ReelsPage() {
             <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-xs opacity-70">
                 {reels.length > 0 ? `${activeIndex + 1}/${reels.length}` : "0/0"}
             </div>
+
+            {/* ===== FAB Add Reels ===== */}
+            <button
+                onClick={() => setShowAdd(true)}
+                className="absolute bottom-4 right-4 bg-white text-black rounded-full px-4 py-3 shadow-lg flex items-center gap-2"
+                aria-label="Thêm reels"
+            >
+                <FaPlus /> <span className="hidden sm:inline">Thêm reels</span>
+            </button>
+
+            {/* ===== Add Reel Modal (mock) ===== */}
+            <Modal show={showAdd} onHide={() => setShowAdd(false)} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Thêm Reels (giả lập)</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="space-y-3">
+                        <div>
+                            <label className="block text-sm font-medium mb-1">Video (.mp4) *</label>
+                            <input type="file" accept="video/mp4" onChange={handleChooseVideo} />
+                            {newVideo && (
+                                <div className="text-xs mt-1 opacity-70">Đã chọn: {newVideo.name}</div>
+                            )}
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium mb-1">Poster (tùy chọn)</label>
+                            <input type="file" accept="image/*" onChange={handleChoosePoster} />
+                            {newPoster && (
+                                <div className="text-xs mt-1 opacity-70">Đã chọn: {newPoster.name}</div>
+                            )}
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium mb-1">Caption</label>
+                            <textarea
+                                className="w-full border rounded p-2 text-black"
+                                rows={3}
+                                placeholder="Nhập mô tả..."
+                                value={newCaption}
+                                onChange={(e) => setNewCaption(e.target.value)}
+                            />
+                        </div>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowAdd(false)} disabled={adding}>
+                        Hủy
+                    </Button>
+                    <Button variant="primary" onClick={handleAddReel} disabled={adding}>
+                        {adding ? (
+                            <>
+                                <Spinner
+                                    as="span"
+                                    animation="border"
+                                    size="sm"
+                                    role="status"
+                                    aria-hidden="true"
+                                />
+                                <span className="ml-2">Đang thêm...</span>
+                            </>
+                        ) : (
+                            "Thêm"
+                        )}
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 }
