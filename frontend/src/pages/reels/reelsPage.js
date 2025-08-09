@@ -112,7 +112,7 @@ function Reel({ data, isActive, onRequestPrev, onRequestNext }) {
     return (
         <div className="relative w-full h-screen overflow-hidden flex items-center justify-center">
             <div
-                className="relative shadow-xl"
+                className="shadow-xl"
                 style={{scrollSnapAlign: "start", width: "min(480px, 92vw)", aspectRatio: "6 / 19" }}
             >
                 <video
