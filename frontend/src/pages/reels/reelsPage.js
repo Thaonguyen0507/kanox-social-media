@@ -28,9 +28,9 @@ function normalizeReels(apiData = []) {
     const reels = [];
 
     for (const post of apiData) {
+        console.log(post);
         const medias = Array.isArray(post.media) ? post.media : [];
-        const firstImage =
-            medias.find((m) => (m?.type || "").toLowerCase() === "image" && typeof m?.url === "string")?.url || null;
+        const firstImage = post.avatarUrl || null;
 
         const videos = medias.filter((m) => {
             if (!m || typeof m.url !== "string") return false;
